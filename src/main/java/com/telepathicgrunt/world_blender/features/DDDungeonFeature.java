@@ -1,12 +1,8 @@
-package net.telepathicgrunt.worldblender.features;
-
-import java.util.Random;
-import java.util.function.Function;
-
-import org.apache.logging.log4j.Level;
+package com.telepathicgrunt.world_blender.features;
 
 import com.mojang.datafixers.Dynamic;
-
+import com.telepathicgrunt.world_blender.WorldBlender;
+import com.telepathicgrunt.world_blender.the_blender.dedicated_mod_support.DimDungeonsCompatibility;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BarrelBlockEntity;
@@ -36,8 +32,10 @@ import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.ChunkGeneratorConfig;
 import net.minecraft.world.gen.feature.DefaultFeatureConfig;
 import net.minecraft.world.gen.feature.Feature;
-import net.telepathicgrunt.worldblender.WorldBlender;
-import net.telepathicgrunt.worldblender.the_blender.dedicated_mod_support.DimDungeonsCompatibility;
+import org.apache.logging.log4j.Level;
+
+import java.util.Random;
+import java.util.function.Function;
 
 
 // Source is Dimension Dungeon's features :

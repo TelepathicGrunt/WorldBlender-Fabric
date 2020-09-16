@@ -1,10 +1,11 @@
-package net.telepathicgrunt.worldblender.the_blender;
+package com.telepathicgrunt.world_blender.the_blender;
+
+import com.telepathicgrunt.world_blender.configs.WBConfig;
+import net.minecraft.util.Identifier;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
-import net.minecraft.util.Identifier;
-import net.telepathicgrunt.worldblender.configs.WBConfig;
 
 public class ConfigBlacklisting
 {

@@ -1,10 +1,6 @@
-package net.telepathicgrunt.worldblender.dimension;
-
-import java.util.List;
-import java.util.Random;
+package com.telepathicgrunt.world_blender.dimension;
 
 import com.google.common.collect.ImmutableList;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.decoration.EnderCrystalEntity;
 import net.minecraft.server.world.ServerWorld;
@@ -13,6 +9,9 @@ import net.minecraft.world.explosion.Explosion;
 import net.minecraft.world.gen.feature.EndSpikeFeature;
 import net.minecraft.world.gen.feature.EndSpikeFeatureConfig;
 import net.minecraft.world.gen.feature.Feature;
+
+import java.util.List;
+import java.util.Random;
 
 
 public enum WBDragonSpawnState

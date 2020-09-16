@@ -1,18 +1,9 @@
 package com.telepathicgrunt.world_blender;
 
-import com.telepathicgrunt.world_blender.blocks.WBPortalBlock;
 import com.telepathicgrunt.world_blender.blocks.WBPortalBlockEntity;
-import com.telepathicgrunt.world_blender.blocks.WBPortalSpawning;
-import com.telepathicgrunt.world_blender.configs.WBConfig;
-import me.sargunvohra.mcmods.autoconfig1u.AutoConfig;
-import me.sargunvohra.mcmods.autoconfig1u.serializer.JanksonConfigSerializer;
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.util.Identifier;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class WorldBlenderClient implements ClientModInitializer {
 	@Override

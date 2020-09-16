@@ -1,15 +1,7 @@
-package net.telepathicgrunt.worldblender.blocks;
+package com.telepathicgrunt.world_blender.blocks;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import org.apache.logging.log4j.Level;
-
+import com.telepathicgrunt.world_blender.WorldBlender;
+import com.telepathicgrunt.world_blender.configs.WBConfig;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.ChestBlockEntity;
@@ -29,8 +21,10 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.ForgeRegistries;
-import net.telepathicgrunt.worldblender.WorldBlender;
-import net.telepathicgrunt.worldblender.configs.WBConfig;
+import org.apache.logging.log4j.Level;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 
 @Mod.EventBusSubscriber(modid = WorldBlender.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)

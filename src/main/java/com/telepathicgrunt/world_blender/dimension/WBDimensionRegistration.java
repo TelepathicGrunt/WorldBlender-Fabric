@@ -1,6 +1,6 @@
-package net.telepathicgrunt.worldblender.dimension;
+package com.telepathicgrunt.world_blender.dimension;
 
-import java.util.function.BiFunction;
+import com.telepathicgrunt.world_blender.WorldBlender;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
 import net.minecraft.world.dimension.Dimension;
@@ -12,7 +12,8 @@ import net.minecraftforge.event.world.RegisterDimensionsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
-import net.telepathicgrunt.worldblender.WorldBlender;
+
+import java.util.function.BiFunction;
 
 
 @EventBusSubscriber(modid = WorldBlender.MODID, bus = Bus.MOD)

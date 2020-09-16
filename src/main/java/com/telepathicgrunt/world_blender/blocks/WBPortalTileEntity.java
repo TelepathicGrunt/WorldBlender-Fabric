@@ -1,6 +1,6 @@
-package net.telepathicgrunt.worldblender.blocks;
+package com.telepathicgrunt.world_blender.blocks;
 
-import javax.annotation.Nullable;
+import com.telepathicgrunt.world_blender.networking.MessageHandler;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.block.Block;
@@ -14,9 +14,8 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Tickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.telepathicgrunt.worldblender.networking.MessageHandler;
+
+import javax.annotation.Nullable;
 
 
 public class WBPortalTileEntity extends BlockEntity implements Tickable

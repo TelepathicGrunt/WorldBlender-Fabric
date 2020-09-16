@@ -1,5 +1,6 @@
-package net.telepathicgrunt.worldblender.dimension;
+package com.telepathicgrunt.world_blender.dimension;
 
+import com.telepathicgrunt.world_blender.features.WBFeatures;
 import net.minecraft.server.world.ChunkHolder;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
@@ -8,7 +9,6 @@ import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ChunkStatus;
 import net.minecraft.world.chunk.WorldChunk;
 import net.minecraft.world.gen.feature.FeatureConfig;
-import net.telepathicgrunt.worldblender.features.WBFeatures;
 
 
 public class AltarManager

@@ -1,11 +1,11 @@
-package net.telepathicgrunt.worldblender.generation.layer;
+package com.telepathicgrunt.world_blender.generation.layer;
 
+import com.telepathicgrunt.world_blender.biome.WBBiomes;
 import net.minecraft.util.math.noise.OctaveSimplexNoiseSampler;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.layer.type.InitLayer;
 import net.minecraft.world.biome.layer.util.LayerRandomnessSource;
 import net.minecraft.world.gen.ChunkRandom;
-import net.telepathicgrunt.worldblender.biome.WBBiomes;
 
 
 @SuppressWarnings("deprecation")

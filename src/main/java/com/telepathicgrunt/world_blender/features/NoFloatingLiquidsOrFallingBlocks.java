@@ -1,20 +1,8 @@
-package net.telepathicgrunt.worldblender.features;
-
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Random;
-import java.util.Set;
-import java.util.function.Function;
+package com.telepathicgrunt.world_blender.features;
 
 import com.mojang.datafixers.Dynamic;
-
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.FallingBlock;
-import net.minecraft.block.Material;
-import net.minecraft.block.MaterialColor;
+import com.telepathicgrunt.world_blender.configs.WBConfig;
+import net.minecraft.block.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.Heightmap;
@@ -23,7 +11,9 @@ import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.ChunkGeneratorConfig;
 import net.minecraft.world.gen.feature.DefaultFeatureConfig;
 import net.minecraft.world.gen.feature.Feature;
-import net.telepathicgrunt.worldblender.configs.WBConfig;
+
+import java.util.*;
+import java.util.function.Function;
 
 
 public class NoFloatingLiquidsOrFallingBlocks extends Feature<DefaultFeatureConfig>

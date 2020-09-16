@@ -1,14 +1,9 @@
-package net.telepathicgrunt.worldblender.blocks;
+package com.telepathicgrunt.world_blender.blocks;
 
-import java.util.Random;
+import com.telepathicgrunt.world_blender.dimension.WBDimensionRegistration;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.BlockWithEntity;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.Material;
-import net.minecraft.block.MaterialColor;
+import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -18,7 +13,6 @@ import net.minecraft.particle.ParticleTypes;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.BooleanBiFunction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
@@ -28,9 +22,8 @@ import net.minecraft.world.BlockView;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.telepathicgrunt.worldblender.dimension.WBDimensionRegistration;
+
+import java.util.Random;
 
 
 public class WBPortalBlock extends BlockWithEntity
@@ -40,7 +33,7 @@ public class WBPortalBlock extends BlockWithEntity
 	
 	protected WBPortalBlock()
 	{
-		super(Block.Settings.of(Material.PORTAL, MaterialColor.BLACK).noCollision().lightLevel(6).strength(-1.0F, 3600000.0F).dropsNothing());
+		super(Block.Settings.of(Material.PORTAL, MaterialColor.BLACK).noCollision().lightLevel((blockState) -> 6).strength(-1.0F, 3600000.0F).dropsNothing());
 	}
 
 
@@ -76,7 +69,7 @@ public class WBPortalBlock extends BlockWithEntity
 				{
 					Block blockNearTeleport = destinationWorld.getBlockState(blockpos).getBlock();
 
-					if (blockNearTeleport == WBBlocks.WORLD_BLENDER_PORTAL.get())
+					if (blockNearTeleport == WBBlocks.WORLD_BLENDER_PORTAL)
 					{
 						//gets portal block closest to players original xz coordinate
 						if (destPos == null || (Math.abs(blockpos.getX() - position.getX()) < Math.abs(destPos.getX() - position.getX()) && Math.abs(blockpos.getZ() - position.getZ()) < Math.abs(destPos.getZ() - position.getZ())))
@@ -88,7 +81,7 @@ public class WBPortalBlock extends BlockWithEntity
 						WBPortalTileEntity wbtile2 = (WBPortalTileEntity) destinationWorld.getBlockEntity(blockpos);
 						wbtile2.triggerCooldown();
 					}
-					else if (blockNearTeleport.getTags().contains(net.minecraftforge.common.Tags.Blocks.CHESTS.getId()))
+					else if (blockNearTeleport.getTags().contains()
 					{
 						//only set position to chest if no portal block is found
 						if (destPos == null)

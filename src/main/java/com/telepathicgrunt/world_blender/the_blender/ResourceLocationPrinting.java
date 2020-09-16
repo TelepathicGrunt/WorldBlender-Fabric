@@ -1,14 +1,15 @@
-package net.telepathicgrunt.worldblender.the_blender;
+package com.telepathicgrunt.world_blender.the_blender;
 
-import java.io.FileNotFoundException;
-import java.io.PrintStream;
+import com.telepathicgrunt.world_blender.WorldBlender;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.gen.feature.StructureFeature;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.IForgeRegistryEntry;
-import net.telepathicgrunt.worldblender.WorldBlender;
+
+import java.io.FileNotFoundException;
+import java.io.PrintStream;
 
 public class ResourceLocationPrinting
 {

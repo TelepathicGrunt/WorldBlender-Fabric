@@ -1,10 +1,10 @@
-package net.telepathicgrunt.worldblender.features;
+package com.telepathicgrunt.world_blender.features;
 
+import com.telepathicgrunt.world_blender.WorldBlender;
 import net.minecraft.world.gen.feature.DefaultFeatureConfig;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.registries.IForgeRegistry;
-import net.telepathicgrunt.worldblender.WorldBlender;
 
 public class WBFeatures
 {

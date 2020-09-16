@@ -1,14 +1,9 @@
-package net.telepathicgrunt.worldblender.dimension;
-
-import java.util.Locale;
-import java.util.function.BiFunction;
-
-import javax.annotation.Nonnull;
+package com.telepathicgrunt.world_blender.dimension;
 
 import com.google.common.base.Function;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Supplier;
-
+import com.telepathicgrunt.world_blender.WorldBlender;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.util.Identifier;
@@ -18,7 +13,10 @@ import net.minecraft.world.gen.feature.StructureFeature;
 import net.minecraftforge.registries.GameData;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.IForgeRegistryEntry;
-import net.telepathicgrunt.worldblender.WorldBlender;
+
+import javax.annotation.Nonnull;
+import java.util.Locale;
+import java.util.function.BiFunction;
 
 public class RegUtil {
     @Nonnull

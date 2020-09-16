@@ -1,10 +1,10 @@
-package net.telepathicgrunt.worldblender.features;
-
-import java.util.Random;
-import java.util.function.Function;
+package com.telepathicgrunt.world_blender.features;
 
 import com.mojang.datafixers.Dynamic;
-
+import com.telepathicgrunt.world_blender.WorldBlender;
+import com.telepathicgrunt.world_blender.blocks.WBBlocks;
+import com.telepathicgrunt.world_blender.blocks.WBPortalTileEntity;
+import com.telepathicgrunt.world_blender.dimension.WBDimensionRegistration;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.Material;
@@ -24,10 +24,9 @@ import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.ChunkGeneratorConfig;
 import net.minecraft.world.gen.feature.DefaultFeatureConfig;
 import net.minecraft.world.gen.feature.Feature;
-import net.telepathicgrunt.worldblender.WorldBlender;
-import net.telepathicgrunt.worldblender.blocks.WBBlocks;
-import net.telepathicgrunt.worldblender.blocks.WBPortalTileEntity;
-import net.telepathicgrunt.worldblender.dimension.WBDimensionRegistration;
+
+import java.util.Random;
+import java.util.function.Function;
 
 
 public class WBPortalAltar extends Feature<DefaultFeatureConfig>

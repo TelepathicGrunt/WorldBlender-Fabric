@@ -1,6 +1,8 @@
-package net.telepathicgrunt.worldblender.the_blender.dedicated_mod_support;
+package com.telepathicgrunt.world_blender.the_blender.dedicated_mod_support;
 
-import java.util.List;
+import com.telepathicgrunt.world_blender.biome.WBBiomes;
+import com.telepathicgrunt.world_blender.features.WBFeatures;
+import com.telepathicgrunt.world_blender.the_blender.ConfigBlacklisting;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.GenerationStep;
@@ -9,9 +11,8 @@ import net.minecraft.world.gen.decorator.DecoratorConfig;
 import net.minecraft.world.gen.feature.ConfiguredFeature;
 import net.minecraft.world.gen.feature.DecoratedFeatureConfig;
 import net.minecraft.world.gen.feature.FeatureConfig;
-import net.telepathicgrunt.worldblender.biome.WBBiomes;
-import net.telepathicgrunt.worldblender.features.WBFeatures;
-import net.telepathicgrunt.worldblender.the_blender.ConfigBlacklisting;
+
+import java.util.List;
 
 public class DimDungeonsCompatibility
 {

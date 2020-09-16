@@ -1,12 +1,10 @@
-package net.telepathicgrunt.worldblender.blocks;
+package com.telepathicgrunt.world_blender.blocks;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.render.RenderPhase;
 import net.minecraft.util.Util;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 
 public class WBRenderTexturingState

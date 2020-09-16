@@ -1,6 +1,9 @@
-package net.telepathicgrunt.worldblender.dimension;
+package com.telepathicgrunt.world_blender.dimension;
 
-import javax.annotation.Nullable;
+import com.telepathicgrunt.world_blender.WorldBlender;
+import com.telepathicgrunt.world_blender.biome.biomes.surfacebuilder.BlendedSurfaceBuilder;
+import com.telepathicgrunt.world_blender.configs.WBConfig;
+import com.telepathicgrunt.world_blender.generation.WBBiomeProvider;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.server.world.ServerWorld;
@@ -14,13 +17,9 @@ import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.ChunkGeneratorType;
 import net.minecraft.world.gen.chunk.OverworldChunkGenerator;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.common.Mod;
-import net.telepathicgrunt.worldblender.WorldBlender;
-import net.telepathicgrunt.worldblender.biome.biomes.surfacebuilder.BlendedSurfaceBuilder;
-import net.telepathicgrunt.worldblender.configs.WBConfig;
-import net.telepathicgrunt.worldblender.generation.WBBiomeProvider;
+
+import javax.annotation.Nullable;
 
 
 @Mod.EventBusSubscriber(modid = WorldBlender.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)

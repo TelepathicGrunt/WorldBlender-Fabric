@@ -1,10 +1,14 @@
-package net.telepathicgrunt.worldblender.the_blender;
+package com.telepathicgrunt.world_blender.the_blender;
 
 import com.google.common.collect.ImmutableList;
+import com.telepathicgrunt.world_blender.biome.WBBiomes;
+import com.telepathicgrunt.world_blender.biome.biomes.surfacebuilder.BlendedSurfaceBuilder;
+import com.telepathicgrunt.world_blender.configs.WBConfig;
+import com.telepathicgrunt.world_blender.features.WBFeatures;
+import com.telepathicgrunt.world_blender.the_blender.ConfigBlacklisting.BlacklistType;
 import net.minecraft.block.Block;
 import net.minecraft.entity.EntityCategory;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.biome.Biome;
@@ -20,11 +24,6 @@ import net.minecraft.world.gen.feature.*;
 import net.minecraft.world.gen.surfacebuilder.SurfaceConfig;
 import net.minecraft.world.gen.surfacebuilder.TernarySurfaceConfig;
 import net.minecraftforge.registries.ForgeRegistries;
-import net.telepathicgrunt.worldblender.biome.WBBiomes;
-import net.telepathicgrunt.worldblender.biome.biomes.surfacebuilder.BlendedSurfaceBuilder;
-import net.telepathicgrunt.worldblender.configs.WBConfig;
-import net.telepathicgrunt.worldblender.features.WBFeatures;
-import net.telepathicgrunt.worldblender.the_blender.ConfigBlacklisting.BlacklistType;
 
 import java.util.Set;
 

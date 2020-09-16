@@ -1,5 +1,9 @@
-package net.telepathicgrunt.worldblender.the_blender.dedicated_mod_support;
+package com.telepathicgrunt.world_blender.the_blender.dedicated_mod_support;
 
+import com.telepathicgrunt.world_blender.biome.WBBiomes;
+import com.telepathicgrunt.world_blender.configs.WBConfig;
+import com.telepathicgrunt.world_blender.the_blender.ConfigBlacklisting;
+import com.telepathicgrunt.world_blender.the_blender.ConfigBlacklisting.BlacklistType;
 import com.terraforged.feature.template.decorator.DecoratedFeature;
 import com.terraforged.feature.template.feature.MultiTemplateFeature;
 import com.terraforged.feature.template.feature.TemplateFeature;
@@ -11,10 +15,6 @@ import net.minecraft.world.gen.decorator.CountExtraChanceDecoratorConfig;
 import net.minecraft.world.gen.decorator.Decorator;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraftforge.registries.ForgeRegistries;
-import net.telepathicgrunt.worldblender.biome.WBBiomes;
-import net.telepathicgrunt.worldblender.configs.WBConfig;
-import net.telepathicgrunt.worldblender.the_blender.ConfigBlacklisting;
-import net.telepathicgrunt.worldblender.the_blender.ConfigBlacklisting.BlacklistType;
 
 public class TerraForgedCompatibility
 {

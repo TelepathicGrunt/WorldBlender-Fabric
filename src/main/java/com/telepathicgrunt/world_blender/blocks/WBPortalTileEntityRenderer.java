@@ -1,26 +1,20 @@
-package net.telepathicgrunt.worldblender.blocks;
-
-import java.util.List;
-import java.util.Random;
-import java.util.stream.IntStream;
+package com.telepathicgrunt.world_blender.blocks;
 
 import com.google.common.collect.ImmutableList;
+import com.telepathicgrunt.world_blender.blocks.WBRenderTexturingState.WBPortalTexturingState;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.RenderPhase;
-import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.VertexFormats;
+import net.minecraft.client.render.*;
 import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.util.math.Matrix4f;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.telepathicgrunt.worldblender.blocks.WBRenderTexturingState.WBPortalTexturingState;
+
+import java.util.List;
+import java.util.Random;
+import java.util.stream.IntStream;
 
 
 @Environment(EnvType.CLIENT)

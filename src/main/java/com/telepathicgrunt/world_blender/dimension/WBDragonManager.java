@@ -1,15 +1,9 @@
-package net.telepathicgrunt.worldblender.dimension;
-
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
-import java.util.UUID;
-import java.util.function.Predicate;
-
-import javax.annotation.Nullable;
+package com.telepathicgrunt.world_blender.dimension;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import com.telepathicgrunt.world_blender.the_blender.ConfigBlacklisting;
+import com.telepathicgrunt.world_blender.the_blender.ConfigBlacklisting.BlacklistType;
 import net.minecraft.advancement.criterion.Criterions;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntity;
@@ -46,8 +40,13 @@ import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.gen.feature.EndPortalFeature;
 import net.minecraft.world.gen.feature.EndSpikeFeature;
 import net.minecraft.world.gen.feature.FeatureConfig;
-import net.telepathicgrunt.worldblender.the_blender.ConfigBlacklisting;
-import net.telepathicgrunt.worldblender.the_blender.ConfigBlacklisting.BlacklistType;
+
+import javax.annotation.Nullable;
+import java.util.List;
+import java.util.Random;
+import java.util.Set;
+import java.util.UUID;
+import java.util.function.Predicate;
 
 
 public class WBDragonManager

@@ -1,10 +1,7 @@
-package net.telepathicgrunt.worldblender.features;
-
-import java.util.Random;
-import java.util.function.Function;
+package com.telepathicgrunt.world_blender.features;
 
 import com.mojang.datafixers.Dynamic;
-
+import com.telepathicgrunt.world_blender.configs.WBConfig;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.tag.FluidTags;
@@ -16,7 +13,9 @@ import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.ChunkGeneratorConfig;
 import net.minecraft.world.gen.feature.DefaultFeatureConfig;
 import net.minecraft.world.gen.feature.Feature;
-import net.telepathicgrunt.worldblender.configs.WBConfig;
+
+import java.util.Random;
+import java.util.function.Function;
 
 
 public class SeparateLavaAndWater extends Feature<DefaultFeatureConfig>

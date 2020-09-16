@@ -1,30 +1,24 @@
-package net.telepathicgrunt.worldblender.generation;
-
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
-import java.util.function.LongFunction;
-
-import javax.annotation.Nullable;
+package com.telepathicgrunt.world_blender.generation;
 
 import com.google.common.collect.Sets;
-
+import com.telepathicgrunt.world_blender.biome.WBBiomes;
+import com.telepathicgrunt.world_blender.generation.layer.MainBiomeLayer;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.layer.ScaleLayer;
-import net.minecraft.world.biome.layer.util.CachingLayerContext;
-import net.minecraft.world.biome.layer.util.CachingLayerSampler;
-import net.minecraft.world.biome.layer.util.LayerFactory;
-import net.minecraft.world.biome.layer.util.LayerSampleContext;
-import net.minecraft.world.biome.layer.util.LayerSampler;
+import net.minecraft.world.biome.layer.util.*;
 import net.minecraft.world.biome.source.BiomeLayerSampler;
 import net.minecraft.world.biome.source.BiomeSource;
 import net.minecraft.world.gen.feature.StructureFeature;
 import net.minecraft.world.level.LevelGeneratorType;
-import net.telepathicgrunt.worldblender.biome.WBBiomes;
-import net.telepathicgrunt.worldblender.generation.layer.MainBiomeLayer;
+
+import javax.annotation.Nullable;
+import java.util.List;
+import java.util.Random;
+import java.util.Set;
+import java.util.function.LongFunction;
 
 
 public class WBBiomeProvider extends BiomeSource

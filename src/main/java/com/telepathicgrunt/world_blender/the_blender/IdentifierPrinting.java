@@ -2,12 +2,10 @@ package com.telepathicgrunt.world_blender.the_blender;
 
 import com.telepathicgrunt.world_blender.WorldBlender;
 import net.minecraft.util.Identifier;
-import net.minecraft.world.gen.feature.structure.Structure;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.IForgeRegistryEntry;
-import net.telepathicgrunt.worldblender.WorldBlender;
 
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
