@@ -1,43 +1,45 @@
-package com.telepathicgrunt.world_blender.blocks;
-
-import com.google.common.collect.ImmutableList;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.Matrix4f;
-import net.minecraft.client.renderer.RenderState;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.telepathicgrunt.worldblender.blocks.WBRenderTexturingState.WBPortalTexturingState;
+package net.telepathicgrunt.worldblender.blocks;
 
 import java.util.List;
 import java.util.Random;
 import java.util.stream.IntStream;
 
+import com.google.common.collect.ImmutableList;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.RenderPhase;
+import net.minecraft.client.render.VertexConsumer;
+import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.VertexFormats;
+import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
+import net.minecraft.client.render.block.entity.BlockEntityRenderer;
+import net.minecraft.client.util.math.Matrix4f;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.math.Direction;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.telepathicgrunt.worldblender.blocks.WBRenderTexturingState.WBPortalTexturingState;
 
-@OnlyIn(Dist.CLIENT)
-public class WBPortalTileEntityRenderer extends TileEntityRenderer<WBPortalTileEntity>
+
+@Environment(EnvType.CLIENT)
+public class WBPortalTileEntityRenderer extends BlockEntityRenderer<WBPortalTileEntity>
 {
 
-	public WBPortalTileEntityRenderer(TileEntityRendererDispatcher dispatcher)
+	public WBPortalTileEntityRenderer(BlockEntityRenderDispatcher dispatcher)
 	{
 		super(dispatcher);
 	}
 
 
 	@Override
-	public void render(WBPortalTileEntity tileEntity, float partialTicks, MatrixStack modelMatrix, IRenderTypeBuffer renderBuffer, int combinedLightIn, int combinedOverlayIn)
+	public void render(WBPortalTileEntity tileEntity, float partialTicks, MatrixStack modelMatrix, VertexConsumerProvider renderBuffer, int combinedLightIn, int combinedOverlayIn)
 	{
 		RANDOM.setSeed(31100L);
-		double distance = tileEntity.getPos().distanceSq(this.renderDispatcher.renderInfo.getProjectedView(), true);
+		double distance = tileEntity.getPos().getSquaredDistance(this.dispatcher.camera.getPos(), true);
 		int passes = this.getPasses(distance);
-		Matrix4f matrix4f = modelMatrix.getLast().getMatrix();
+		Matrix4f matrix4f = modelMatrix.peek().getModel();
 		this.drawColor(tileEntity, 0.15F, matrix4f, renderBuffer.getBuffer(WB_RENDER_TYPE.get(0)));
 
 		for (int currentPass = 1; currentPass < passes; ++currentPass)
@@ -47,7 +49,7 @@ public class WBPortalTileEntityRenderer extends TileEntityRenderer<WBPortalTileE
 	}
 
 
-	private void drawColor(WBPortalTileEntity tileEntity, float modifier, Matrix4f matrix4f, IVertexBuilder vertexBuilder)
+	private void drawColor(WBPortalTileEntity tileEntity, float modifier, Matrix4f matrix4f, VertexConsumer vertexBuilder)
 	{
 		// turns dark red when cooling down but lightens over time. And when finished cooling down, it pops to full brightness
 		float coolDownEffect = tileEntity.isCoolingDown() ? 0.7f - tileEntity.getCoolDown()/1200F : 0.85f ; 
@@ -64,14 +66,14 @@ public class WBPortalTileEntityRenderer extends TileEntityRenderer<WBPortalTileE
 	}
 
 
-	private void setVertexColor(WBPortalTileEntity tileEntity, Matrix4f matrix4f, IVertexBuilder vertexBuilder, float pos1, float pos2, float pos3, float pos4, float pos5, float pos6, float pos7, float pos8, float red, float green, float blue, Direction direction)
+	private void setVertexColor(WBPortalTileEntity tileEntity, Matrix4f matrix4f, VertexConsumer vertexBuilder, float pos1, float pos2, float pos3, float pos4, float pos5, float pos6, float pos7, float pos8, float red, float green, float blue, Direction direction)
 	{
 		if (tileEntity.shouldRenderFace(direction))
 		{
-			vertexBuilder.pos(matrix4f, pos1, pos3, pos5).color(red, green, blue, 1.0F).endVertex();
-			vertexBuilder.pos(matrix4f, pos2, pos3, pos6).color(red, green, blue, 1.0F).endVertex();
-			vertexBuilder.pos(matrix4f, pos2, pos4, pos7).color(red, green, blue, 1.0F).endVertex();
-			vertexBuilder.pos(matrix4f, pos1, pos4, pos8).color(red, green, blue, 1.0F).endVertex();
+			vertexBuilder.vertex(matrix4f, pos1, pos3, pos5).color(red, green, blue, 1.0F).next();
+			vertexBuilder.vertex(matrix4f, pos2, pos3, pos6).color(red, green, blue, 1.0F).next();
+			vertexBuilder.vertex(matrix4f, pos2, pos4, pos7).color(red, green, blue, 1.0F).next();
+			vertexBuilder.vertex(matrix4f, pos1, pos4, pos8).color(red, green, blue, 1.0F).next();
 		}
 	}
 
@@ -115,35 +117,35 @@ public class WBPortalTileEntityRenderer extends TileEntityRenderer<WBPortalTileE
 	
 	//////////////////////////////////RENDER STATE STUFF//////////////////////////////////////////
 
-	public static final ResourceLocation MAIN_TEXTURE =     new ResourceLocation("textures/misc/enchanted_item_glint.png");
-	public static final ResourceLocation ADDITIVE_TEXTURE = new ResourceLocation("textures/misc/forcefield.png");
+	public static final Identifier MAIN_TEXTURE =     new Identifier("textures/misc/enchanted_item_glint.png");
+	public static final Identifier ADDITIVE_TEXTURE = new Identifier("textures/misc/forcefield.png");
 	private static final Random RANDOM = new Random(31100L);
-	private static final List<RenderType> WB_RENDER_TYPE = IntStream.range(0, 9).mapToObj((index) ->
+	private static final List<RenderLayer> WB_RENDER_TYPE = IntStream.range(0, 9).mapToObj((index) ->
 	{
 		return getWBPortal(index + 1);
 	}).collect(ImmutableList.toImmutableList());
 
 	
-	public static RenderType getWBPortal(int layer)
+	public static RenderLayer getWBPortal(int layer)
 	{
-		RenderState.TransparencyState renderstate$transparencystate;
-		RenderState.TextureState renderstate$texturestate;
+		RenderPhase.Transparency renderstate$transparencystate;
+		RenderPhase.Texture renderstate$texturestate;
 		if (layer <= 1)
 		{
-			renderstate$transparencystate = RenderState.TRANSLUCENT_TRANSPARENCY;
-			renderstate$texturestate = new RenderState.TextureState(MAIN_TEXTURE, false, false);
+			renderstate$transparencystate = RenderPhase.TRANSLUCENT_TRANSPARENCY;
+			renderstate$texturestate = new RenderPhase.Texture(MAIN_TEXTURE, false, false);
 		}
 		else if (layer <= 3)
 		{
-			renderstate$transparencystate = RenderState.ADDITIVE_TRANSPARENCY;
-			renderstate$texturestate = new RenderState.TextureState(ADDITIVE_TEXTURE, true, false);
+			renderstate$transparencystate = RenderPhase.ADDITIVE_TRANSPARENCY;
+			renderstate$texturestate = new RenderPhase.Texture(ADDITIVE_TEXTURE, true, false);
 		}
 		else
 		{
-			renderstate$transparencystate = RenderState.ADDITIVE_TRANSPARENCY;
-			renderstate$texturestate = new RenderState.TextureState(ADDITIVE_TEXTURE, false, false);
+			renderstate$transparencystate = RenderPhase.ADDITIVE_TRANSPARENCY;
+			renderstate$texturestate = new RenderPhase.Texture(ADDITIVE_TEXTURE, false, false);
 		}
 
-		return RenderType.makeType("world_blender_portal", DefaultVertexFormats.POSITION_COLOR, 7, 90, false, true, RenderType.State.getBuilder().transparency(renderstate$transparencystate).texture(renderstate$texturestate).texturing(new WBPortalTexturingState(layer)).fog(RenderState.BLACK_FOG).build(false));
+		return RenderLayer.of("world_blender_portal", VertexFormats.POSITION_COLOR, 7, 90, false, true, RenderLayer.MultiPhaseParameters.builder().transparency(renderstate$transparencystate).texture(renderstate$texturestate).texturing(new WBPortalTexturingState(layer)).fog(RenderPhase.BLACK_FOG).build(false));
 	}
 }

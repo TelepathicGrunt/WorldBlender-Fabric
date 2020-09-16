@@ -1,22 +1,40 @@
-package com.telepathicgrunt.world_blender.the_blender;
+package net.telepathicgrunt.worldblender.the_blender;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
 import com.google.common.collect.Maps;
 import com.mojang.datafixers.Dynamic;
-import net.minecraft.nbt.INBT;
-import net.minecraft.nbt.NBTDynamicOps;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.datafixer.NbtOps;
+import net.minecraft.nbt.Tag;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.gen.GenerationStage;
-import net.minecraft.world.gen.feature.*;
-
-import java.util.*;
+import net.minecraft.world.gen.GenerationStep;
+import net.minecraft.world.gen.feature.ConfiguredFeature;
+import net.minecraft.world.gen.feature.DecoratedFeatureConfig;
+import net.minecraft.world.gen.feature.DecoratedFlowerFeature;
+import net.minecraft.world.gen.feature.DiskFeatureConfig;
+import net.minecraft.world.gen.feature.Feature;
+import net.minecraft.world.gen.feature.OreFeatureConfig;
+import net.minecraft.world.gen.feature.RandomBooleanFeatureConfig;
+import net.minecraft.world.gen.feature.RandomFeatureConfig;
+import net.minecraft.world.gen.feature.RandomFeatureEntry;
+import net.minecraft.world.gen.feature.RandomPatchFeatureConfig;
+import net.minecraft.world.gen.feature.RandomRandomFeatureConfig;
+import net.minecraft.world.gen.feature.SimpleBlockFeatureConfig;
+import net.minecraft.world.gen.feature.SimpleRandomFeatureConfig;
+import net.minecraft.world.gen.feature.SingleStateFeatureConfig;
+import net.minecraft.world.gen.feature.SpringFeatureConfig;
 
 
 public class FeatureGrouping
 {
 	public static void setupFeatureMaps() 
 	{
-		for(GenerationStage.Decoration stage : GenerationStage.Decoration.values())
+		for(GenerationStep.Feature stage : GenerationStep.Feature.values())
 		{
 			SMALL_PLANT_MAP.put(stage, new ArrayList<ConfiguredFeature<?,?>>());
 			LARGE_PLANT_MAP.put(stage, new ArrayList<ConfiguredFeature<?,?>>());
@@ -34,25 +52,25 @@ public class FeatureGrouping
 
 	private static final List<String> BAMBOO_FEATURE_KEYWORDS = Arrays.asList("bamboo");
 	private static final List<String> LAGGY_FEATURE_KEYWORDS = Arrays.asList("lava","fire","bamboo","sugar_cane");
-	private static final ResourceLocation GNS_NETHER_SPREAD = new ResourceLocation("goodnightsleep:nether_splash");
+	private static final Identifier GNS_NETHER_SPREAD = new Identifier("goodnightsleep:nether_splash");
 	public static boolean bambooFound = false;
 	
 	/**
 	 * tries to find if the feature is bamboo, sugar cane, lava, or 
 	 * fire and return true if it is due to them being laggy
 	 */
-	public static boolean isLaggyFeature(GenerationStage.Decoration stage, ConfiguredFeature<?, ?> configuredFeature) 
+	public static boolean isLaggyFeature(GenerationStep.Feature stage, ConfiguredFeature<?, ?> configuredFeature) 
 	{
 		if(configuredFeature.config instanceof DecoratedFeatureConfig)
 		{
 			DecoratedFeatureConfig decoratedConfig = (DecoratedFeatureConfig)configuredFeature.config;
-			ResourceLocation rl = null;
+			Identifier rl = null;
 			
 			//A bunch of edge cases that have to handled because features can hold other features.
 			//If a mod makes a custom feature to hold features, welp, we are screwed. Nothing we can do about it. 
 			if(decoratedConfig.feature.feature == Feature.RANDOM_RANDOM_SELECTOR)
 			{
-				for(ConfiguredFeature<?, ?> nestedConfiguredFeature : ((MultipleWithChanceRandomFeatureConfig)decoratedConfig.feature.config).features)
+				for(ConfiguredFeature<?, ?> nestedConfiguredFeature : ((RandomRandomFeatureConfig)decoratedConfig.feature.config).features)
 				{
 					rl = nestedConfiguredFeature.feature.getRegistryName();
 					if(keywordFoundInPath(rl, BAMBOO_FEATURE_KEYWORDS))
@@ -64,7 +82,7 @@ public class FeatureGrouping
 			}
 			else if(decoratedConfig.feature.feature == Feature.RANDOM_SELECTOR)
 			{
-				for(ConfiguredRandomFeatureList<?> nestedConfiguredFeature : ((MultipleRandomFeatureConfig)decoratedConfig.feature.config).features)
+				for(RandomFeatureEntry<?> nestedConfiguredFeature : ((RandomFeatureConfig)decoratedConfig.feature.config).features)
 				{
 					rl = nestedConfiguredFeature.feature.feature.getRegistryName();
 					if(keywordFoundInPath(rl, BAMBOO_FEATURE_KEYWORDS))
@@ -76,7 +94,7 @@ public class FeatureGrouping
 			}
 			else if(decoratedConfig.feature.feature == Feature.SIMPLE_RANDOM_SELECTOR)
 			{
-				for(ConfiguredFeature<?, ?> nestedConfiguredFeature : ((SingleRandomFeature)decoratedConfig.feature.config).features)
+				for(ConfiguredFeature<?, ?> nestedConfiguredFeature : ((SimpleRandomFeatureConfig)decoratedConfig.feature.config).features)
 				{
 					rl = nestedConfiguredFeature.feature.getRegistryName();
 					if(keywordFoundInPath(rl, BAMBOO_FEATURE_KEYWORDS))
@@ -88,14 +106,14 @@ public class FeatureGrouping
 			}
 			else if(decoratedConfig.feature.feature == Feature.RANDOM_BOOLEAN_SELECTOR)
 			{
-				rl = ((TwoFeatureChoiceConfig)decoratedConfig.feature.config).field_227285_a_.feature.getRegistryName();
+				rl = ((RandomBooleanFeatureConfig)decoratedConfig.feature.config).featureTrue.feature.getRegistryName();
 				if(keywordFoundInPath(rl, BAMBOO_FEATURE_KEYWORDS))
 					bambooFound = true;
 				
 				if(keywordFoundInPath(rl, LAGGY_FEATURE_KEYWORDS))
 					return true;
 				
-				rl = ((TwoFeatureChoiceConfig)decoratedConfig.feature.config).field_227286_b_.feature.getRegistryName();
+				rl = ((RandomBooleanFeatureConfig)decoratedConfig.feature.config).featureFalse.feature.getRegistryName();
 				if(keywordFoundInPath(rl, BAMBOO_FEATURE_KEYWORDS))
 					bambooFound = true;
 				
@@ -105,19 +123,19 @@ public class FeatureGrouping
 			//end of edge cases with nested features
 			else if(decoratedConfig.feature.feature == Feature.LAKE)
 			{
-				rl = ((BlockStateFeatureConfig)decoratedConfig.feature.config).state.getBlock().getRegistryName();
+				rl = ((SingleStateFeatureConfig)decoratedConfig.feature.config).state.getBlock().getRegistryName();
 			}
 			else if(decoratedConfig.feature.feature == Feature.SIMPLE_BLOCK)
 			{
-				rl = ((BlockWithContextConfig)decoratedConfig.feature.config).toPlace.getBlock().getRegistryName();
+				rl = ((SimpleBlockFeatureConfig)decoratedConfig.feature.config).toPlace.getBlock().getRegistryName();
 			}
 			else if(decoratedConfig.feature.feature == Feature.RANDOM_PATCH)
 			{
-				rl = ((BlockClusterFeatureConfig)decoratedConfig.feature.config).stateProvider.getBlockState(new Random(0), BlockPos.ZERO).getBlock().getRegistryName();
+				rl = ((RandomPatchFeatureConfig)decoratedConfig.feature.config).stateProvider.getBlockState(new Random(0), BlockPos.ORIGIN).getBlock().getRegistryName();
 			}
 			else if(decoratedConfig.feature.feature == Feature.SPRING_FEATURE)
 			{
-				rl = ((LiquidsConfig)decoratedConfig.feature.config).state.getBlockState().getBlock().getBlock().getRegistryName();
+				rl = ((SpringFeatureConfig)decoratedConfig.feature.config).state.getBlockState().getBlock().getBlock().getRegistryName();
 			}
 			else if(decoratedConfig.feature.feature == Feature.ORE)
 			{
@@ -125,7 +143,7 @@ public class FeatureGrouping
 			}
 			else if(decoratedConfig.feature.feature == Feature.DISK)
 			{
-				rl = ((SphereReplaceConfig)decoratedConfig.feature.config).state.getBlockState().getBlock().getBlock().getRegistryName();
+				rl = ((DiskFeatureConfig)decoratedConfig.feature.config).state.getBlockState().getBlock().getBlock().getRegistryName();
 			}
 			else
 			{
@@ -142,7 +160,7 @@ public class FeatureGrouping
 		}
 		else
 		{
-			ResourceLocation rl = configuredFeature.feature.getRegistryName();
+			Identifier rl = configuredFeature.feature.getRegistryName();
 
 			//checks rl of non-nested feature's block or itself
 			if(keywordFoundInPath(rl, BAMBOO_FEATURE_KEYWORDS))
@@ -158,14 +176,14 @@ public class FeatureGrouping
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	public static final Map<GenerationStage.Decoration, List<ConfiguredFeature<?, ?>>> SMALL_PLANT_MAP = Maps.newHashMap();
+	public static final Map<GenerationStep.Feature, List<ConfiguredFeature<?, ?>>> SMALL_PLANT_MAP = Maps.newHashMap();
 	private static final List<String> SMALL_PLANT_KEYWORDS = Arrays.asList("grass","flower","rose","plant","bush","fern");
 
 	/**
 	 * Will check if incoming configuredfeature is a small plant and add it to the small plant map if it is so 
 	 * we can have a list of them for specific feature manipulation later
 	 */
-	public static boolean checksAndAddSmallPlantFeatures(GenerationStage.Decoration stage, ConfiguredFeature<?, ?> configuredFeature) 
+	public static boolean checksAndAddSmallPlantFeatures(GenerationStep.Feature stage, ConfiguredFeature<?, ?> configuredFeature) 
 	{
 		//if small plant is already added, skip it
 		if(SMALL_PLANT_MAP.get(stage).stream().anyMatch(vanillaConfigFeature -> serializeAndCompareFeature(vanillaConfigFeature, configuredFeature)))
@@ -183,7 +201,7 @@ public class FeatureGrouping
 		else if(configuredFeature.config instanceof DecoratedFeatureConfig)
 		{
 			DecoratedFeatureConfig decoratedConfig = (DecoratedFeatureConfig)configuredFeature.config;
-			ResourceLocation rl;
+			Identifier rl;
 			
 			//A bunch of edge cases that have to handled because features can hold other features.
 			//If a mod makes a custom feature to hold features, welp, we are screwed. Nothing we can do about it. 
@@ -195,7 +213,7 @@ public class FeatureGrouping
 			}
 			else if(decoratedConfig.feature.feature == Feature.RANDOM_PATCH)
 			{
-				rl = ((BlockClusterFeatureConfig)decoratedConfig.feature.config).stateProvider.getBlockState(new Random(0), BlockPos.ZERO).getBlock().getRegistryName();
+				rl = ((RandomPatchFeatureConfig)decoratedConfig.feature.config).stateProvider.getBlockState(new Random(0), BlockPos.ORIGIN).getBlock().getRegistryName();
 				if(keywordFoundInPath(rl, SMALL_PLANT_KEYWORDS))
 				{
 					SMALL_PLANT_MAP.get(stage).add(configuredFeature);
@@ -206,7 +224,7 @@ public class FeatureGrouping
 		}
 		else
 		{
-			ResourceLocation rl = configuredFeature.feature.getRegistryName();
+			Identifier rl = configuredFeature.feature.getRegistryName();
 			if(keywordFoundInPath(rl, SMALL_PLANT_KEYWORDS))
 			{
 				SMALL_PLANT_MAP.get(stage).add(configuredFeature);
@@ -223,14 +241,14 @@ public class FeatureGrouping
 
 	//while we are storing large plants into this map, we don't use it at the moment as we just
 	//need to identify what's a large plant and move it to the front of the feature list.
-	public static final Map<GenerationStage.Decoration, List<ConfiguredFeature<?, ?>>> LARGE_PLANT_MAP = Maps.newHashMap();
+	public static final Map<GenerationStep.Feature, List<ConfiguredFeature<?, ?>>> LARGE_PLANT_MAP = Maps.newHashMap();
 	private static final List<String> LARGE_PLANT_KEYWORDS = Arrays.asList("tree","huge_mushroom","big_mushroom","poplar","twiglet","mangrove","bramble");
 	
 	/**
 	 * Will check if incoming configuredfeature is a large plant and add it to the Large plant map if it is so 
 	 * we can have a list of them for specific feature manipulation later
 	 */
-	public static boolean checksAndAddLargePlantFeatures(GenerationStage.Decoration stage, ConfiguredFeature<?, ?> configuredFeature) 
+	public static boolean checksAndAddLargePlantFeatures(GenerationStep.Feature stage, ConfiguredFeature<?, ?> configuredFeature) 
 	{
 		//if large plant is already added, skip it
 		if(LARGE_PLANT_MAP.get(stage).stream().anyMatch(vanillaConfigFeature -> serializeAndCompareFeature(vanillaConfigFeature, configuredFeature)))
@@ -241,13 +259,13 @@ public class FeatureGrouping
 		if(configuredFeature.config instanceof DecoratedFeatureConfig)
 		{
 			DecoratedFeatureConfig decoratedConfig = (DecoratedFeatureConfig)configuredFeature.config;
-			ResourceLocation rl = null;
+			Identifier rl = null;
 			
 			//A bunch of edge cases that have to handled because features can hold other features.
 			//If a mod makes a custom feature to hold features, welp, we are screwed. Nothing we can do about it. 
 			if(decoratedConfig.feature.feature == Feature.RANDOM_RANDOM_SELECTOR)
 			{
-				for(ConfiguredFeature<?, ?> nestedConfiguredFeature : ((MultipleWithChanceRandomFeatureConfig)decoratedConfig.feature.config).features)
+				for(ConfiguredFeature<?, ?> nestedConfiguredFeature : ((RandomRandomFeatureConfig)decoratedConfig.feature.config).features)
 				{
 					rl = nestedConfiguredFeature.feature.getRegistryName();
 					if(addFeatureToLargePlantMap(rl, configuredFeature,stage))
@@ -256,7 +274,7 @@ public class FeatureGrouping
 			}
 			else if(decoratedConfig.feature.feature == Feature.RANDOM_SELECTOR)
 			{
-				for(ConfiguredRandomFeatureList<?> nestedConfiguredFeature : ((MultipleRandomFeatureConfig)decoratedConfig.feature.config).features)
+				for(RandomFeatureEntry<?> nestedConfiguredFeature : ((RandomFeatureConfig)decoratedConfig.feature.config).features)
 				{
 					rl = nestedConfiguredFeature.feature.feature.getRegistryName();
 					if(addFeatureToLargePlantMap(rl, configuredFeature,stage))
@@ -265,7 +283,7 @@ public class FeatureGrouping
 			}
 			else if(decoratedConfig.feature.feature == Feature.SIMPLE_RANDOM_SELECTOR)
 			{
-				for(ConfiguredFeature<?, ?> nestedConfiguredFeature : ((SingleRandomFeature)decoratedConfig.feature.config).features)
+				for(ConfiguredFeature<?, ?> nestedConfiguredFeature : ((SimpleRandomFeatureConfig)decoratedConfig.feature.config).features)
 				{
 					rl = nestedConfiguredFeature.feature.getRegistryName();
 					if(addFeatureToLargePlantMap(rl, configuredFeature,stage))
@@ -274,11 +292,11 @@ public class FeatureGrouping
 			}
 			else if(decoratedConfig.feature.feature == Feature.RANDOM_BOOLEAN_SELECTOR)
 			{
-				rl = ((TwoFeatureChoiceConfig)decoratedConfig.feature.config).field_227285_a_.feature.getRegistryName();
+				rl = ((RandomBooleanFeatureConfig)decoratedConfig.feature.config).featureTrue.feature.getRegistryName();
 				if(addFeatureToLargePlantMap(rl, configuredFeature,stage))
 					return true;
 				
-				rl = ((TwoFeatureChoiceConfig)decoratedConfig.feature.config).field_227286_b_.feature.getRegistryName();
+				rl = ((RandomBooleanFeatureConfig)decoratedConfig.feature.config).featureFalse.feature.getRegistryName();
 				if(addFeatureToLargePlantMap(rl, configuredFeature,stage))
 					return true;
 			}
@@ -291,7 +309,7 @@ public class FeatureGrouping
 		}
 		else
 		{
-			ResourceLocation rl = configuredFeature.feature.getRegistryName();
+			Identifier rl = configuredFeature.feature.getRegistryName();
 			if(addFeatureToLargePlantMap(rl, configuredFeature,stage))
 				return true;
 		}
@@ -302,7 +320,7 @@ public class FeatureGrouping
 	/*
 	 * Adds large plant found to the large plant map if rl isn't null
 	 */
-	private static boolean addFeatureToLargePlantMap(ResourceLocation rl, ConfiguredFeature<?,?> configuredFeature, GenerationStage.Decoration stage) 
+	private static boolean addFeatureToLargePlantMap(Identifier rl, ConfiguredFeature<?,?> configuredFeature, GenerationStep.Feature stage) 
 	{
 		if(keywordFoundInPath(rl, LARGE_PLANT_KEYWORDS))
 		{
@@ -320,7 +338,7 @@ public class FeatureGrouping
 	/**
 	 * Takes the feature's ResourceLocation and checks if the path contains a keyword from a list anywhere in it.
 	 */
-	private static boolean keywordFoundInPath(ResourceLocation featureRL, List<String> keywordList) 
+	private static boolean keywordFoundInPath(Identifier featureRL, List<String> keywordList) 
 	{
 		if(featureRL != null)
 		{
@@ -345,8 +363,8 @@ public class FeatureGrouping
 	{
 		try
 		{
-			Map<Dynamic<INBT>, Dynamic<INBT>> feature1Map = feature1.serialize(NBTDynamicOps.INSTANCE).getMapValues().get();
-			Map<Dynamic<INBT>, Dynamic<INBT>> feature2Map = feature2.serialize(NBTDynamicOps.INSTANCE).getMapValues().get();
+			Map<Dynamic<Tag>, Dynamic<Tag>> feature1Map = feature1.serialize(NbtOps.INSTANCE).getMapValues().get();
+			Map<Dynamic<Tag>, Dynamic<Tag>> feature2Map = feature2.serialize(NbtOps.INSTANCE).getMapValues().get();
 
 			if (feature1Map != null && feature2Map != null)
 			{

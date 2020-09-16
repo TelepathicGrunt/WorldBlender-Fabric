@@ -1,10 +1,13 @@
-package net.telepathicgrunt.worldblender.blocks;
+package com.telepathicgrunt.world_blender.blocks;
 
-import javax.annotation.Nullable;
+import com.telepathicgrunt.world_blender.networking.MessageHandler;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.entity.BeaconBlockEntity;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.client.render.block.entity.BeaconBlockEntityRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundTag;
@@ -14,20 +17,17 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Tickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.telepathicgrunt.worldblender.networking.MessageHandler;
 
 
-public class WBPortalTileEntity extends BlockEntity implements Tickable
+public class WBPortalBlockEntity extends BlockEntity implements Tickable
 {
 	private float teleportCooldown = 300;
 	private boolean removeable = true;
 
 
-	public WBPortalTileEntity()
+	public WBPortalBlockEntity()
 	{
-		super(WBBlocks.WORLD_BLENDER_PORTAL_TILE.get());
+		super(WBBlocks.WORLD_BLENDER_PORTAL_BE);
 	}
 
 
@@ -68,11 +68,11 @@ public class WBPortalTileEntity extends BlockEntity implements Tickable
 	        	 entity2.setVelocity(entity.getVelocity());
 	        	 destinationWorld.onDimensionChanged(entity2);
 	         }
-	         entity.remove(false);
-	         this.world.getProfiler().pop();
+	         entity.remove();
+	         this.world.getProfiler().endTick();
 	         originalWorld.resetIdleTimeout();
 	         destinationWorld.resetIdleTimeout();
-	         this.world.getProfiler().pop();
+	         this.world.getProfiler().endTick();
 		}
 	}
 
@@ -95,6 +95,7 @@ public class WBPortalTileEntity extends BlockEntity implements Tickable
 	{
 		this.teleportCooldown = 300;
 		this.markDirty();
+		assert this.world != null;
 		this.world.updateListeners(this.pos, this.getCachedState(), this.getCachedState(), 3);
 		MessageHandler.UpdateTECooldownPacket.sendToClient(this.pos, this.getCoolDown());
 	}
@@ -121,9 +122,9 @@ public class WBPortalTileEntity extends BlockEntity implements Tickable
 
 
 	@Override
-	public void fromTag(CompoundTag data)
+	public void fromTag(BlockState blockState, CompoundTag data)
 	{
-		super.fromTag(data);
+		super.fromTag(blockState, data);
 		if(data.contains("Cooldown")) 
 		{
 			this.teleportCooldown = data.getFloat("Cooldown");
@@ -138,13 +139,13 @@ public class WBPortalTileEntity extends BlockEntity implements Tickable
 
 
 	@Environment(EnvType.CLIENT)
-	public int getParticleAmount()
+	public int getDrawnSidesCount()
 	{
 		int visibleFaces = 0;
 
 		for (Direction direction : Direction.values())
 		{
-			visibleFaces += this.shouldRenderFace(direction) ? 1 : 0;
+			visibleFaces += this.shouldDrawSide(direction) ? 1 : 0;
 		}
 
 		return visibleFaces;
@@ -152,7 +153,7 @@ public class WBPortalTileEntity extends BlockEntity implements Tickable
 
 
 	@Environment(EnvType.CLIENT)
-	public boolean shouldRenderFace(Direction direction)
+	public boolean shouldDrawSide(Direction direction)
 	{
 		return Block.shouldDrawSide(this.getCachedState(), this.world, this.getPos(), direction);
 	}
@@ -168,10 +169,9 @@ public class WBPortalTileEntity extends BlockEntity implements Tickable
 
 	/**
 	 * Retrieves packet to send to the client whenever this Tile Entity is resynced via World.notifyBlockUpdate. For modded
-	 * TE's, this packet comes back to you clientside in {@link #onDataPacket}
+	 * TE's, this packet comes back to you clientside
 	 */
 	@Override
-	@Nullable
 	public BlockEntityUpdateS2CPacket toUpdatePacket()
 	{
 		return new BlockEntityUpdateS2CPacket(this.pos, 0, this.toInitialChunkDataTag());
@@ -180,7 +180,7 @@ public class WBPortalTileEntity extends BlockEntity implements Tickable
 
 	/**
 	 * Get an NBT compound to sync to the client with SPacketChunkData, used for initial loading of the chunk or when many
-	 * blocks change at once. This compound comes back to you clientside in {@link handleUpdateTag}
+	 * blocks change at once. This compound comes back to you clientside
 	 */
 	@Override
 	public CompoundTag toInitialChunkDataTag()

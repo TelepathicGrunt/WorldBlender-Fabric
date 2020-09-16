@@ -1,17 +1,17 @@
-package com.telepathicgrunt.world_blender.features;
+package net.telepathicgrunt.worldblender.features;
 
+import net.minecraft.world.gen.feature.DefaultFeatureConfig;
 import net.minecraft.world.gen.feature.Feature;
-import net.minecraft.world.gen.feature.NoFeatureConfig;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.telepathicgrunt.worldblender.WorldBlender;
 
 public class WBFeatures
 {
-    public static Feature<NoFeatureConfig> WB_PORTAL_ALTAR = new WBPortalAltar(NoFeatureConfig::deserialize);
-    public static Feature<NoFeatureConfig> DD_DUNGEON_FEATURE = new DDDungeonFeature(NoFeatureConfig::deserialize);
-    public static Feature<NoFeatureConfig> NO_FLOATING_LIQUIDS_OR_FALLING_BLOCKS = new NoFloatingLiquidsOrFallingBlocks(NoFeatureConfig::deserialize);
-    public static Feature<NoFeatureConfig> SEPARATE_LAVA_AND_WATER = new SeparateLavaAndWater(NoFeatureConfig::deserialize);
+    public static Feature<DefaultFeatureConfig> WB_PORTAL_ALTAR = new WBPortalAltar(DefaultFeatureConfig::deserialize);
+    public static Feature<DefaultFeatureConfig> DD_DUNGEON_FEATURE = new DDDungeonFeature(DefaultFeatureConfig::deserialize);
+    public static Feature<DefaultFeatureConfig> NO_FLOATING_LIQUIDS_OR_FALLING_BLOCKS = new NoFloatingLiquidsOrFallingBlocks(DefaultFeatureConfig::deserialize);
+    public static Feature<DefaultFeatureConfig> SEPARATE_LAVA_AND_WATER = new SeparateLavaAndWater(DefaultFeatureConfig::deserialize);
     
     public static void registerFeatures(RegistryEvent.Register<Feature<?>> event)
     {

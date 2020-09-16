@@ -1,11 +1,10 @@
-package com.telepathicgrunt.world_blender.the_blender;
-
-import net.minecraft.util.ResourceLocation;
-import net.telepathicgrunt.worldblender.configs.WBConfig;
+package net.telepathicgrunt.worldblender.the_blender;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import net.minecraft.util.Identifier;
+import net.telepathicgrunt.worldblender.configs.WBConfig;
 
 public class ConfigBlacklisting
 {
@@ -51,7 +50,7 @@ public class ConfigBlacklisting
 	 * Helper method that will perform the actual RL match, mod specific match, 
 	 * and term matching based on the format of the blacklisted entry string
 	 */
-	private static boolean matchFound(String blacklistedEntry, ResourceLocation resourceLocationToCheck) 
+	private static boolean matchFound(String blacklistedEntry, Identifier resourceLocationToCheck) 
 	{
 		//cannot do any matching. RIP
 		if(resourceLocationToCheck == null || blacklistedEntry.isEmpty()) 
@@ -76,7 +75,7 @@ public class ConfigBlacklisting
 	
 	
 	
-	public static boolean isResourceLocationBlacklisted(BlacklistType type, ResourceLocation incomingRL) 
+	public static boolean isResourceLocationBlacklisted(BlacklistType type, Identifier incomingRL) 
 	{
 		List<String> listToUse;
 		

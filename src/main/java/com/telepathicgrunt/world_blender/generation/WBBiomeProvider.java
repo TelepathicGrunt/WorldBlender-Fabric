@@ -1,37 +1,39 @@
-package com.telepathicgrunt.world_blender.generation;
+package net.telepathicgrunt.worldblender.generation;
 
-import com.google.common.collect.Sets;
-import net.minecraft.block.BlockState;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraft.world.WorldType;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.provider.BiomeProvider;
-import net.minecraft.world.gen.IExtendedNoiseRandom;
-import net.minecraft.world.gen.LazyAreaLayerContext;
-import net.minecraft.world.gen.area.IArea;
-import net.minecraft.world.gen.area.IAreaFactory;
-import net.minecraft.world.gen.area.LazyArea;
-import net.minecraft.world.gen.feature.structure.Structure;
-import net.minecraft.world.gen.layer.Layer;
-import net.minecraft.world.gen.layer.ZoomLayer;
-import net.telepathicgrunt.worldblender.biome.WBBiomes;
-import net.telepathicgrunt.worldblender.generation.layer.MainBiomeLayer;
-
-import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
 import java.util.function.LongFunction;
 
+import javax.annotation.Nullable;
 
-public class WBBiomeProvider extends BiomeProvider
+import com.google.common.collect.Sets;
+
+import net.minecraft.block.BlockState;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
+import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.layer.ScaleLayer;
+import net.minecraft.world.biome.layer.util.CachingLayerContext;
+import net.minecraft.world.biome.layer.util.CachingLayerSampler;
+import net.minecraft.world.biome.layer.util.LayerFactory;
+import net.minecraft.world.biome.layer.util.LayerSampleContext;
+import net.minecraft.world.biome.layer.util.LayerSampler;
+import net.minecraft.world.biome.source.BiomeLayerSampler;
+import net.minecraft.world.biome.source.BiomeSource;
+import net.minecraft.world.gen.feature.StructureFeature;
+import net.minecraft.world.level.LevelGeneratorType;
+import net.telepathicgrunt.worldblender.biome.WBBiomes;
+import net.telepathicgrunt.worldblender.generation.layer.MainBiomeLayer;
+
+
+public class WBBiomeProvider extends BiomeSource
 {
 
-	private final Layer genBiomes;
+	private final BiomeLayerSampler genBiomes;
 
 
-	public WBBiomeProvider(long seed, WorldType worldType)
+	public WBBiomeProvider(long seed, LevelGeneratorType worldType)
 	{
 		super(WBBiomes.biomes);
 
@@ -42,33 +44,33 @@ public class WBBiomeProvider extends BiomeProvider
 
 	public WBBiomeProvider(World world)
 	{
-		this(world.getSeed(), world.getWorldInfo().getGenerator());
+		this(world.getSeed(), world.getLevelProperties().getGeneratorType());
 		MainBiomeLayer.setSeed(world.getSeed());
 	}
 	
 
-	public static Layer buildOverworldProcedure(long seed, WorldType typeIn)
+	public static BiomeLayerSampler buildOverworldProcedure(long seed, LevelGeneratorType typeIn)
 	{
-	    IAreaFactory<LazyArea> layerArea = buildOverworldProcedure(typeIn, (p_215737_2_) ->
+	    LayerFactory<CachingLayerSampler> layerArea = buildOverworldProcedure(typeIn, (p_215737_2_) ->
 		{
-			return new LazyAreaLayerContext(25, seed, p_215737_2_);
+			return new CachingLayerContext(25, seed, p_215737_2_);
 		});
-		return new Layer(layerArea);
+		return new BiomeLayerSampler(layerArea);
 	}
 
 
-	public static <T extends IArea, C extends IExtendedNoiseRandom<T>> IAreaFactory<T> buildOverworldProcedure(WorldType worldTypeIn, LongFunction<C> contextFactory)
+	public static <T extends LayerSampler, C extends LayerSampleContext<T>> LayerFactory<T> buildOverworldProcedure(LevelGeneratorType worldTypeIn, LongFunction<C> contextFactory)
 	{
-	    IAreaFactory<T> layer = MainBiomeLayer.INSTANCE.apply(contextFactory.apply(200L));
-		layer = ZoomLayer.FUZZY.apply(contextFactory.apply(2000L), layer);
-		layer = ZoomLayer.NORMAL.apply((IExtendedNoiseRandom<T>) contextFactory.apply(1001L), layer);
-		layer = ZoomLayer.NORMAL.apply((IExtendedNoiseRandom<T>) contextFactory.apply(1002L), layer);
+	    LayerFactory<T> layer = MainBiomeLayer.INSTANCE.create(contextFactory.apply(200L));
+		layer = ScaleLayer.FUZZY.create(contextFactory.apply(2000L), layer);
+		layer = ScaleLayer.NORMAL.create((LayerSampleContext<T>) contextFactory.apply(1001L), layer);
+		layer = ScaleLayer.NORMAL.create((LayerSampleContext<T>) contextFactory.apply(1002L), layer);
 		return layer;
 	}
 
 
 	@Override
-	public Set<Biome> getBiomes(int centerX, int centerY, int centerZ, int sideLength)
+	public Set<Biome> getBiomesInArea(int centerX, int centerY, int centerZ, int sideLength)
 	{
 		int i = centerX - sideLength >> 2;
 		int j = centerY - sideLength >> 2;
@@ -90,7 +92,7 @@ public class WBBiomeProvider extends BiomeProvider
 					int xPos = i + k2;
 					int yPos = j + l2;
 					int zPos = k + j2;
-					set.add(this.getNoiseBiome(xPos, yPos, zPos));
+					set.add(this.getBiomeForNoiseGen(xPos, yPos, zPos));
 				}
 			}
 		}
@@ -100,7 +102,7 @@ public class WBBiomeProvider extends BiomeProvider
 
 	@Nullable
 	@Override
-	public BlockPos func_225531_a_(int x, int y, int z, int range, List<Biome> biomes, Random random)
+	public BlockPos locateBiome(int x, int y, int z, int range, List<Biome> biomes, Random random)
 	{
 		int i = x - range >> 2;
 		int j = z - range >> 2;
@@ -115,7 +117,7 @@ public class WBBiomeProvider extends BiomeProvider
 		{
 			int i2 = i + l1 % i1 << 2;
 			int j2 = j + l1 / i1 << 2;
-			if (biomes.contains(this.getNoiseBiome(i2, k1, j2)))
+			if (biomes.contains(this.getBiomeForNoiseGen(i2, k1, j2)))
 			{
 				if (blockpos == null || random.nextInt(k1 + 1) == 0)
 				{
@@ -131,13 +133,13 @@ public class WBBiomeProvider extends BiomeProvider
 
 
 	@Override
-	public boolean hasStructure(Structure<?> structureIn)
+	public boolean hasStructureFeature(StructureFeature<?> structureIn)
 	{
-		return this.hasStructureCache.computeIfAbsent(structureIn, (structure) ->
+		return this.structureFeatures.computeIfAbsent(structureIn, (structure) ->
 		{
 			for (Biome biome : this.biomes)
 			{
-				if (biome.hasStructure(structure))
+				if (biome.hasStructureFeature(structure))
 				{
 					return true;
 				}
@@ -149,24 +151,24 @@ public class WBBiomeProvider extends BiomeProvider
 
 
 	@Override
-	public Set<BlockState> getSurfaceBlocks()
+	public Set<BlockState> getTopMaterials()
 	{
-		if (this.topBlocksCache.isEmpty())
+		if (this.topMaterials.isEmpty())
 		{
 			for (Biome biome : this.biomes)
 			{
-				this.topBlocksCache.add(biome.getSurfaceBuilderConfig().getTop());
+				this.topMaterials.add(biome.getSurfaceConfig().getTopMaterial());
 			}
 		}
 
-		return this.topBlocksCache;
+		return this.topMaterials;
 	}
 
 
 	@Override
-	public Biome getNoiseBiome(int x, int y, int z)
+	public Biome getBiomeForNoiseGen(int x, int y, int z)
 	{
-		return this.genBiomes.func_215738_a(x, z);
+		return this.genBiomes.sample(x, z);
 	}
 
 }
