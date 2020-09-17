@@ -1,9 +1,6 @@
 package com.telepathicgrunt.world_blender.blocks;
 
-import com.telepathicgrunt.world_blender.WorldBlender;
-import com.telepathicgrunt.world_blender.dimension.WBDimensionRegistration;
-import it.unimi.dsi.fastutil.objects.Object2BooleanArrayMap;
-import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
+import com.telepathicgrunt.world_blender.WBIdentifiers;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.block.*;
@@ -25,14 +22,12 @@ import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.World;
-import net.minecraft.world.dimension.DimensionType;
 
 import java.util.Random;
 
 
 public class WBPortalBlock extends BlockWithEntity
 {
-	private Object2BooleanMap<BlockEntity> validChests = new Object2BooleanArrayMap<>();
 	protected static final VoxelShape COLLISION_BOX = Block.createCuboidShape(2.0D, 2.0D, 2.0D, 14.0D, 14.0D, 14.0D);
 	
 	protected WBPortalBlock()
@@ -52,13 +47,13 @@ public class WBPortalBlock extends BlockWithEntity
 	@Override
 	public void onEntityCollision(BlockState blockState, World world, BlockPos position, Entity entity)
 	{
-		BlockEntity tileentity = world.getBlockEntity(position);
-		if (tileentity instanceof WBPortalBlockEntity)
+		BlockEntity blockEntityOriginal = world.getBlockEntity(position);
+		if (blockEntityOriginal instanceof WBPortalBlockEntity)
 		{
-			WBPortalBlockEntity wbtile = (WBPortalBlockEntity) tileentity;
+			WBPortalBlockEntity wbBlockEntity = (WBPortalBlockEntity) blockEntityOriginal;
 
 			if (!world.isClient &&
-					!wbtile.isCoolingDown() &&
+					!wbBlockEntity.isCoolingDown() &&
 					!entity.hasVehicle() &&
 					!entity.hasPassengers() &&
 					entity.canUsePortals() &&
@@ -74,7 +69,7 @@ public class WBPortalBlock extends BlockWithEntity
 				MinecraftServer minecraftServer = entity.getServer(); // the server itself
 
 				assert minecraftServer != null;
-				ServerWorld destinationWorld = minecraftServer.getWorld(world.getRegistryKey().equals(WorldBlender.BZ_WORLD_KEY) ? World.OVERWORLD : WorldBlender.BZ_WORLD_KEY);
+				ServerWorld destinationWorld = minecraftServer.getWorld(world.getRegistryKey().equals(WBIdentifiers.WB_WORLD_KEY) ? World.OVERWORLD : WBIdentifiers.WB_WORLD_KEY);
 				ServerWorld originalWorld = minecraftServer.getWorld(entity.world.getRegistryKey());
 
 				if(destinationWorld == null) return;
@@ -110,10 +105,7 @@ public class WBPortalBlock extends BlockWithEntity
 					BlockEntity blockEntity = destinationWorld.getBlockEntity(blockpos);
 					if(blockEntity == null) continue;
 
-					if(!validChests.containsKey(blockEntity))
-						validChests.put(blockEntity, blockEntity.getClass().getSimpleName().toLowerCase().contains("chest"));
-
-					if (validChests.getOrDefault(blockEntity, false))
+					if (WBPortalSpawning.VALID_CHEST_BLOCKS_ENTITY_TYPES.getOrDefault(blockEntity.getType(), false))
 					{
 						//only set position to chest if no portal block is found
 						if (destPos == null)
@@ -129,7 +121,7 @@ public class WBPortalBlock extends BlockWithEntity
 
 					//places a portal block in World Blender so player can escape if
 					//there is no portal block and then makes it be in cooldown
-					if (destinationWorld.getRegistryKey().equals(WorldBlender.BZ_WORLD_KEY))
+					if (destinationWorld.getRegistryKey().equals(WBIdentifiers.WB_WORLD_KEY))
 					{
 						destinationWorld.setBlockState(destPos, Blocks.AIR.getDefaultState());
 						destinationWorld.setBlockState(destPos.up(), Blocks.AIR.getDefaultState());
@@ -142,7 +134,7 @@ public class WBPortalBlock extends BlockWithEntity
 					}
 				}
 
-				wbtile.teleportEntity(entity, destPos, destinationWorld, originalWorld);
+				wbBlockEntity.teleportEntity(entity, destPos, destinationWorld, originalWorld);
 			}
 		}
 	}

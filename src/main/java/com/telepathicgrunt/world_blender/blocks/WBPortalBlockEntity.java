@@ -1,6 +1,6 @@
 package com.telepathicgrunt.world_blender.blocks;
 
-import com.telepathicgrunt.world_blender.WorldBlender;
+import com.telepathicgrunt.world_blender.WBIdentifiers;
 import io.netty.buffer.Unpooled;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -111,7 +111,7 @@ public class WBPortalBlockEntity extends BlockEntity implements Tickable
 
 		// Then we'll send the packet to all the players
 		PlayerStream.all(Objects.requireNonNull(world.getServer())).forEach(player ->
-				ServerSidePacketRegistry.INSTANCE.sendToPlayer(player, WorldBlender.PORTAL_COOLDOWN_PACKET_ID, passedData));
+				ServerSidePacketRegistry.INSTANCE.sendToPlayer(player, WBIdentifiers.PORTAL_COOLDOWN_PACKET_ID, passedData));
 	}
 	
 	public boolean isRemoveable()

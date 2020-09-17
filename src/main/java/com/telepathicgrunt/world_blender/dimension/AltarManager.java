@@ -13,23 +13,14 @@ import net.minecraft.world.gen.feature.FeatureConfig;
 
 public class AltarManager
 {
-
-	private boolean altarMade = false;
+	private boolean altarMade;
 	private final ServerWorld world;
-
 
 	public AltarManager(ServerWorld serverWorld)
 	{
 		this.world = serverWorld;
 		this.altarMade = WBWorldSavedData.get(serverWorld).getWBAltarState();
 	}
-
-
-	public boolean getState()
-	{
-		return this.altarMade;
-	}
-
 
 	@SuppressWarnings("resource")
 	public void tick()
@@ -39,7 +30,7 @@ public class AltarManager
 			boolean flag = this.isWorldOriginTicking();
 			if(flag)
 			{
-				WBFeatures.WB_PORTAL_ALTAR.generate(this.world, this.world.getChunkManager().chunkGenerator, this.world.random, new BlockPos(0, 255, 0), FeatureConfig.DEFAULT);
+				WBFeatures.WB_PORTAL_ALTAR.generate(this.world, this.world.getChunkManager().getChunkGenerator(), this.world.random, new BlockPos(0, 255, 0), FeatureConfig.DEFAULT);
 				this.altarMade = true;
 				this.saveWBAltarData(this.world);
 			}

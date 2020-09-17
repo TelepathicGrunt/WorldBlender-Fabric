@@ -1,6 +1,6 @@
 package com.telepathicgrunt.world_blender.the_blender;
 
-import com.telepathicgrunt.world_blender.configs.WBConfig;
+import com.telepathicgrunt.world_blender.WorldBlender;
 import net.minecraft.util.Identifier;
 
 import java.util.Arrays;
@@ -29,12 +29,12 @@ public class ConfigBlacklisting
 	
 	public static void setupBlackLists() 
 	{
-		blanketBL = parseConfigAndAssignEntries(WBConfig.blanketBlacklist);
-		featureBL = parseConfigAndAssignEntries(WBConfig.blacklistedFeatures);
-		structureBL = parseConfigAndAssignEntries(WBConfig.blacklistedStructures);
-		carverBL = parseConfigAndAssignEntries(WBConfig.blacklistedCarvers);
-		spawnBL = parseConfigAndAssignEntries(WBConfig.blacklistedSpawns);
-		surfaceBL = parseConfigAndAssignEntries(WBConfig.blacklistedBiomeSurfaces);
+		blanketBL = parseConfigAndAssignEntries(WorldBlender.WB_CONFIG.WBBlendingConfig.blanketBlacklist);
+		featureBL = parseConfigAndAssignEntries(WorldBlender.WB_CONFIG.WBBlendingConfig.blacklistedFeatures);
+		structureBL = parseConfigAndAssignEntries(WorldBlender.WB_CONFIG.WBBlendingConfig.blacklistedStructures);
+		carverBL = parseConfigAndAssignEntries(WorldBlender.WB_CONFIG.WBBlendingConfig.blacklistedCarvers);
+		spawnBL = parseConfigAndAssignEntries(WorldBlender.WB_CONFIG.WBBlendingConfig.blacklistedSpawns);
+		surfaceBL = parseConfigAndAssignEntries(WorldBlender.WB_CONFIG.WBBlendingConfig.blacklistedBiomeSurfaces);
 	}
 	
 	/**
@@ -67,10 +67,10 @@ public class ConfigBlacklisting
 		//mod specific ban
 		else if(blacklistedEntry.contains("*")) 
 		{
-			return blacklistedEntry.substring(0, blacklistedEntry.length() - 1).equals(resourceLocationToCheck.getNamespace().toString());
+			return blacklistedEntry.substring(0, blacklistedEntry.length() - 1).equals(resourceLocationToCheck.getNamespace());
 		}
 		//term specific ban
-		return resourceLocationToCheck.getPath().toString().contains(blacklistedEntry);
+		return resourceLocationToCheck.getPath().contains(blacklistedEntry);
 	}
 	
 	
@@ -109,10 +109,9 @@ public class ConfigBlacklisting
 			default:
 				return false;
 		}
-				
-		
-		boolean isNotAllowed = listToUse.stream().anyMatch(banEntry -> matchFound(banEntry, incomingRL));
-		return isNotAllowed;
+
+
+		return listToUse.stream().anyMatch(banEntry -> matchFound(banEntry, incomingRL));
 	}
 	
 }

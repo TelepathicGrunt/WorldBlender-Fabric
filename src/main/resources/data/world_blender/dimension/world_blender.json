@@ -5,7 +5,7 @@
       "type": "world_blender:biome_source",
       "seed": 0
     },
-    "type": "world_blender:chunk_generator",
+    "type": "minecraft:noise",
     "settings": "minecraft:overworld",
     "seed": 0
   }

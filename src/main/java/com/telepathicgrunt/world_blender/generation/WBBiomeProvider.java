@@ -1,168 +1,103 @@
 package com.telepathicgrunt.world_blender.generation;
 
-import com.google.common.collect.Sets;
-import com.telepathicgrunt.world_blender.biome.WBBiomes;
+import com.google.common.collect.ImmutableList;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import com.telepathicgrunt.world_blender.WBIdentifiers;
 import com.telepathicgrunt.world_blender.generation.layer.MainBiomeLayer;
-import net.minecraft.block.BlockState;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import com.telepathicgrunt.world_blender.mixin.BiomeLayerSamplerAccessor;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.minecraft.SharedConstants;
+import net.minecraft.util.Util;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.util.registry.RegistryLookupCodec;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.layer.ScaleLayer;
+import net.minecraft.world.biome.Biomes;
 import net.minecraft.world.biome.layer.util.*;
 import net.minecraft.world.biome.source.BiomeLayerSampler;
 import net.minecraft.world.biome.source.BiomeSource;
-import net.minecraft.world.gen.feature.StructureFeature;
-import net.minecraft.world.level.LevelGeneratorType;
 
-import javax.annotation.Nullable;
 import java.util.List;
-import java.util.Random;
-import java.util.Set;
 import java.util.function.LongFunction;
 
 
 public class WBBiomeProvider extends BiomeSource
 {
+	public static void registerBiomeProvider() {
+		Registry.register(Registry.BIOME_SOURCE, WBIdentifiers.WB_BIOME_PROVIDER_ID, WBBiomeProvider.CODEC);
+	}
 
-	private final BiomeLayerSampler genBiomes;
+	public static final Codec<WBBiomeProvider> CODEC =
+			RecordCodecBuilder.create((instance) -> instance.group(
+					Codec.LONG.fieldOf("seed").stable().forGetter((WBBiomeProvider) -> WBBiomeProvider.SEED),
+					RegistryLookupCodec.of(Registry.BIOME_KEY).forGetter((biomeSource) -> biomeSource.BIOME_REGISTRY))
+					.apply(instance, instance.stable(WBBiomeProvider::new)));
+
+	private final BiomeLayerSampler BIOME_SAMPLER;
+	private final long SEED;
+	private final Registry<Biome> BIOME_REGISTRY;
+	public static Registry<Biome> LAYERS_BIOME_REGISTRY;
+	private static final List<RegistryKey<Biome>> BIOMES = ImmutableList.of(
+			RegistryKey.of(Registry.BIOME_KEY, WBIdentifiers.GENERAL_BLENDED_BIOME_ID),
+			RegistryKey.of(Registry.BIOME_KEY, WBIdentifiers.MOUNTAINOUS_BLENDED_BIOME_ID),
+			RegistryKey.of(Registry.BIOME_KEY, WBIdentifiers.COLD_HILLS_BLENDED_BIOME_ID),
+			RegistryKey.of(Registry.BIOME_KEY, WBIdentifiers.OCEAN_BLENDED_BIOME_ID),
+			RegistryKey.of(Registry.BIOME_KEY, WBIdentifiers.FROZEN_OCEAN_BLENDED_BIOME_ID));
 
 
-	public WBBiomeProvider(long seed, LevelGeneratorType worldType)
-	{
-		super(WBBiomes.biomes);
-
-		//generates the world and biome layouts
-		this.genBiomes =  buildOverworldProcedure(seed, worldType);
+	public WBBiomeProvider(long seed, Registry<Biome> biomeRegistry) {
+		super(BIOMES.stream().map((registryKey) -> () -> (Biome)biomeRegistry.get(registryKey)));
+		MainBiomeLayer.setSeed(seed);
+		this.SEED = seed;
+		this.BIOME_REGISTRY = biomeRegistry;
+		WBBiomeProvider.LAYERS_BIOME_REGISTRY = biomeRegistry;
+		this.BIOME_SAMPLER = buildWorldProcedure(seed);
 	}
 
 
-	public WBBiomeProvider(World world)
-	{
-		this(world.getSeed(), world.getLevelProperties().getGeneratorType());
-		MainBiomeLayer.setSeed(world.getSeed());
-	}
-	
-
-	public static BiomeLayerSampler buildOverworldProcedure(long seed, LevelGeneratorType typeIn)
-	{
-	    LayerFactory<CachingLayerSampler> layerArea = buildOverworldProcedure(typeIn, (p_215737_2_) ->
-		{
-			return new CachingLayerContext(25, seed, p_215737_2_);
-		});
-		return new BiomeLayerSampler(layerArea);
+	public static BiomeLayerSampler buildWorldProcedure(long seed) {
+		LayerFactory<CachingLayerSampler> layerFactory = build((salt) ->
+				new CachingLayerContext(25, seed, salt));
+		return new BiomeLayerSampler(layerFactory);
 	}
 
 
-	public static <T extends LayerSampler, C extends LayerSampleContext<T>> LayerFactory<T> buildOverworldProcedure(LevelGeneratorType worldTypeIn, LongFunction<C> contextFactory)
-	{
-	    LayerFactory<T> layer = MainBiomeLayer.INSTANCE.create(contextFactory.apply(200L));
-		layer = ScaleLayer.FUZZY.create(contextFactory.apply(2000L), layer);
-		layer = ScaleLayer.NORMAL.create((LayerSampleContext<T>) contextFactory.apply(1001L), layer);
-		layer = ScaleLayer.NORMAL.create((LayerSampleContext<T>) contextFactory.apply(1002L), layer);
-		return layer;
+	public static <T extends LayerSampler, C extends LayerSampleContext<T>> LayerFactory<T> build(LongFunction<C> contextFactory) {
+		return MainBiomeLayer.INSTANCE.create(contextFactory.apply(200L));
 	}
 
 
-	@Override
-	public Set<Biome> getBiomesInArea(int centerX, int centerY, int centerZ, int sideLength)
-	{
-		int i = centerX - sideLength >> 2;
-		int j = centerY - sideLength >> 2;
-		int k = centerZ - sideLength >> 2;
-		int l = centerX + sideLength >> 2;
-		int i1 = centerY + sideLength >> 2;
-		int j1 = centerZ + sideLength >> 2;
-		int k1 = l - i + 1;
-		int l1 = i1 - j + 1;
-		int i2 = j1 - k + 1;
-		Set<Biome> set = Sets.newHashSet();
+	public Biome getBiomeForNoiseGen(int x, int y, int z) {
+		return this.sample(WBBiomeProvider.LAYERS_BIOME_REGISTRY, x, z);
+	}
 
-		for (int j2 = 0; j2 < i2; ++j2)
-		{
-			for (int k2 = 0; k2 < k1; ++k2)
-			{
-				for (int l2 = 0; l2 < l1; ++l2)
-				{
-					int xPos = i + k2;
-					int yPos = j + l2;
-					int zPos = k + j2;
-					set.add(this.getBiomeForNoiseGen(xPos, yPos, zPos));
-				}
+	public Biome sample(Registry<Biome> registry, int i, int j) {
+		int k = ((BiomeLayerSamplerAccessor)this.BIOME_SAMPLER).getSampler().sample(i, j);
+		Biome biome = registry.get(k);
+		if (biome == null) {
+			//fallback to builtin registry if dynamic registry doesnt have biome
+			if (SharedConstants.isDevelopment) {
+				throw Util.throwOrPause(new IllegalStateException("Unknown biome id: " + k));
+			}
+			else {
+				return registry.get(Biomes.fromRawId(0));
 			}
 		}
-		return set;
-	}
-
-
-	@Nullable
-	@Override
-	public BlockPos locateBiome(int x, int y, int z, int range, List<Biome> biomes, Random random)
-	{
-		int i = x - range >> 2;
-		int j = z - range >> 2;
-		int k = x + range >> 2;
-		int l = z + range >> 2;
-		int i1 = k - i + 1;
-		int j1 = l - j + 1;
-		BlockPos blockpos = null;
-		int k1 = 0;
-
-		for (int l1 = 0; l1 < i1 * j1; ++l1)
-		{
-			int i2 = i + l1 % i1 << 2;
-			int j2 = j + l1 / i1 << 2;
-			if (biomes.contains(this.getBiomeForNoiseGen(i2, k1, j2)))
-			{
-				if (blockpos == null || random.nextInt(k1 + 1) == 0)
-				{
-					blockpos = new BlockPos(i2, 0, j2);
-				}
-
-				++k1;
-			}
+		else {
+			return biome;
 		}
-
-		return blockpos;
 	}
-
 
 	@Override
-	public boolean hasStructureFeature(StructureFeature<?> structureIn)
-	{
-		return this.structureFeatures.computeIfAbsent(structureIn, (structure) ->
-		{
-			for (Biome biome : this.biomes)
-			{
-				if (biome.hasStructureFeature(structure))
-				{
-					return true;
-				}
-			}
-
-			return false;
-		});
+	protected Codec<? extends BiomeSource> getCodec() {
+		return CODEC;
 	}
-
 
 	@Override
-	public Set<BlockState> getTopMaterials()
-	{
-		if (this.topMaterials.isEmpty())
-		{
-			for (Biome biome : this.biomes)
-			{
-				this.topMaterials.add(biome.getSurfaceConfig().getTopMaterial());
-			}
-		}
-
-		return this.topMaterials;
+	@Environment(EnvType.CLIENT)
+	public BiomeSource withSeed(long seed) {
+		return new WBBiomeProvider(seed, WBBiomeProvider.LAYERS_BIOME_REGISTRY);
 	}
-
-
-	@Override
-	public Biome getBiomeForNoiseGen(int x, int y, int z)
-	{
-		return this.genBiomes.sample(x, z);
-	}
-
 }

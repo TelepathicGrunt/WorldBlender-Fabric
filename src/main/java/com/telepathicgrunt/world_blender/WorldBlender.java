@@ -1,22 +1,24 @@
 package com.telepathicgrunt.world_blender;
 
+import com.telepathicgrunt.world_blender.blocks.WBBlocks;
 import com.telepathicgrunt.world_blender.blocks.WBPortalSpawning;
 import com.telepathicgrunt.world_blender.configs.WBConfig;
+import com.telepathicgrunt.world_blender.features.WBConfiguredFeatures;
+import com.telepathicgrunt.world_blender.features.WBFeatures;
+import com.telepathicgrunt.world_blender.generation.WBBiomeProvider;
+import com.telepathicgrunt.world_blender.surfacebuilder.WBSurfaceBuilders;
+import com.telepathicgrunt.world_blender.the_blender.ConfigBlacklisting;
 import me.sargunvohra.mcmods.autoconfig1u.AutoConfig;
 import me.sargunvohra.mcmods.autoconfig1u.serializer.JanksonConfigSerializer;
 import net.fabricmc.api.ModInitializer;
-import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryKey;
-import net.minecraft.world.World;
+import net.minecraft.world.biome.DefaultBiomeCreator;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class WorldBlender implements ModInitializer {
 	public static String MODID = "world_blender";
-	public static final Identifier MOD_DIMENSION_ID = new Identifier(WorldBlender.MODID, WorldBlender.MODID);
-	public static final RegistryKey<World> BZ_WORLD_KEY = RegistryKey.of(Registry.DIMENSION, WorldBlender.MOD_DIMENSION_ID);
-	public static final Identifier PORTAL_COOLDOWN_PACKET_ID = new Identifier(MODID, "portal_cooldown");
 	public static final Logger LOGGER = LogManager.getLogger(MODID);
 	public static WBConfig WB_CONFIG;
 
@@ -26,7 +28,26 @@ public class WorldBlender implements ModInitializer {
 		AutoConfig.register(WBConfig.class, JanksonConfigSerializer::new);
 		WB_CONFIG = AutoConfig.getConfigHolder(WBConfig.class).getConfig();
 
+		WBBlocks.register();
 
+		ConfigBlacklisting.setupBlackLists();
 		WBPortalSpawning.generateRequiredBlockList(WB_CONFIG.WBPortalConfig.requiredBlocksInChests);
+
+		WorldBlender.reserveBiomeIDs();
+		WBFeatures.registerFeatures();
+		WBConfiguredFeatures.registerConfiguredFeatures();
+		WBSurfaceBuilders.registerSurfaceBuilders();
+		WBBiomeProvider.registerBiomeProvider();
+	}
+
+
+
+	public static void reserveBiomeIDs() {
+		//Reserve WorldBlender biome IDs for the json version to replace
+		Registry.register(BuiltinRegistries.BIOME, WBIdentifiers.GENERAL_BLENDED_BIOME_ID, DefaultBiomeCreator.createNormalOcean(false));
+		Registry.register(BuiltinRegistries.BIOME, WBIdentifiers.MOUNTAINOUS_BLENDED_BIOME_ID, DefaultBiomeCreator.createNormalOcean(false));
+		Registry.register(BuiltinRegistries.BIOME, WBIdentifiers.COLD_HILLS_BLENDED_BIOME_ID, DefaultBiomeCreator.createNormalOcean(false));
+		Registry.register(BuiltinRegistries.BIOME, WBIdentifiers.OCEAN_BLENDED_BIOME_ID, DefaultBiomeCreator.createNormalOcean(false));
+		Registry.register(BuiltinRegistries.BIOME, WBIdentifiers.FROZEN_OCEAN_BLENDED_BIOME_ID, DefaultBiomeCreator.createNormalOcean(false));
 	}
 }

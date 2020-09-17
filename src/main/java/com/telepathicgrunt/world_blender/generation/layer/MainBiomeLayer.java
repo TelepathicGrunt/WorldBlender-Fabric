@@ -1,23 +1,20 @@
 package com.telepathicgrunt.world_blender.generation.layer;
 
-import com.telepathicgrunt.world_blender.biome.WBBiomes;
+import com.telepathicgrunt.world_blender.WBIdentifiers;
+import com.telepathicgrunt.world_blender.generation.WBBiomeProvider;
 import net.minecraft.util.math.noise.OctaveSimplexNoiseSampler;
-import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.layer.type.InitLayer;
 import net.minecraft.world.biome.layer.util.LayerRandomnessSource;
 import net.minecraft.world.gen.ChunkRandom;
 
+import java.util.stream.IntStream;
 
-@SuppressWarnings("deprecation")
+
 public enum MainBiomeLayer implements InitLayer
 {
 	INSTANCE;
 
-	private static final int BLENDED_BIOME_ID = Registry.BIOME.getRawId(WBBiomes.BLENDED_BIOME);
-	private static final int COLD_HILLS_BLENDED_BIOME_ID = Registry.BIOME.getRawId(WBBiomes.COLD_HILLS_BLENDED_BIOME);
-	private static final int MOUNTAINOUS_BLENDED_BIOME_ID = Registry.BIOME.getRawId(WBBiomes.MOUNTAINOUS_BLENDED_BIOME);
-	private static final int OCEAN_BLENDED_BIOME_ID = Registry.BIOME.getRawId(WBBiomes.OCEAN_BLENDED_BIOME);
-	private static final int FROZEN_OCEAN_BLENDED_BIOME_ID = Registry.BIOME.getRawId(WBBiomes.FROZEN_OCEAN_BLENDED_BIOME);
+
 	private static OctaveSimplexNoiseSampler perlinGen;
 //	private double max = -100000;
 //	private double min = 100000;
@@ -34,18 +31,20 @@ public enum MainBiomeLayer implements InitLayer
 		
 		
 		if(perlinNoise > 0.53) {	
-			return MOUNTAINOUS_BLENDED_BIOME_ID;
+			return WBBiomeProvider.LAYERS_BIOME_REGISTRY.getRawId(WBBiomeProvider.LAYERS_BIOME_REGISTRY.get(WBIdentifiers.MOUNTAINOUS_BLENDED_BIOME_ID));
 		}
 		else if(perlinNoise > -0.58) {	
 			if(perlinNoise2 < -0.75) {	
-				return COLD_HILLS_BLENDED_BIOME_ID;
+				return WBBiomeProvider.LAYERS_BIOME_REGISTRY.getRawId(WBBiomeProvider.LAYERS_BIOME_REGISTRY.get(WBIdentifiers.COLD_HILLS_BLENDED_BIOME_ID));
 			}
 			else {
-				return BLENDED_BIOME_ID;
+				return WBBiomeProvider.LAYERS_BIOME_REGISTRY.getRawId(WBBiomeProvider.LAYERS_BIOME_REGISTRY.get(WBIdentifiers.GENERAL_BLENDED_BIOME_ID));
 			}
 		}
 		else {	
-			return noise.nextInt(100)/800D + perlinNoise%0.4D > -0.2D ? OCEAN_BLENDED_BIOME_ID : FROZEN_OCEAN_BLENDED_BIOME_ID;
+			return noise.nextInt(100)/800D + perlinNoise%0.4D > -0.2D ?
+					WBBiomeProvider.LAYERS_BIOME_REGISTRY.getRawId(WBBiomeProvider.LAYERS_BIOME_REGISTRY.get(WBIdentifiers.OCEAN_BLENDED_BIOME_ID)) :
+					WBBiomeProvider.LAYERS_BIOME_REGISTRY.getRawId(WBBiomeProvider.LAYERS_BIOME_REGISTRY.get(WBIdentifiers.FROZEN_OCEAN_BLENDED_BIOME_ID));
 		}
 	
 	}
@@ -56,7 +55,7 @@ public enum MainBiomeLayer implements InitLayer
 		if (perlinGen == null)
 		{
 			ChunkRandom sharedseedrandom = new ChunkRandom(seed);
-			perlinGen = new OctaveSimplexNoiseSampler(sharedseedrandom, 0, 0);
+			perlinGen = new OctaveSimplexNoiseSampler(sharedseedrandom, IntStream.rangeClosed(0, 0));
 		}
 	}
 }

@@ -37,7 +37,7 @@ public class WBPortalBlockEntityRenderer extends BlockEntityRenderer<WBPortalBlo
 
 		for (int currentPass = 1; currentPass < passes; ++currentPass)
 		{
-			this.drawColor(tileEntity, 2.2F / (20 - currentPass), matrix4f, renderBuffer.getBuffer(WB_RENDER_TYPE.get(currentPass)));
+			this.drawColor(tileEntity, 2.2F / (13 - currentPass), matrix4f, renderBuffer.getBuffer(WB_RENDER_TYPE.get(currentPass)));
 		}
 	}
 
