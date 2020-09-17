@@ -4,6 +4,7 @@
   "package": "com.telepathicgrunt.world_blender.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
+    "RenderPhaseAccessor"
   ],
   "client": [
   ],

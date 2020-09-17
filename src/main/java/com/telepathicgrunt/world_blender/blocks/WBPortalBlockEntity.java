@@ -1,20 +1,26 @@
 package com.telepathicgrunt.world_blender.blocks;
 
-import com.telepathicgrunt.world_blender.networking.MessageHandler;
+import com.telepathicgrunt.world_blender.WorldBlender;
+import io.netty.buffer.Unpooled;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
+import net.fabricmc.fabric.api.server.PlayerStream;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Tickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+
+import java.util.Objects;
 
 
 public class WBPortalBlockEntity extends BlockEntity implements Tickable
@@ -67,10 +73,11 @@ public class WBPortalBlockEntity extends BlockEntity implements Tickable
 	        	 destinationWorld.onDimensionChanged(entity2);
 	         }
 	         entity.remove();
-	         this.world.getProfiler().endTick();
+			 assert this.world != null;
+			 this.world.getProfiler().pop();
 	         originalWorld.resetIdleTimeout();
 	         destinationWorld.resetIdleTimeout();
-	         this.world.getProfiler().endTick();
+	         this.world.getProfiler().pop();
 		}
 	}
 
@@ -91,11 +98,20 @@ public class WBPortalBlockEntity extends BlockEntity implements Tickable
 
 	public void triggerCooldown()
 	{
+		if(this.world == null) return;
+
 		this.teleportCooldown = 300;
 		this.markDirty();
-		assert this.world != null;
 		this.world.updateListeners(this.pos, this.getCachedState(), this.getCachedState(), 3);
-		MessageHandler.UpdateTECooldownPacket.sendToClient(this.pos, this.getCoolDown());
+
+		// We'll get to this later
+		PacketByteBuf passedData = new PacketByteBuf(Unpooled.buffer());
+		passedData.writeBlockPos(this.pos);
+		passedData.writeFloat(this.getCoolDown());
+
+		// Then we'll send the packet to all the players
+		PlayerStream.all(Objects.requireNonNull(world.getServer())).forEach(player ->
+				ServerSidePacketRegistry.INSTANCE.sendToPlayer(player, WorldBlender.PORTAL_COOLDOWN_PACKET_ID, passedData));
 	}
 	
 	public boolean isRemoveable()
@@ -135,23 +151,8 @@ public class WBPortalBlockEntity extends BlockEntity implements Tickable
 		this.removeable = data.getBoolean("Removeable");
 	}
 
-
 	@Environment(EnvType.CLIENT)
-	public int getDrawnSidesCount()
-	{
-		int visibleFaces = 0;
-
-		for (Direction direction : Direction.values())
-		{
-			visibleFaces += this.shouldDrawSide(direction) ? 1 : 0;
-		}
-
-		return visibleFaces;
-	}
-
-
-	@Environment(EnvType.CLIENT)
-	public boolean shouldDrawSide(Direction direction)
+	public boolean shouldRenderFace(Direction direction)
 	{
 		return Block.shouldDrawSide(this.getCachedState(), this.world, this.getPos(), direction);
 	}

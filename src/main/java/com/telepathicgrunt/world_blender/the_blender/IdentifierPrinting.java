@@ -2,13 +2,13 @@ package com.telepathicgrunt.world_blender.the_blender;
 
 import com.telepathicgrunt.world_blender.WorldBlender;
 import net.minecraft.util.Identifier;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.ForgeRegistryEntry;
-import net.minecraftforge.registries.IForgeRegistry;
-import net.minecraftforge.registries.IForgeRegistryEntry;
+import net.minecraft.util.registry.DynamicRegistryManager;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.RegistryKey;
 
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
+import java.util.Map;
 
 public class IdentifierPrinting
 {
@@ -20,26 +20,26 @@ public class IdentifierPrinting
 	 * The resource location will be printed into a file call identifierDump.txt
 	 * and can be found below the world's save folder in the Minecraft folder.
 	 */
-	public static void printAllIdentifiers()
+	public static void printAllIdentifiers(DynamicRegistryManager registryManager)
 	{
 		try(PrintStream printStream = new PrintStream("identifierDump.txt"))
 		{ 
-			printOutSection(printStream, ForgeRegistries.BIOMES, "BIOMES");
+			printOutSection(printStream, registryManager.get(Registry.BIOME_KEY), "BIOMES");
 
 			printStream.println();
-			printOutSection(printStream, ForgeRegistries.FEATURES, "FEATURES");
+			printOutSection(printStream, registryManager.get(Registry.CONFIGURED_FEATURE_WORLDGEN), "CONFIGURED FEATURES");
 			
 			printStream.println();
-			printOutSection(printStream, ForgeRegistries.FEATURES, "STRUCTURES");
+			printOutSection(printStream, registryManager.get(Registry.CONFIGURED_STRUCTURE_FEATURE_WORLDGEN), "CONFIGURED STRUCTURES");
 
 			printStream.println();
-			printOutSection(printStream, ForgeRegistries.WORLD_CARVERS, "CARVERS");
+			printOutSection(printStream, registryManager.get(Registry.CARVER_KEY), "CARVERS");
 			
 			printStream.println();
-			printOutSection(printStream, ForgeRegistries.ENTITIES, "ENTITIES");
+			printOutSection(printStream, registryManager.get(Registry.ENTITY_TYPE_KEY), "ENTITIES");
 			
 			printStream.println();
-			printOutSection(printStream, ForgeRegistries.BLOCKS, "BLOCKS");
+			printOutSection(printStream, registryManager.get(Registry.BLOCK_KEY), "BLOCKS");
 			
 		}
 		catch (FileNotFoundException e)
@@ -50,34 +50,33 @@ public class IdentifierPrinting
 	}
 	/**
 	 * Will go through that registry passed in and print out all the resource locations of every entry inside of it.
-	 * 
-	 * @param <T> - generic type of the entries in the registry
+	 *
 	 * @param printStream - the place we are printing the resource locations to
 	 * @param registry - the registry to go through and get all entries
 	 * @param section - name of this section. Will be put into the header and printed into the printStream
 	 */
-	private static <T extends IForgeRegistryEntry<T>> void printOutSection(PrintStream printStream, IForgeRegistry<T> registry, String section)
+	private static <T> void printOutSection(PrintStream printStream, Registry<T> registry, String section)
 	{
 		String previousNameSpace = "minecraft";
-		Identifier forgeRL;
+		Identifier entryID;
 		
 		//title of the section
 		printStream.println("######################################################################"); 
 		printStream.println("######      "+section+" RESOURCE LOCATION (IDs)        ######"); 
-		printStream.println(""); 
+		printStream.println();
 
-		for (T forgeEntry : registry.getValues())
+		for (Map.Entry<RegistryKey<T>, T> entry : registry.getEntries())
 		{
-			forgeRL = ((ForgeRegistryEntry<T>) forgeEntry).getRegistryName();
+			entryID = entry.getKey().getValue();
 			
 			// extra check to just make sure. Probably never possible to be null
-			if(forgeRL == null) continue; 
+			if(entryID == null) continue;
 			
 			//prints a space between different Mod IDs
-			previousNameSpace = printSpacingBetweenMods(printStream, previousNameSpace, forgeRL.getNamespace());
+			previousNameSpace = printSpacingBetweenMods(printStream, previousNameSpace, entryID.getNamespace());
 			
 			//prints the actual entry's resource location
-			printStream.println(forgeRL.toString()); 
+			printStream.println(entryID.toString());
 		}
 	}
 	

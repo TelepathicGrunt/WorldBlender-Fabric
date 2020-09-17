@@ -2,15 +2,16 @@ package com.telepathicgrunt.world_blender.blocks;
 
 import com.google.common.collect.ImmutableList;
 import com.telepathicgrunt.world_blender.blocks.WBRenderTexturingState.WBPortalTexturingState;
+import com.telepathicgrunt.world_blender.mixin.RenderPhaseAccessor;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.render.*;
 import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
-import net.minecraft.client.util.math.Matrix4f;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.Matrix4f;
 
 import java.util.List;
 import java.util.Random;
@@ -18,17 +19,15 @@ import java.util.stream.IntStream;
 
 
 @Environment(EnvType.CLIENT)
-public class WBPortalTileEntityRenderer extends BlockEntityRenderer<WBPortalTileEntity>
+public class WBPortalBlockEntityRenderer extends BlockEntityRenderer<WBPortalBlockEntity>
 {
-
-	public WBPortalTileEntityRenderer(BlockEntityRenderDispatcher dispatcher)
+	public WBPortalBlockEntityRenderer(BlockEntityRenderDispatcher dispatcher)
 	{
 		super(dispatcher);
 	}
 
-
 	@Override
-	public void render(WBPortalTileEntity tileEntity, float partialTicks, MatrixStack modelMatrix, VertexConsumerProvider renderBuffer, int combinedLightIn, int combinedOverlayIn)
+	public void render(WBPortalBlockEntity tileEntity, float partialTicks, MatrixStack modelMatrix, VertexConsumerProvider renderBuffer, int combinedLightIn, int combinedOverlayIn)
 	{
 		RANDOM.setSeed(31100L);
 		double distance = tileEntity.getPos().getSquaredDistance(this.dispatcher.camera.getPos(), true);
@@ -43,7 +42,7 @@ public class WBPortalTileEntityRenderer extends BlockEntityRenderer<WBPortalTile
 	}
 
 
-	private void drawColor(WBPortalTileEntity tileEntity, float modifier, Matrix4f matrix4f, VertexConsumer vertexBuilder)
+	private void drawColor(WBPortalBlockEntity tileEntity, float modifier, Matrix4f matrix4f, VertexConsumer vertexBuilder)
 	{
 		// turns dark red when cooling down but lightens over time. And when finished cooling down, it pops to full brightness
 		float coolDownEffect = tileEntity.isCoolingDown() ? 0.7f - tileEntity.getCoolDown()/1200F : 0.85f ; 
@@ -60,7 +59,7 @@ public class WBPortalTileEntityRenderer extends BlockEntityRenderer<WBPortalTile
 	}
 
 
-	private void setVertexColor(WBPortalTileEntity tileEntity, Matrix4f matrix4f, VertexConsumer vertexBuilder, float pos1, float pos2, float pos3, float pos4, float pos5, float pos6, float pos7, float pos8, float red, float green, float blue, Direction direction)
+	private void setVertexColor(WBPortalBlockEntity tileEntity, Matrix4f matrix4f, VertexConsumer vertexBuilder, float pos1, float pos2, float pos3, float pos4, float pos5, float pos6, float pos7, float pos8, float red, float green, float blue, Direction direction)
 	{
 		if (tileEntity.shouldRenderFace(direction))
 		{
@@ -115,9 +114,7 @@ public class WBPortalTileEntityRenderer extends BlockEntityRenderer<WBPortalTile
 	public static final Identifier ADDITIVE_TEXTURE = new Identifier("textures/misc/forcefield.png");
 	private static final Random RANDOM = new Random(31100L);
 	private static final List<RenderLayer> WB_RENDER_TYPE = IntStream.range(0, 9).mapToObj((index) ->
-	{
-		return getWBPortal(index + 1);
-	}).collect(ImmutableList.toImmutableList());
+			getWBPortal(index + 1)).collect(ImmutableList.toImmutableList());
 
 	
 	public static RenderLayer getWBPortal(int layer)
@@ -126,20 +123,32 @@ public class WBPortalTileEntityRenderer extends BlockEntityRenderer<WBPortalTile
 		RenderPhase.Texture renderstate$texturestate;
 		if (layer <= 1)
 		{
-			renderstate$transparencystate = RenderPhase.TRANSLUCENT_TRANSPARENCY;
+			renderstate$transparencystate = RenderPhaseAccessor.getTRANSLUCENT_TRANSPARENCY();
 			renderstate$texturestate = new RenderPhase.Texture(MAIN_TEXTURE, false, false);
 		}
 		else if (layer <= 3)
 		{
-			renderstate$transparencystate = RenderPhase.ADDITIVE_TRANSPARENCY;
+			renderstate$transparencystate = RenderPhaseAccessor.getADDITIVE_TRANSPARENCY();
 			renderstate$texturestate = new RenderPhase.Texture(ADDITIVE_TEXTURE, true, false);
 		}
 		else
 		{
-			renderstate$transparencystate = RenderPhase.ADDITIVE_TRANSPARENCY;
+			renderstate$transparencystate = RenderPhaseAccessor.getADDITIVE_TRANSPARENCY();
 			renderstate$texturestate = new RenderPhase.Texture(ADDITIVE_TEXTURE, false, false);
 		}
 
-		return RenderLayer.of("world_blender_portal", VertexFormats.POSITION_COLOR, 7, 90, false, true, RenderLayer.MultiPhaseParameters.builder().transparency(renderstate$transparencystate).texture(renderstate$texturestate).texturing(new WBPortalTexturingState(layer)).fog(RenderPhase.BLACK_FOG).build(false));
+		return RenderLayer.of(
+				"world_blender_portal",
+				VertexFormats.POSITION_COLOR,
+				7,
+				90,
+				false,
+				true,
+				RenderLayer.MultiPhaseParameters.builder()
+						.transparency(renderstate$transparencystate)
+						.texture(renderstate$texturestate)
+						.texturing(new WBPortalTexturingState(layer))
+						.fog(RenderPhaseAccessor.getBLACK_FOG())
+						.build(false));
 	}
 }

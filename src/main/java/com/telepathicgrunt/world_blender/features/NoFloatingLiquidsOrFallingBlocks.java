@@ -1,14 +1,15 @@
 package com.telepathicgrunt.world_blender.features;
 
-import com.mojang.datafixers.Dynamic;
-import com.telepathicgrunt.world_blender.configs.WBConfig;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.Dynamic;
+import com.telepathicgrunt.world_blender.WorldBlender;
 import net.minecraft.block.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.Heightmap;
-import net.minecraft.world.IWorld;
+import net.minecraft.world.ServerWorldAccess;
+import net.minecraft.world.StructureWorldAccess;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
-import net.minecraft.world.gen.chunk.ChunkGeneratorConfig;
 import net.minecraft.world.gen.feature.DefaultFeatureConfig;
 import net.minecraft.world.gen.feature.Feature;
 
@@ -19,15 +20,15 @@ import java.util.function.Function;
 public class NoFloatingLiquidsOrFallingBlocks extends Feature<DefaultFeatureConfig>
 {
 
-	public NoFloatingLiquidsOrFallingBlocks(Function<Dynamic<?>, ? extends DefaultFeatureConfig> configFactory)
+	public NoFloatingLiquidsOrFallingBlocks()
 	{
-		super(configFactory);
+		super(DefaultFeatureConfig.CODEC);
 	}
 
 	private static final Map<MaterialColor, Block> COLOR_MAP;
 	static {
-		COLOR_MAP = new HashMap<MaterialColor, Block>();
-		COLOR_MAP.put(MaterialColor.AIR, Blocks.TERRACOTTA);
+		COLOR_MAP = new HashMap<>();
+		COLOR_MAP.put(MaterialColor.CLEAR, Blocks.TERRACOTTA);
 		COLOR_MAP.put(MaterialColor.ORANGE, Blocks.ORANGE_TERRACOTTA);
 		COLOR_MAP.put(MaterialColor.BLACK, Blocks.BLACK_TERRACOTTA);
 		COLOR_MAP.put(MaterialColor.BLUE, Blocks.BLUE_TERRACOTTA);
@@ -76,14 +77,13 @@ public class NoFloatingLiquidsOrFallingBlocks extends Feature<DefaultFeatureConf
 		COLOR_MAP.put(MaterialColor.MAGENTA_TERRACOTTA, Blocks.MAGENTA_TERRACOTTA);
 		COLOR_MAP.put(MaterialColor.RED_TERRACOTTA, Blocks.RED_TERRACOTTA);
 		COLOR_MAP.put(MaterialColor.YELLOW_TERRACOTTA, Blocks.YELLOW_TERRACOTTA);
-		COLOR_MAP.put(MaterialColor.ORANGE_TERRACOTTA, Blocks.ORANGE_TERRACOTTA);
 		COLOR_MAP.put(MaterialColor.PINK_TERRACOTTA, Blocks.PINK_TERRACOTTA);
 		COLOR_MAP.put(MaterialColor.PURPLE_TERRACOTTA, Blocks.PURPLE_TERRACOTTA);
 	}
 	
 	private static final Set<Material> REPLACEABLE_MATERIALS;
 	static {
-		REPLACEABLE_MATERIALS = new HashSet<Material>();
+		REPLACEABLE_MATERIALS = new HashSet<>();
 		REPLACEABLE_MATERIALS.add(Material.AIR);
 		REPLACEABLE_MATERIALS.add(Material.STRUCTURE_VOID);
 		REPLACEABLE_MATERIALS.add(Material.REPLACEABLE_PLANT);
@@ -92,14 +92,14 @@ public class NoFloatingLiquidsOrFallingBlocks extends Feature<DefaultFeatureConf
 	}
 
 	@Override
-	public boolean place(IWorld world, ChunkGenerator<? extends ChunkGeneratorConfig> changedBlock, Random rand, BlockPos position, DefaultFeatureConfig config)
+	public boolean generate(StructureWorldAccess world, ChunkGenerator chunkgenerator, Random rand, BlockPos position, DefaultFeatureConfig config)
 	{
 		//this feature is completely turned off.
-		if(!WBConfig.preventFallingBlocks && !WBConfig.containFloatingLiquids)
+		if(!WorldBlender.WB_CONFIG.WBBlendingConfig.preventFallingBlocks && !WorldBlender.WB_CONFIG.WBBlendingConfig.containFloatingLiquids)
 			return false;
 		
-		BlockPos.Mutable mutable = new BlockPos.Mutable();
-		BlockState currentBlockstate = Blocks.STONE.getDefaultState();
+		BlockPos.Mutable mutable;
+		BlockState currentBlockstate;
 		BlockState lastBlockstate = Blocks.STONE.getDefaultState();
 		
 		for(int x = 0; x < 16; x++)
@@ -107,10 +107,10 @@ public class NoFloatingLiquidsOrFallingBlocks extends Feature<DefaultFeatureConf
 			for(int z = 0; z < 16; z++)
 			{
 				mutable = new BlockPos.Mutable(position.getX() + x, 0, position.getZ() + z);
-				mutable.setOffset(Direction.UP, Math.max(world.getTopY(Heightmap.Type.WORLD_SURFACE, mutable.getX(), mutable.getZ()), world.getSeaLevel()));
+				mutable.move(Direction.UP, Math.max(world.getTopY(Heightmap.Type.WORLD_SURFACE, mutable.getX(), mutable.getZ()), chunkgenerator.getSeaLevel()));
 				
 				//checks the column downward
-				for(; mutable.getY() >= 0; mutable.setOffset(Direction.DOWN))
+				for(; mutable.getY() >= 0; mutable.move(Direction.DOWN))
 				{
 					currentBlockstate = world.getBlockState(mutable);
 					
@@ -145,13 +145,12 @@ public class NoFloatingLiquidsOrFallingBlocks extends Feature<DefaultFeatureConf
 	 * @param mutable - current position
 	 * @param lastBlockstate - must be the above blockstate when passed in
 	 */
-	private static void preventfalling(IWorld world, BlockPos.Mutable mutable, BlockState lastBlockstate)
+	private static void preventfalling(ServerWorldAccess world, BlockPos.Mutable mutable, BlockState lastBlockstate)
 	{
-		if(!WBConfig.preventFallingBlocks) return;
+		if(!WorldBlender.WB_CONFIG.WBBlendingConfig.preventFallingBlocks) return;
 		
 		if(lastBlockstate.getBlock() instanceof FallingBlock)
 		{
-			@SuppressWarnings("deprecation")
 			MaterialColor targetMaterial = lastBlockstate.getTopMaterialColor(world, mutable);
 			if(targetMaterial == null || !COLOR_MAP.containsKey(targetMaterial))
 			{
@@ -171,9 +170,9 @@ public class NoFloatingLiquidsOrFallingBlocks extends Feature<DefaultFeatureConf
 	 * @param mutable - current position
 	 * @param lastBlockstate - must be the above blockstate when passed in
 	 */
-	private static void liquidContaining(IWorld world, BlockPos.Mutable mutable, BlockState lastBlockstate)
+	private static void liquidContaining(ServerWorldAccess world, BlockPos.Mutable mutable, BlockState lastBlockstate)
 	{
-		if(!WBConfig.containFloatingLiquids) return;
+		if(!WorldBlender.WB_CONFIG.WBBlendingConfig.containFloatingLiquids) return;
 		
 		boolean touchingLiquid = false;
 		BlockState neighboringBlockstate = null;
@@ -202,7 +201,6 @@ public class NoFloatingLiquidsOrFallingBlocks extends Feature<DefaultFeatureConf
 		
 		if(touchingLiquid)
 		{
-			@SuppressWarnings("deprecation")
 			MaterialColor targetMaterial = neighboringBlockstate.getTopMaterialColor(world, mutable);
 			if(targetMaterial == null || !COLOR_MAP.containsKey(targetMaterial))
 			{
@@ -214,4 +212,6 @@ public class NoFloatingLiquidsOrFallingBlocks extends Feature<DefaultFeatureConf
 			}
 		}
 	}
+
+
 }

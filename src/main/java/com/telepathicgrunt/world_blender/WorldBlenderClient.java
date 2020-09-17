@@ -17,7 +17,7 @@ public class WorldBlenderClient implements ClientModInitializer {
 						wbPortalBlockEntity = (WBPortalBlockEntity) MinecraftClient.getInstance().world.getBlockEntity(attachedData.readBlockPos());
 
 					if(wbPortalBlockEntity != null)
-						wbPortalBlockEntity.setCoolDown(attachedData.readInt());
+						wbPortalBlockEntity.setCoolDown(attachedData.readFloat());
 				}));
 	}
 }
