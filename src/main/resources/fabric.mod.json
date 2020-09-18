@@ -21,6 +21,9 @@
     "main": [
       "com.telepathicgrunt.world_blender.WorldBlender"
     ],
+    "modmenu": [
+      "com.telepathicgrunt.world_blender.configs.ModMenuConfig"
+    ],
     "client": [
       "com.telepathicgrunt.world_blender.WorldBlenderClient"
     ]

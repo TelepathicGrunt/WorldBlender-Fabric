@@ -8,7 +8,6 @@ import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.world.gen.feature.ConfiguredFeature;
 
 import java.util.*;
-import java.util.regex.Pattern;
 
 
 public class FeatureGrouping
@@ -33,31 +32,27 @@ public class FeatureGrouping
 
 	private static final List<String> BAMBOO_FEATURE_KEYWORDS = Arrays.asList("bamboo");
 	private static final List<String> LAGGY_STATE_KEYWORDS = Arrays.asList("lava", "fire", "bamboo", "sugar_cane");
-	private static final List<String> LAGGY_FEATURE_KEYWORDS = Arrays.asList("basalt_pillar","netherrack_replace_blobs");
+	private static final List<String> LAGGY_FEATURE_KEYWORDS = Arrays.asList("basalt_columns", "basalt_pillar", "delta_feature");
 	public static boolean bambooFound = false;
 	
 	/**
 	 * tries to find if the feature is bamboo, sugar cane, lava, or 
 	 * fire and return true if it is due to them being laggy
 	 */
-	public static boolean isLaggyFeature(GenerationStep.Feature stage, ConfiguredFeature<?, ?> configuredFeature) 
+	public static boolean isLaggyFeature(ConfiguredFeature<?, ?> configuredFeature)
 	{
 		Optional<JsonElement> optionalConfiguredFeatureJSON = ConfiguredFeature.CODEC.encode(() -> configuredFeature, JsonOps.INSTANCE, JsonOps.INSTANCE.empty()).get().left();
 
 		if(optionalConfiguredFeatureJSON.isPresent()){
 			JsonElement configuredFeatureJSON = optionalConfiguredFeatureJSON.get();
 
-			if(LAGGY_FEATURE_KEYWORDS.stream().anyMatch(string -> configuredFeatureJSON.toString().contains(string))){
-				int t =5;
-			}
-
-			if(regexContainsBannedFeatureName(configuredFeatureJSON, BAMBOO_FEATURE_KEYWORDS))
+			if(containsBannedFeatureName(configuredFeatureJSON, BAMBOO_FEATURE_KEYWORDS))
 				bambooFound = true;
 
-			if(regexContainsBannedFeatureName(configuredFeatureJSON, LAGGY_FEATURE_KEYWORDS))
+			if(containsBannedFeatureName(configuredFeatureJSON, LAGGY_FEATURE_KEYWORDS))
 				return true;
 
-			if(regexContainsBannedState(configuredFeatureJSON, LAGGY_STATE_KEYWORDS))
+			if(containsBannedState(configuredFeatureJSON, LAGGY_STATE_KEYWORDS))
 				return true;
 
 		}
@@ -69,7 +64,7 @@ public class FeatureGrouping
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public static final Map<GenerationStep.Feature, List<ConfiguredFeature<?, ?>>> SMALL_PLANT_MAP = Maps.newHashMap();
-	private static final List<String> SMALL_PLANT_KEYWORDS = Arrays.asList("grass","flower","rose","plant","bush","fern");
+	private static final List<String> SMALL_PLANT_KEYWORDS = Arrays.asList("grass", "flower", "rose", "plant", "bush", "fern");
 
 	/**
 	 * Will check if incoming configuredfeature is a small plant and add it to the small plant map if it is so 
@@ -89,8 +84,8 @@ public class FeatureGrouping
 		if(optionalConfiguredFeatureJSON.isPresent()) {
 			JsonElement configuredFeatureJSON = optionalConfiguredFeatureJSON.get();
 
-			if (regexContainsBannedFeatureName(configuredFeatureJSON, SMALL_PLANT_KEYWORDS) ||
-					regexContainsBannedState(configuredFeatureJSON, SMALL_PLANT_KEYWORDS)) {
+			if (containsBannedFeatureName(configuredFeatureJSON, SMALL_PLANT_KEYWORDS) ||
+					containsBannedState(configuredFeatureJSON, SMALL_PLANT_KEYWORDS)) {
 
 				SMALL_PLANT_MAP.get(stage).add(configuredFeature);
 				return true;
@@ -107,7 +102,7 @@ public class FeatureGrouping
 	//while we are storing large plants into this map, we don't use it at the moment as we just
 	//need to identify what's a large plant and move it to the front of the feature list.
 	public static final Map<GenerationStep.Feature, List<ConfiguredFeature<?, ?>>> LARGE_PLANT_MAP = Maps.newHashMap();
-	private static final List<String> LARGE_PLANT_KEYWORDS = Arrays.asList("tree","huge_mushroom","big_mushroom","poplar","twiglet","mangrove","bramble");
+	private static final List<String> LARGE_PLANT_KEYWORDS = Arrays.asList("tree", "huge_mushroom", "big_mushroom", "poplar", "twiglet", "mangrove", "bramble");
 	
 	/**
 	 * Will check if incoming configuredfeature is a large plant and add it to the Large plant map if it is so 
@@ -127,8 +122,8 @@ public class FeatureGrouping
 		if(optionalConfiguredFeatureJSON.isPresent()) {
 			JsonElement configuredFeatureJSON = optionalConfiguredFeatureJSON.get();
 
-			if (regexContainsBannedFeatureName(configuredFeatureJSON, LARGE_PLANT_KEYWORDS) ||
-					regexContainsBannedState(configuredFeatureJSON, LARGE_PLANT_KEYWORDS)) {
+			if (containsBannedFeatureName(configuredFeatureJSON, LARGE_PLANT_KEYWORDS) ||
+					containsBannedState(configuredFeatureJSON, LARGE_PLANT_KEYWORDS)) {
 
 				LARGE_PLANT_MAP.get(stage).add(configuredFeature);
 				return true;
@@ -149,20 +144,21 @@ public class FeatureGrouping
 	 * If you get crossed-eye, that normal.
 	 * Checks if the state's name block contains a banned word.
 	 */
-	private static boolean regexContainsBannedState(JsonElement jsonElement, List<String> keywordList)
+	private static boolean containsBannedState(JsonElement jsonElement, List<String> keywordList)
 	{
 		JsonObject jsonStartObject = jsonElement.getAsJsonObject();
 		for(Map.Entry<String, JsonElement> entry : jsonStartObject.entrySet()){
 			if(entry.getKey().equals("state")){
 				JsonObject jsonStateObject = entry.getValue().getAsJsonObject();
 				if(jsonStateObject.has("Name")){
-					String blockPath = jsonStateObject.get("Name").getAsString().split(":")[1];for(String keyword : keywordList) {
+					String blockPath = jsonStateObject.get("Name").getAsString().split(":")[1];
+					for(String keyword : keywordList) {
 						if(blockPath.contains(keyword)) return true;
 					}
 				}
 			}
 			else if(entry.getValue().isJsonObject()){
-				regexContainsBannedState(entry.getValue().getAsJsonObject(), keywordList);
+				containsBannedState(entry.getValue().getAsJsonObject(), keywordList);
 			}
 		}
 
@@ -172,11 +168,21 @@ public class FeatureGrouping
 
 	/**
 	 * Look to see if any of the banned words are in the json feature object
-	 *
-	 * If you get crossed-eye, that normal. I blame mojang's json format being so cursed and random.
 	 * This is gonna check if the bottommost type or default contains a banned word
 	 */
-	private static boolean regexContainsBannedFeatureName(JsonElement jsonElement, List<String> keywordList)
+	private static boolean containsBannedFeatureName(JsonElement jsonElement, List<String> keywordList)
+	{
+		String stringToCheck = getsFeatureName(jsonElement);
+		return keywordList.stream().anyMatch(stringToCheck::contains);
+	}
+
+
+	/**
+	 * Gets the Feature's name being used
+	 *
+	 * If you get crossed-eye, that normal. I blame mojang's json format being so cursed and random.
+	 */
+	private static String getsFeatureName(JsonElement jsonElement)
 	{
 		JsonObject jsonStartObject = jsonElement.getAsJsonObject();
 
@@ -186,37 +192,33 @@ public class FeatureGrouping
 			JsonElement jsonFeatureElement = jsonConfigObject.get("feature");
 
 			if(jsonFeatureElement.isJsonObject()){
-				return regexContainsBannedFeatureName(jsonFeatureElement, keywordList);
+				return getsFeatureName(jsonFeatureElement);
 			}
+
+			// Handles vanilla's one freaking feature that holds MULTIPLE features for no reason! (trees usually)
 			else if(jsonFeatureElement.isJsonArray()){
+				StringBuilder allFeatures = new StringBuilder();
+
+				for(JsonElement entry : jsonFeatureElement.getAsJsonArray()){
+					allFeatures.append(entry.getAsJsonObject().get("feature").getAsString().split(":")[1]).append(" ");
+				}
 
 				if(jsonConfigObject.has("default")){
-					String stringToCheck = jsonConfigObject.get("default").getAsString().split(":")[1];
-					for(String keyword : keywordList) {
-						if(stringToCheck.contains(keyword)) return true;
-					}
-					return false;
+					allFeatures.append(jsonConfigObject.get("default").getAsString().split(":")[1]);
+					return allFeatures.toString();
 				}
 				else if(jsonConfigObject.has("type")){
-					String stringToCheck = jsonConfigObject.get("type").getAsString().split(":")[1];
-					for(String keyword : keywordList) {
-						if(stringToCheck.contains(keyword)) return true;
-					}
-					return false;
+					allFeatures.append(jsonConfigObject.get("type").getAsString().split(":")[1]);
+					return allFeatures.toString();
 				}
 			}
 		}
 		else if(jsonStartObject.has("type")){
-			String stringToCheck = jsonStartObject.get("type").getAsString().split(":")[1];
-			for(String keyword : keywordList) {
-				if(stringToCheck.contains(keyword)) return true;
-			}
-			return false;
+			return jsonStartObject.get("type").getAsString().split(":")[1];
 		}
 
-		return false;
+		return "";
 	}
-
 
 
 	/**
@@ -225,23 +227,20 @@ public class FeatureGrouping
 	 */
 	public static boolean serializeAndCompareFeature(ConfiguredFeature<?, ?> configuredFeature1, ConfiguredFeature<?, ?> configuredFeature2) {
 
-		Optional<JsonElement> configuredFeatureJSON1 = ConfiguredFeature.CODEC.encode(() -> configuredFeature1, JsonOps.INSTANCE, JsonOps.INSTANCE.empty()).get().left();
-		Optional<JsonElement> configuredFeatureJSON2 = ConfiguredFeature.CODEC.encode(() -> configuredFeature2, JsonOps.INSTANCE, JsonOps.INSTANCE.empty()).get().left();
+		Optional<JsonElement> optionalJsonElement1 = ConfiguredFeature.CODEC.encode(() -> configuredFeature1, JsonOps.INSTANCE, JsonOps.INSTANCE.empty()).get().left();
+		Optional<JsonElement> optionalJsonElement2 = ConfiguredFeature.CODEC.encode(() -> configuredFeature2, JsonOps.INSTANCE, JsonOps.INSTANCE.empty()).get().left();
 
 		// Compare the JSON to see if it's the exact same ConfiguredFeature.
-		if(configuredFeatureJSON1.isPresent() &&
-				configuredFeatureJSON2.isPresent() &&
-				configuredFeatureJSON1.equals(configuredFeatureJSON2))
+		if(optionalJsonElement1.isPresent() &&
+			optionalJsonElement2.isPresent())
 		{
-			return true;
+			JsonElement configuredFeatureJSON1 = optionalJsonElement1.get();
+			JsonElement configuredFeatureJSON2 = optionalJsonElement2.get();
+
+			return configuredFeatureJSON1.toString().equals(configuredFeatureJSON2.toString()) ||
+					getsFeatureName(configuredFeatureJSON1).equals(getsFeatureName(configuredFeatureJSON2));
 		}
 
 		return false;
-
-		// Check deeper to see if they are the same.
-//		return (configuredFeature1.config instanceof DecoratedFeatureConfig &&
-//				configuredFeature2.config instanceof DecoratedFeatureConfig) &&
-//						((DecoratedFeatureConfig) configuredFeature1.config).feature.get().feature ==
-//						((DecoratedFeatureConfig) configuredFeature2.config).feature.get().feature;
 	}
 }

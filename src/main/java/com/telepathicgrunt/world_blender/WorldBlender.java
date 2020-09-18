@@ -29,8 +29,6 @@ public class WorldBlender implements ModInitializer {
 		WB_CONFIG = AutoConfig.getConfigHolder(WBConfig.class).getConfig();
 
 		WBBlocks.register();
-
-		ConfigBlacklisting.setupBlackLists();
 		WBPortalSpawning.generateRequiredBlockList(WB_CONFIG.WBPortalConfig.requiredBlocksInChests);
 
 		WorldBlender.reserveBiomeIDs();

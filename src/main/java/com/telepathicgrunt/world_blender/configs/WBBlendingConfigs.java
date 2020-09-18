@@ -56,7 +56,7 @@ public class WBBlendingConfigs implements ConfigData {
             +" each entry with a , (comma). Here's an example blacklisting all trees\r\n"
             +" and vanilla's icebergs: \r\n"
             +" \"tree, minecraft:iceberg\"\r\n")
-    public String blacklistedFeatures = "";
+    public String blacklistedFeatures = "minecraft:basalt_blobs, minecraft:blackstone_blobs";
 
 
     @ConfigEntry.Gui.PrefixText
@@ -118,15 +118,11 @@ public class WBBlendingConfigs implements ConfigData {
             +" mob's name. For example, \"minecraft:ghast\" will prevent \r\n"
             +" vanilla's ghast from being imported.\r\n"
             +" \r\n"
-            +" As default, The Midnight's Night Stag is blacklisted because\r\n"
-            +" trying to spawn that mob outside The Mindnight's dimension will\r\n"
-            +" cause the world to hang forever.\r\n"
-            +" \r\n"
             +" NOTE: You can blacklist multiple things at a time. Just separate\r\n"
             +" each entry with a , (comma). Here's an example blacklisting all zombies\r\n"
             +" and vanilla's ghasts: \r\n"
             +" \"zombie, minecraft:ghast\"\r\n")
-    public String blacklistedSpawns = "midnight:nightstag";
+    public String blacklistedSpawns = "";
 
 
 

@@ -55,6 +55,7 @@ public class TheBlender {
 
 
         // Reset these before biome loop
+        ConfigBlacklisting.setupBlackLists();
         FeatureGrouping.setupFeatureMaps();
         BlendedSurfaceBuilder.resetSurfaceList();
 
@@ -82,6 +83,10 @@ public class TheBlender {
      * blends the given biome into WB biomes
      */
     private static void mainBlending(Biome biome, List<Biome> world_blender_biomes, Identifier biomeID, DynamicRegistryManager.Impl dynamicRegistryManager) {
+
+        if(biomeID.getPath().contains("basalt")){
+            int t = 5;
+        }
 
         // ignore our own biomes to speed things up and prevent possible duplications
         if (biomeID.getNamespace().equals("world_blender"))
@@ -254,7 +259,7 @@ public class TheBlender {
                             }
 
                             // if we have no laggy feature config on, then the feature must not be fire, lava, bamboo, etc in order to be added
-                            if ((!FeatureGrouping.isLaggyFeature(stage, configuredFeature) || !WorldBlender.WB_CONFIG.WBBlendingConfig.disallowLaggyFeatures)) {
+                            if ((!FeatureGrouping.isLaggyFeature(configuredFeature) || !WorldBlender.WB_CONFIG.WBBlendingConfig.disallowLaggyFeatures)) {
                                 world_blender_biomes.forEach(blendedBiome -> blendedBiome.getGenerationSettings().getFeatures().get(stage.ordinal()).add(configuredFeatureSupplier));
                             }
                         }
@@ -273,7 +278,7 @@ public class TheBlender {
                             // list so they don't overwhelm other features or cause as many bamboo breaking
                             // because it got cut off
                             // if we have no laggy feature config on, then the feature must not be fire, lava, bamboo, etc in order to be added
-                            if ((!FeatureGrouping.isLaggyFeature(stage, configuredFeature) || !WorldBlender.WB_CONFIG.WBBlendingConfig.disallowLaggyFeatures)) {
+                            if ((!FeatureGrouping.isLaggyFeature(configuredFeature) || !WorldBlender.WB_CONFIG.WBBlendingConfig.disallowLaggyFeatures)) {
                                 world_blender_biomes.forEach(blendedBiome -> blendedBiome.getGenerationSettings().getFeatures().get(stage.ordinal()).add(configuredFeatureSupplier));
                             }
                         }

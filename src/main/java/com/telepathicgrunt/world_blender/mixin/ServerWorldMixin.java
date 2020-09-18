@@ -1,9 +1,9 @@
 package com.telepathicgrunt.world_blender.mixin;
 
+import com.telepathicgrunt.world_blender.WBIdentifiers;
 import com.telepathicgrunt.world_blender.WorldBlender;
 import com.telepathicgrunt.world_blender.dimension.AltarManager;
-import com.telepathicgrunt.world_blender.WBIdentifiers;
-import com.telepathicgrunt.world_blender.surfacebuilder.BlendedSurfaceBuilder;
+import net.minecraft.entity.boss.dragon.EnderDragonFight;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.WorldGenerationProgressListener;
 import net.minecraft.server.world.ServerWorld;
@@ -14,8 +14,7 @@ import net.minecraft.world.gen.Spawner;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.level.ServerWorldProperties;
 import net.minecraft.world.level.storage.LevelStorage;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Unique;
+import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -25,6 +24,11 @@ import java.util.concurrent.Executor;
 
 @Mixin(ServerWorld.class)
 public class ServerWorldMixin {
+
+	@Mutable
+	@Final
+	@Shadow
+	private EnderDragonFight enderDragonFight;
 
 	@Unique
 	private AltarManager ALTAR = null;
@@ -37,6 +41,7 @@ public class ServerWorldMixin {
 				registryKey.getValue().equals(WBIdentifiers.MOD_DIMENSION_ID))
 		{
 			((DimensionTypeAccessor)dimensionType).setEnderDragonFight(true);
+			enderDragonFight = new EnderDragonFight((ServerWorld)(Object)this, server.getSaveProperties().getGeneratorOptions().getSeed(), server.getSaveProperties().getDragonFight());
 		}
 
 		ALTAR = new AltarManager((ServerWorld)(Object)this);
