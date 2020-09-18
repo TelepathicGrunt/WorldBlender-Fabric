@@ -1,4 +1,4 @@
-package com.telepathicgrunt.world_blender.generation.layer;
+package com.telepathicgrunt.world_blender.generation;
 
 import com.telepathicgrunt.world_blender.WBIdentifiers;
 import com.telepathicgrunt.world_blender.generation.WBBiomeProvider;

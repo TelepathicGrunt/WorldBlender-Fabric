@@ -36,10 +36,10 @@ public class IdentifierPrinting
 			printOutSection(printStream, registryManager.get(Registry.CARVER_KEY), "CARVERS");
 			
 			printStream.println();
-			printOutSection(printStream, registryManager.get(Registry.ENTITY_TYPE_KEY), "ENTITIES");
+			printOutSection(printStream, Registry.ENTITY_TYPE, "ENTITIES");
 			
 			printStream.println();
-			printOutSection(printStream, registryManager.get(Registry.BLOCK_KEY), "BLOCKS");
+			printOutSection(printStream, Registry.BLOCK, "BLOCKS");
 			
 		}
 		catch (FileNotFoundException e)

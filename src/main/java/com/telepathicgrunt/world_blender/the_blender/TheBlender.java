@@ -9,6 +9,7 @@ import com.telepathicgrunt.world_blender.features.WBConfiguredFeatures;
 import com.telepathicgrunt.world_blender.mixin.CarverAccessor;
 import com.telepathicgrunt.world_blender.mixin.ConfiguredCarverAccessor;
 import com.telepathicgrunt.world_blender.mixin.GenerationSettingsAccessor;
+import com.telepathicgrunt.world_blender.mixin.SpawnSettingsAccessor;
 import com.telepathicgrunt.world_blender.surfacebuilder.BlendedSurfaceBuilder;
 import com.telepathicgrunt.world_blender.surfacebuilder.WBSurfaceBuilders;
 import com.telepathicgrunt.world_blender.the_blender.ConfigBlacklisting.BlacklistType;
@@ -83,7 +84,7 @@ public class TheBlender {
     private static void mainBlending(Biome biome, List<Biome> world_blender_biomes, Identifier biomeID, DynamicRegistryManager.Impl dynamicRegistryManager) {
 
         // ignore our own biomes to speed things up and prevent possible duplications
-        if (!biomeID.getNamespace().equals("world_blender"))
+        if (biomeID.getNamespace().equals("world_blender"))
             return;
 
             // if the biome is a vanilla biome but config says no vanilla biome, skip this biome
@@ -109,10 +110,10 @@ public class TheBlender {
         addBiomeCarvers(biome, world_blender_biomes, dynamicRegistryManager.get(Registry.CONFIGURED_CARVER_WORLDGEN));
 
         //////////////////////// SPAWNER/////////////////////////
-        addBiomeNaturalMobs(biome, world_blender_biomes, dynamicRegistryManager.get(Registry.ENTITY_TYPE_KEY));
+        addBiomeNaturalMobs(biome, world_blender_biomes, Registry.ENTITY_TYPE);
 
         //////////////////////// SURFACE/////////////////////////
-        addBiomeSurfaceConfig(biome, biomeID, dynamicRegistryManager.get(Registry.BLOCK_KEY));
+        addBiomeSurfaceConfig(biome, biomeID, Registry.BLOCK);
     }
 
 
@@ -181,9 +182,9 @@ public class TheBlender {
         List<List<Supplier<ConfiguredFeature<?, ?>>>> tempFeature = ((GenerationSettingsAccessor)biome.getGenerationSettings()).getGSFeatures();
         List<List<Supplier<ConfiguredFeature<?, ?>>>> mutableGenerationStages = new ArrayList<>();
 
-        // Fill in generation stages so there are at least 9 or else Minecraft crashes.
+        // Fill in generation stages so there are at least 10 or else Minecraft crashes.
         // (we need all stages for adding features/structures to the right stage too)
-        for(int currentStageIndex = 0; currentStageIndex < Math.max(10, tempFeature.size()); currentStageIndex++){
+        for(int currentStageIndex = 0; currentStageIndex < Math.max(GenerationStep.Feature.values().length, tempFeature.size()); currentStageIndex++){
             if(currentStageIndex >= tempFeature.size()){
                 mutableGenerationStages.add(new ArrayList<>());
             }else{
@@ -194,6 +195,19 @@ public class TheBlender {
         // Make the Structure and GenerationStages (features) list mutable for modification later
         ((GenerationSettingsAccessor)biome.getGenerationSettings()).setGSFeatures(mutableGenerationStages);
         ((GenerationSettingsAccessor)biome.getGenerationSettings()).setGSStructureFeatures(new ArrayList<>(((GenerationSettingsAccessor)biome.getGenerationSettings()).getGSStructureFeatures()));
+        ((GenerationSettingsAccessor)biome.getGenerationSettings()).setGSStructureFeatures(new ArrayList<>(((GenerationSettingsAccessor)biome.getGenerationSettings()).getGSStructureFeatures()));
+
+        ((GenerationSettingsAccessor)biome.getGenerationSettings()).setCarvers(new HashMap<>(((GenerationSettingsAccessor)biome.getGenerationSettings()).getCarvers()));
+        for(Carver carverGroup : Carver.values()){
+            ((GenerationSettingsAccessor) biome.getGenerationSettings()).getCarvers().put(carverGroup, new ArrayList<>(biome.getGenerationSettings().getCarversForStep(carverGroup)));
+        }
+
+        ((SpawnSettingsAccessor)biome.getSpawnSettings()).setSpawners(new HashMap<>(((SpawnSettingsAccessor) biome.getSpawnSettings()).getSpawners()));
+        for(SpawnGroup spawnGroup : SpawnGroup.values()){
+            ((SpawnSettingsAccessor) biome.getSpawnSettings()).getSpawners().put(spawnGroup, new ArrayList<>(biome.getSpawnSettings().getSpawnEntry(spawnGroup)));
+        }
+
+        ((SpawnSettingsAccessor)biome.getSpawnSettings()).setSpawnCosts(new HashMap<>(((SpawnSettingsAccessor) biome.getSpawnSettings()).getSpawnCosts()));
     }
 
 
@@ -204,6 +218,8 @@ public class TheBlender {
 
     private static void addBiomeFeatures(Biome biome, List<Biome> world_blender_biomes, MutableRegistry<ConfiguredFeature<?, ?>> configuredFeaturesRegistry) {
         for (GenerationStep.Feature stage : GenerationStep.Feature.values()) {
+            if(stage.ordinal() >= biome.getGenerationSettings().getFeatures().size()) break;
+
             for (Supplier<ConfiguredFeature<?, ?>> configuredFeatureSupplier : biome.getGenerationSettings().getFeatures().get(stage.ordinal())) {
                 ConfiguredFeature<?, ?> configuredFeature = configuredFeatureSupplier.get();
                 if (world_blender_biomes.get(0).getGenerationSettings().getFeatures().get(stage.ordinal()).stream().noneMatch(addedConfigFeature -> FeatureGrouping.serializeAndCompareFeature(addedConfigFeature.get(), configuredFeatureSupplier.get()))) {
@@ -271,7 +287,9 @@ public class TheBlender {
     private static void addBiomeStructures(Biome biome, List<Biome> world_blender_biomes, MutableRegistry<ConfiguredStructureFeature<?, ?>> configuredStructuresRegistry) {
         for (Supplier<ConfiguredStructureFeature<?, ?>> configuredStructureSupplier : biome.getGenerationSettings().getStructureFeatures()) {
             ConfiguredStructureFeature<?, ?> configuredStructure = configuredStructureSupplier.get();
-            if (world_blender_biomes.get(0).getGenerationSettings().getStructureFeatures().stream().noneMatch(addedConfiguredStructure -> addedConfiguredStructure.get() == configuredStructure)) {
+
+            // Having multiple configured structures of the same structure spawns only the last one it seems. Booo mojang boooooo. I want multiple village types in 1 biome!
+            if (world_blender_biomes.get(0).getGenerationSettings().getStructureFeatures().stream().noneMatch(addedConfiguredStructure -> addedConfiguredStructure.get().feature == configuredStructure.feature)) {
 
                 Identifier configuredStructureID = configuredStructuresRegistry.getId(configuredStructure);
                 if(configuredStructureID == null){
@@ -313,7 +331,7 @@ public class TheBlender {
 
                     Identifier configuredCarverID = configuredCarversRegistry.getId(configuredCarver);
                     if(configuredCarverID == null){
-                        Optional<JsonElement> configuredStructureJSON = ConfiguredCarver.field_24828.encode(configuredCarverSupplier, JsonOps.INSTANCE, JsonOps.INSTANCE.empty()).get().left();
+                        Optional<JsonElement> configuredStructureJSON = ConfiguredCarver.CODEC.encode(configuredCarver, JsonOps.INSTANCE, JsonOps.INSTANCE.empty()).get().left();
 
                         WorldBlender.LOGGER.log(Level.WARN, "---------------\n" +
                                 "WORLD BLENDER:\n\n" +

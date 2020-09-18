@@ -12,7 +12,8 @@
     "GenerationSettingsAccessor",
     "MinecraftServerMixin",
     "RenderPhaseAccessor",
-    "ServerWorldMixin"
+    "ServerWorldMixin",
+    "SpawnSettingsAccessor"
   ],
   "client": [
   ],

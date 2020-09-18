@@ -4,7 +4,6 @@ import com.google.common.collect.ImmutableList;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.telepathicgrunt.world_blender.WBIdentifiers;
-import com.telepathicgrunt.world_blender.generation.layer.MainBiomeLayer;
 import com.telepathicgrunt.world_blender.mixin.BiomeLayerSamplerAccessor;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -14,7 +13,8 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.util.registry.RegistryLookupCodec;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.Biomes;
+import net.minecraft.world.biome.BuiltinBiomes;
+import net.minecraft.world.biome.layer.ScaleLayer;
 import net.minecraft.world.biome.layer.util.*;
 import net.minecraft.world.biome.source.BiomeLayerSampler;
 import net.minecraft.world.biome.source.BiomeSource;
@@ -38,7 +38,7 @@ public class WBBiomeProvider extends BiomeSource
 	private final BiomeLayerSampler BIOME_SAMPLER;
 	private final long SEED;
 	private final Registry<Biome> BIOME_REGISTRY;
-	public static Registry<Biome> LAYERS_BIOME_REGISTRY;
+	protected static Registry<Biome> LAYERS_BIOME_REGISTRY;
 	private static final List<RegistryKey<Biome>> BIOMES = ImmutableList.of(
 			RegistryKey.of(Registry.BIOME_KEY, WBIdentifiers.GENERAL_BLENDED_BIOME_ID),
 			RegistryKey.of(Registry.BIOME_KEY, WBIdentifiers.MOUNTAINOUS_BLENDED_BIOME_ID),
@@ -65,7 +65,10 @@ public class WBBiomeProvider extends BiomeSource
 
 
 	public static <T extends LayerSampler, C extends LayerSampleContext<T>> LayerFactory<T> build(LongFunction<C> contextFactory) {
-		return MainBiomeLayer.INSTANCE.create(contextFactory.apply(200L));
+		LayerFactory<T> layerFactory = MainBiomeLayer.INSTANCE.create(contextFactory.apply(200L));
+		layerFactory = ScaleLayer.NORMAL.create(contextFactory.apply(2001L), layerFactory);
+		layerFactory = ScaleLayer.FUZZY.create(contextFactory.apply(2000L), layerFactory);
+		return layerFactory;
 	}
 
 
@@ -82,7 +85,7 @@ public class WBBiomeProvider extends BiomeSource
 				throw Util.throwOrPause(new IllegalStateException("Unknown biome id: " + k));
 			}
 			else {
-				return registry.get(Biomes.fromRawId(0));
+				return registry.get(BuiltinBiomes.fromRawId(0));
 			}
 		}
 		else {

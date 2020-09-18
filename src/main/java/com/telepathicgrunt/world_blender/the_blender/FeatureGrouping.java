@@ -2,12 +2,13 @@ package com.telepathicgrunt.world_blender.the_blender;
 
 import com.google.common.collect.Maps;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.mojang.serialization.JsonOps;
 import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.world.gen.feature.ConfiguredFeature;
-import net.minecraft.world.gen.feature.DecoratedFeatureConfig;
 
 import java.util.*;
+import java.util.regex.Pattern;
 
 
 public class FeatureGrouping
@@ -31,7 +32,8 @@ public class FeatureGrouping
 	/////////////////////////////////////////////////////////////////////////////////////
 
 	private static final List<String> BAMBOO_FEATURE_KEYWORDS = Arrays.asList("bamboo");
-	private static final List<String> LAGGY_FEATURE_KEYWORDS = Arrays.asList("lava", "fire", "bamboo", "sugar_cane");
+	private static final List<String> LAGGY_STATE_KEYWORDS = Arrays.asList("lava", "fire", "bamboo", "sugar_cane");
+	private static final List<String> LAGGY_FEATURE_KEYWORDS = Arrays.asList("basalt_pillar","netherrack_replace_blobs");
 	public static boolean bambooFound = false;
 	
 	/**
@@ -44,12 +46,18 @@ public class FeatureGrouping
 
 		if(optionalConfiguredFeatureJSON.isPresent()){
 			JsonElement configuredFeatureJSON = optionalConfiguredFeatureJSON.get();
-			JsonElement test = configuredFeatureJSON.getAsJsonObject().get("state");
 
-			if(regexFindWord(configuredFeatureJSON.toString(), BAMBOO_FEATURE_KEYWORDS))
+			if(LAGGY_FEATURE_KEYWORDS.stream().anyMatch(string -> configuredFeatureJSON.toString().contains(string))){
+				int t =5;
+			}
+
+			if(regexContainsBannedFeatureName(configuredFeatureJSON, BAMBOO_FEATURE_KEYWORDS))
 				bambooFound = true;
 
-			if(regexFindState(configuredFeatureJSON.toString(), LAGGY_FEATURE_KEYWORDS))
+			if(regexContainsBannedFeatureName(configuredFeatureJSON, LAGGY_FEATURE_KEYWORDS))
+				return true;
+
+			if(regexContainsBannedState(configuredFeatureJSON, LAGGY_STATE_KEYWORDS))
 				return true;
 
 		}
@@ -81,8 +89,8 @@ public class FeatureGrouping
 		if(optionalConfiguredFeatureJSON.isPresent()) {
 			JsonElement configuredFeatureJSON = optionalConfiguredFeatureJSON.get();
 
-			if (regexFindWord(configuredFeatureJSON.toString(), SMALL_PLANT_KEYWORDS) ||
-					regexFindState(configuredFeatureJSON.toString(), SMALL_PLANT_KEYWORDS)) {
+			if (regexContainsBannedFeatureName(configuredFeatureJSON, SMALL_PLANT_KEYWORDS) ||
+					regexContainsBannedState(configuredFeatureJSON, SMALL_PLANT_KEYWORDS)) {
 
 				SMALL_PLANT_MAP.get(stage).add(configuredFeature);
 				return true;
@@ -119,8 +127,8 @@ public class FeatureGrouping
 		if(optionalConfiguredFeatureJSON.isPresent()) {
 			JsonElement configuredFeatureJSON = optionalConfiguredFeatureJSON.get();
 
-			if (regexFindWord(configuredFeatureJSON.toString(), LARGE_PLANT_KEYWORDS) ||
-					regexFindState(configuredFeatureJSON.toString(), LARGE_PLANT_KEYWORDS)) {
+			if (regexContainsBannedFeatureName(configuredFeatureJSON, LARGE_PLANT_KEYWORDS) ||
+					regexContainsBannedState(configuredFeatureJSON, LARGE_PLANT_KEYWORDS)) {
 
 				LARGE_PLANT_MAP.get(stage).add(configuredFeature);
 				return true;
@@ -137,35 +145,79 @@ public class FeatureGrouping
 
 	/**
 	 * Look to see if any of the banned words are in the json state object
+	 *
+	 * If you get crossed-eye, that normal.
+	 * Checks if the state's name block contains a banned word.
 	 */
-	private static boolean regexFindState(String jsonstring, List<String> keywordList)
+	private static boolean regexContainsBannedState(JsonElement jsonElement, List<String> keywordList)
 	{
-		for(String keyword : keywordList)
-		{
-			if(jsonstring.contains(keyword))
-			{
-				return true;
+		JsonObject jsonStartObject = jsonElement.getAsJsonObject();
+		for(Map.Entry<String, JsonElement> entry : jsonStartObject.entrySet()){
+			if(entry.getKey().equals("state")){
+				JsonObject jsonStateObject = entry.getValue().getAsJsonObject();
+				if(jsonStateObject.has("Name")){
+					String blockPath = jsonStateObject.get("Name").getAsString().split(":")[1];for(String keyword : keywordList) {
+						if(blockPath.contains(keyword)) return true;
+					}
+				}
+			}
+			else if(entry.getValue().isJsonObject()){
+				regexContainsBannedState(entry.getValue().getAsJsonObject(), keywordList);
 			}
 		}
 
 		return false;
 	}
+
 
 	/**
 	 * Look to see if any of the banned words are in the json feature object
+	 *
+	 * If you get crossed-eye, that normal. I blame mojang's json format being so cursed and random.
+	 * This is gonna check if the bottommost type or default contains a banned word
 	 */
-	private static boolean regexFindWord(String jsonstring, List<String> keywordList)
+	private static boolean regexContainsBannedFeatureName(JsonElement jsonElement, List<String> keywordList)
 	{
-		for(String keyword : keywordList)
-		{
-			if(jsonstring.contains(keyword))
-			{
-				return true;
+		JsonObject jsonStartObject = jsonElement.getAsJsonObject();
+
+		if(jsonStartObject.has("config") && jsonStartObject.get("config").getAsJsonObject().has("feature")){
+
+			JsonObject jsonConfigObject = jsonStartObject.get("config").getAsJsonObject();
+			JsonElement jsonFeatureElement = jsonConfigObject.get("feature");
+
+			if(jsonFeatureElement.isJsonObject()){
+				return regexContainsBannedFeatureName(jsonFeatureElement, keywordList);
 			}
+			else if(jsonFeatureElement.isJsonArray()){
+
+				if(jsonConfigObject.has("default")){
+					String stringToCheck = jsonConfigObject.get("default").getAsString().split(":")[1];
+					for(String keyword : keywordList) {
+						if(stringToCheck.contains(keyword)) return true;
+					}
+					return false;
+				}
+				else if(jsonConfigObject.has("type")){
+					String stringToCheck = jsonConfigObject.get("type").getAsString().split(":")[1];
+					for(String keyword : keywordList) {
+						if(stringToCheck.contains(keyword)) return true;
+					}
+					return false;
+				}
+			}
+		}
+		else if(jsonStartObject.has("type")){
+			String stringToCheck = jsonStartObject.get("type").getAsString().split(":")[1];
+			for(String keyword : keywordList) {
+				if(stringToCheck.contains(keyword)) return true;
+			}
+			return false;
 		}
 
 		return false;
 	}
+
+
 
 	/**
 	 * Will serialize (if possible) both features and check if they are the same feature.
@@ -184,10 +236,12 @@ public class FeatureGrouping
 			return true;
 		}
 
+		return false;
+
 		// Check deeper to see if they are the same.
-		return (configuredFeature1.config instanceof DecoratedFeatureConfig &&
-				configuredFeature2.config instanceof DecoratedFeatureConfig) &&
-						((DecoratedFeatureConfig) configuredFeature1.config).feature.get().feature ==
-						((DecoratedFeatureConfig) configuredFeature2.config).feature.get().feature;
+//		return (configuredFeature1.config instanceof DecoratedFeatureConfig &&
+//				configuredFeature2.config instanceof DecoratedFeatureConfig) &&
+//						((DecoratedFeatureConfig) configuredFeature1.config).feature.get().feature ==
+//						((DecoratedFeatureConfig) configuredFeature2.config).feature.get().feature;
 	}
 }

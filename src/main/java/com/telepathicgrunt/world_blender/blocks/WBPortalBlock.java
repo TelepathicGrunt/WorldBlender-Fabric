@@ -8,6 +8,7 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluid;
+import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.server.MinecraftServer;
@@ -103,7 +104,7 @@ public class WBPortalBlock extends BlockWithEntity
 					// We check if the block entity class itself has 'chest in the name.
 					// Cache the result and only count the block entity if it is a chest.
 					BlockEntity blockEntity = destinationWorld.getBlockEntity(blockpos);
-					if(blockEntity == null) continue;
+					if(blockEntity == null || blockNearTeleport instanceof Inventory) continue;
 
 					if (WBPortalSpawning.VALID_CHEST_BLOCKS_ENTITY_TYPES.getOrDefault(blockEntity.getType(), false))
 					{

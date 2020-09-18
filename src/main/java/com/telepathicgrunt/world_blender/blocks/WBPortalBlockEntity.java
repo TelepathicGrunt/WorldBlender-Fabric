@@ -98,19 +98,18 @@ public class WBPortalBlockEntity extends BlockEntity implements Tickable
 
 	public void triggerCooldown()
 	{
-		if(this.world == null) return;
+		if(this.world == null || this.world.isClient()) return;
 
 		this.teleportCooldown = 300;
 		this.markDirty();
 		this.world.updateListeners(this.pos, this.getCachedState(), this.getCachedState(), 3);
 
-		// We'll get to this later
+		// Send cooldown to client to display visually
 		PacketByteBuf passedData = new PacketByteBuf(Unpooled.buffer());
 		passedData.writeBlockPos(this.pos);
 		passedData.writeFloat(this.getCoolDown());
 
-		// Then we'll send the packet to all the players
-		PlayerStream.all(Objects.requireNonNull(world.getServer())).forEach(player ->
+		PlayerStream.world(world).forEach(player ->
 				ServerSidePacketRegistry.INSTANCE.sendToPlayer(player, WBIdentifiers.PORTAL_COOLDOWN_PACKET_ID, passedData));
 	}
 	

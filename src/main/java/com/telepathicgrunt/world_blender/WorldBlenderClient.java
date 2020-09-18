@@ -16,18 +16,21 @@ public class WorldBlenderClient implements ClientModInitializer {
 	public void onInitializeClient() {
 		((BlockEntityRenderDispatcherInvoker)BlockEntityRenderDispatcher.INSTANCE).callRegister(WBBlocks.WORLD_BLENDER_PORTAL_BE, new WBPortalBlockEntityRenderer(BlockEntityRenderDispatcher.INSTANCE));
 
-		// We associate PLAY_PARTICLE_PACKET_ID with this callback, so the server can then use that id to execute the callback.
+		// Set cooldown for portal after server says it was triggered
 		ClientSidePacketRegistry.INSTANCE.register(WBIdentifiers.PORTAL_COOLDOWN_PACKET_ID,
-				(packetContext, attachedData) -> packetContext.getTaskQueue().execute(() -> {
-					WBPortalBlockEntity wbPortalBlockEntity = null;
+				(packetContext, attachedData) -> {
 					BlockPos blockPos = attachedData.readBlockPos();
 					float cooldown = attachedData.readFloat();
 
-					if(MinecraftClient.getInstance().world != null)
-						wbPortalBlockEntity = (WBPortalBlockEntity) MinecraftClient.getInstance().world.getBlockEntity(blockPos);
+					packetContext.getTaskQueue().execute(() -> {
+						WBPortalBlockEntity wbPortalBlockEntity = null;
 
-					if(wbPortalBlockEntity != null)
-						wbPortalBlockEntity.setCoolDown(cooldown);
-				}));
+						if (MinecraftClient.getInstance().world != null)
+							wbPortalBlockEntity = (WBPortalBlockEntity) MinecraftClient.getInstance().world.getBlockEntity(blockPos);
+
+						if (wbPortalBlockEntity != null)
+							wbPortalBlockEntity.setCoolDown(cooldown);
+					});
+				});
 	}
 }

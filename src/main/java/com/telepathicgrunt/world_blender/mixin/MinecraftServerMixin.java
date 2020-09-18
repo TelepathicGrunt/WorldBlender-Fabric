@@ -3,8 +3,10 @@ package com.telepathicgrunt.world_blender.mixin;
 import com.mojang.authlib.GameProfileRepository;
 import com.mojang.authlib.minecraft.MinecraftSessionService;
 import com.mojang.datafixers.DataFixer;
+import com.telepathicgrunt.world_blender.WorldBlender;
 import com.telepathicgrunt.world_blender.generation.WBBiomeProvider;
 import com.telepathicgrunt.world_blender.surfacebuilder.BlendedSurfaceBuilder;
+import com.telepathicgrunt.world_blender.the_blender.IdentifierPrinting;
 import com.telepathicgrunt.world_blender.the_blender.TheBlender;
 import net.minecraft.resource.ResourcePackManager;
 import net.minecraft.resource.ServerResourceManager;
@@ -37,7 +39,9 @@ public class MinecraftServerMixin {
 
         if(impl.getOptional(Registry.BIOME_KEY).isPresent()) {
             TheBlender.blendTheWorld(impl);
-            WBBiomeProvider.LAYERS_BIOME_REGISTRY = impl.getOptional(Registry.BIOME_KEY).get();
+            if(WorldBlender.WB_CONFIG.WBBlendingConfig.identifierDump){
+                IdentifierPrinting.printAllIdentifiers(impl);
+            }
         }
     }
 }

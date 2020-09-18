@@ -5,6 +5,7 @@ import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import net.minecraft.block.Block;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.inventory.Inventory;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -253,7 +254,7 @@ public class WBPortalSpawning
 						// We check if the block entity class itself has 'chest in the name.
 						// Cache the result and only break if the block entity is not a chest.
 						BlockEntity blockEntity = world.getBlockEntity(blockpos);
-						if(blockEntity == null){
+						if(blockEntity == null || world.getBlockState(blockpos).getBlock() instanceof Inventory){
 							eightChestsFound = false;
 							break;
 						}
