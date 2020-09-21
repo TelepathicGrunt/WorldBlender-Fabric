@@ -158,7 +158,7 @@ public class FeatureGrouping
 				}
 			}
 			else if(entry.getValue().isJsonObject()){
-				containsBannedState(entry.getValue().getAsJsonObject(), keywordList);
+				return containsBannedState(entry.getValue().getAsJsonObject(), keywordList);
 			}
 		}
 
@@ -186,35 +186,46 @@ public class FeatureGrouping
 	{
 		JsonObject jsonStartObject = jsonElement.getAsJsonObject();
 
-		if(jsonStartObject.has("config") && jsonStartObject.get("config").getAsJsonObject().has("feature")){
+		if(jsonStartObject.has("config")){
 
 			JsonObject jsonConfigObject = jsonStartObject.get("config").getAsJsonObject();
-			JsonElement jsonFeatureElement = jsonConfigObject.get("feature");
 
-			if(jsonFeatureElement.isJsonObject()){
-				return getsFeatureName(jsonFeatureElement);
+			if(jsonConfigObject.has("features")){
+				JsonElement jsonFeatureElement = jsonConfigObject.get("features");
+
+				// Handles vanilla's one freaking feature that holds MULTIPLE features for no reason! (trees usually)
+				if(jsonFeatureElement.isJsonArray()){
+					StringBuilder allFeatures = new StringBuilder();
+
+					for(JsonElement entry : jsonFeatureElement.getAsJsonArray()){
+						allFeatures.append(entry.toString()).append(" ");
+					}
+
+					if(jsonConfigObject.has("default")){
+						allFeatures.append(jsonConfigObject.get("default").toString()).append(" ");
+						return allFeatures.toString();
+					}
+					else if(jsonConfigObject.has("type")){
+						allFeatures.append(jsonConfigObject.get("type").toString()).append(" ");
+						return allFeatures.toString();
+					}
+				}
+			}
+			else if(jsonConfigObject.has("feature")){
+
+				JsonElement jsonFeatureElement = jsonConfigObject.get("feature");
+
+				if(jsonFeatureElement.isJsonObject()){
+					return getsFeatureName(jsonFeatureElement);
+				}
+			}
+			else if(jsonStartObject.has("type")){
+				return jsonStartObject.toString();
 			}
 
-			// Handles vanilla's one freaking feature that holds MULTIPLE features for no reason! (trees usually)
-			else if(jsonFeatureElement.isJsonArray()){
-				StringBuilder allFeatures = new StringBuilder();
-
-				for(JsonElement entry : jsonFeatureElement.getAsJsonArray()){
-					allFeatures.append(entry.getAsJsonObject().get("feature").getAsString().split(":")[1]).append(" ");
-				}
-
-				if(jsonConfigObject.has("default")){
-					allFeatures.append(jsonConfigObject.get("default").getAsString().split(":")[1]);
-					return allFeatures.toString();
-				}
-				else if(jsonConfigObject.has("type")){
-					allFeatures.append(jsonConfigObject.get("type").getAsString().split(":")[1]);
-					return allFeatures.toString();
-				}
-			}
 		}
 		else if(jsonStartObject.has("type")){
-			return jsonStartObject.get("type").getAsString().split(":")[1];
+			return jsonStartObject.get("type").toString();
 		}
 
 		return "";

@@ -22,8 +22,6 @@ public class WorldBlender implements ModInitializer {
 	public static final Logger LOGGER = LogManager.getLogger(MODID);
 	public static WBConfig WB_CONFIG;
 
-	// TODO: Fixed serializing comparison breaking vanilla trees
-	// TODO: Blacklist basalt delta's one feature replacing all netherrack
 	// TODO: Add right click behavior to make portal
 	// TODO: Finalized config folders and add translations for config
 	@Override

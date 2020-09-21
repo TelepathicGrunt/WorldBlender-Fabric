@@ -24,9 +24,6 @@ public class WBBlendingConfigs implements ConfigData {
             +" If you want to blacklist an entire mod itself so no importing\r\n"
             +" will happen for any of its biome, just enter the mod's ID and thenr\n"
             +" put an * at the end.r\n"
-            +" As default, Ultra Amplified Dimension is blacklisted because\r\n"
-            +" its features are not setup for normal worldgen and will completely\r\n"
-            +" destroy this dimension.\r\n"
             +" \r\n"
             +" To blacklist by key terms, just enter the term alone such as \"ocean\"\r\n"
             +" and all biomes with ocean in their name will not be imported.\r\n"
@@ -34,7 +31,7 @@ public class WBBlendingConfigs implements ConfigData {
             +" NOTE: You can blacklist multiple things at a time. Just separate\r\n"
             +" each entry with a , (comma). Here's an example blacklisting a mod\r\n"
             +" and a vanilla biome at the same time: \r\n"
-            +" \"ultra_amplified_dimension*, minecraft:ice_spike\"\r\n")
+            +" \"ultra_amplified_dimension*, minecraft:jungle_edge\"\r\n")
     public String blanketBlacklist = "ultra_amplified_dimension*";
 
 

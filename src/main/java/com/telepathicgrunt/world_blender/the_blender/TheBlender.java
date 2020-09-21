@@ -84,9 +84,10 @@ public class TheBlender {
      */
     private static void mainBlending(Biome biome, List<Biome> world_blender_biomes, Identifier biomeID, DynamicRegistryManager.Impl dynamicRegistryManager) {
 
-        if(biomeID.getPath().contains("basalt")){
-            int t = 5;
-        }
+        // Debugging breakpoint spot
+//        if(biomeID.getPath().contains("nether")){
+//            int t = 5;
+//        }
 
         // ignore our own biomes to speed things up and prevent possible duplications
         if (biomeID.getNamespace().equals("world_blender"))
