@@ -133,17 +133,17 @@ public class GoVote {
         public void render(MatrixStack mstack, int mx, int my, float pticks) {
             super.render(mstack, mx, my, pticks);
 
-            fill(mstack, 0, 0, width, (int) (height*0.15), 0xFF591818);
-            fill(mstack, 0, (int) (height*0.15), width, height, 0xFF171D56);
+            fill(mstack, 0, 0, width, (int) (height*0.16), 0xFF591818);
+            fill(mstack, 0, (int) (height*0.16), width, height, 0xFF171D56);
             int middle = width / 2;
             int dist = 12;
 
             Text note1 = s("Note: If you can't vote in the United States,").formatted(Formatting.ITALIC);
-            Text note2 = s("Please press ESC and let TelepathicGrunt know if").formatted(Formatting.ITALIC);
-            Text note3 = s("you can see this message while outside USA.").formatted(Formatting.ITALIC);
-            drawCenteredText(mstack, this.textRenderer, note1, middle, 10, 0xFFFFFF);
-            drawCenteredText(mstack, this.textRenderer, note2, middle, 22, 0xFFFFFF);
-            drawCenteredText(mstack, this.textRenderer, note3, middle, 34, 0xFFFFFF);
+            Text note2 = s("Please press ESC and let World Blender dev know").formatted(Formatting.ITALIC);
+            Text note3 = s("if you can see this message while outside USA.").formatted(Formatting.ITALIC);
+            drawCenteredText(mstack, this.textRenderer, note1, middle, 5, 0xFFFFFF);
+            drawCenteredText(mstack, this.textRenderer, note2, middle, 15, 0xFFFFFF);
+            drawCenteredText(mstack, this.textRenderer, note3, middle, 25, 0xFFFFFF);
 
             int y = 46;
             for (int groupIdx = 0; groupIdx < message.size(); groupIdx++) {
