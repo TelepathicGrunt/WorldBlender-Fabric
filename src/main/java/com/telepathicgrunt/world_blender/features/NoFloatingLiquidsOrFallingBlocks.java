@@ -1,7 +1,5 @@
 package com.telepathicgrunt.world_blender.features;
 
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.Dynamic;
 import com.telepathicgrunt.world_blender.WorldBlender;
 import net.minecraft.block.*;
 import net.minecraft.util.math.BlockPos;
@@ -14,7 +12,6 @@ import net.minecraft.world.gen.feature.DefaultFeatureConfig;
 import net.minecraft.world.gen.feature.Feature;
 
 import java.util.*;
-import java.util.function.Function;
 
 
 public class NoFloatingLiquidsOrFallingBlocks extends Feature<DefaultFeatureConfig>

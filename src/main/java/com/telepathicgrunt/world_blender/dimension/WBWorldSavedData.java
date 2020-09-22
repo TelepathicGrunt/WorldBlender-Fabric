@@ -1,14 +1,11 @@
 package com.telepathicgrunt.world_blender.dimension;
 
-import com.telepathicgrunt.world_blender.WBIdentifiers;
 import com.telepathicgrunt.world_blender.WorldBlender;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.world.PersistentState;
 import net.minecraft.world.PersistentStateManager;
 import net.minecraft.world.World;
-
-import java.util.Objects;
 
 
 public class WBWorldSavedData extends PersistentState

@@ -1,21 +1,31 @@
 package com.telepathicgrunt.world_blender.blocks;
 
+import com.telepathicgrunt.world_blender.WorldBlender;
 import it.unimi.dsi.fastutil.objects.Object2BooleanArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import net.minecraft.block.Block;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventory;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
+import org.apache.logging.log4j.Level;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class WBPortalSpawning
 {
@@ -52,187 +62,195 @@ public class WBPortalSpawning
 		{
 			WBPortalSpawning.VALID_CHEST_BLOCKS_ENTITY_TYPES.put(
 					blockEntityType,
-					blockEntityType.instantiate().getClass().getSimpleName().toLowerCase().contains("chest"));
+					Objects.requireNonNull(blockEntityType.instantiate()).getClass().getSimpleName().toLowerCase().contains("chest") &&
+							blockEntityType.instantiate() instanceof Inventory);
 		}
 	}
-	
-	@SuppressWarnings("resource")
-//	@SubscribeEvent
-//	public static void BlockRightClickEvent(PlayerInteractEvent.RightClickBlock event)
-//	{
-//		World world = event.getWorld();
-//		BlockPos position = event.getPos();
-//
-//		//cannot create portals in WB world type nor run this code on client
-//		if(world.isClient || world.getGeneratorType() == WorldBlender.WBWorldType) {
-//			return;
-//		}
-//
-//		// Checks to see if player uses right click on a chest while crouching while holding nether star
-//		if (event.getPlayer().isInSneakingPose() && world.getBlockState(position).getBlock().getTags().contains(Tags.Blocks.CHESTS.getId()))
-//		{
-//			//checks to make sure the activation item is a real item before doing the rest of the checks
-//			Identifier activationItem = new Identifier(WBConfig.activationItem);
-//			if (!ForgeRegistries.ITEMS.containsKey(activationItem))
-//			{
-//				WorldBlender.LOGGER.log(Level.INFO, "World Blender: Warning, the activation item set in the config does not exist. Please make sure it is a valid resource location to a real item as the portal cannot be created now.");
-//				Text message = new LiteralText("�eWorld Blender: �fWarning, the activation item set in the config does not exist. Please make sure it is a valid resource location to a real item as the portal cannot be created now.");
-//				event.getPlayer().sendMessage(message);
-//				return;
-//			}
-//			else if((event.getPlayer().getMainHandStack().getItem() != Registry.ITEM.get(activationItem) && event.getHand() == Hand.MAIN_HAND) ||
-//					(event.getPlayer().getOffHandStack().getItem() != Registry.ITEM.get(activationItem) && event.getHand() == Hand.OFF_HAND))
-//			{
-//				return;
-//			}
-//
-//
-//			BlockPos.Mutable cornerOffset = new BlockPos.Mutable(1, 1, 1);
-//			boolean eightChestsFound = checkForValidChests(world, position, cornerOffset);
-//
-//			//8 chests found, time to check their inventory.
-//			if (eightChestsFound)
-//			{
-//				Set<Item> uniqueBlocksSet = new HashSet<Item>();
-//				Set<Item> invalidItemSet = new HashSet<Item>();
-//				Set<Item> duplicateBlockSlotSet = new HashSet<Item>();
-//
-//				for (BlockPos blockpos : BlockPos.iterate(position, position.add(cornerOffset)))
-//				{
-//					ChestBlockEntity chestTileEntity = (ChestBlockEntity) world.getBlockEntity(blockpos);
-//					for (int index = 0; index < chestTileEntity.getInvSize(); index++)
-//					{
-//						Item item = chestTileEntity.getInvStack(index).getItem();
-//
-//						//if it is a valid block, it would not return air
-//						if (Block.getBlockFromItem(item) != Blocks.AIR)
-//						{
-//							if(uniqueBlocksSet.contains(item))
-//							{
-//								duplicateBlockSlotSet.add(item); // save what block is taking up multiple slots
-//							}
-//							else
-//							{
-//								uniqueBlocksSet.add(item);
-//							}
-//						}
-//						//not a valid block item.
-//						else
-//						{
-//							invalidItemSet.add(item);
-//						}
-//					}
-//				}
-//
-//				if(!INVALID_IDS.isEmpty())
-//				{
-//					WorldBlender.LOGGER.log(Level.INFO, "World Blender: Warning, error reading the required blocks config entry. Please make sure the blocks specified in that config are valid resource locations and points to real blocks as the portal cannot be created now. The problematic entries are: " + String.join(", ", INVALID_IDS));
-//					Text message = new LiteralText("�eWorld Blender: �fWarning, error reading the required blocks config entry. Please make sure the blocks specified in that config are valid resource locations and points to real blocks as the portal cannot be created now. The problematic entries are: �6" + String.join(", ", INVALID_IDS));
-//					event.getPlayer().sendMessage(message);
-//					return;
-//				}
-//
-//				List<Block> listOfRequireBlocksNotFound = new ArrayList<>(REQUIRED_PORTAL_BLOCKS);
-//				boolean isMissingRequiredBlocks = false;
-//
-//				//all unique blocks in chests must be a part of the require blocks list
-//				if(WBConfig.uniqueBlocksNeeded <= REQUIRED_PORTAL_BLOCKS.size())
-//				{
-//					for(Item blockItem : uniqueBlocksSet)
-//					{
-//						listOfRequireBlocksNotFound.remove(Block.getBlockFromItem(blockItem));
-//					}
-//
-//					if(WBConfig.uniqueBlocksNeeded > REQUIRED_PORTAL_BLOCKS.size() - listOfRequireBlocksNotFound.size())
-//					{
-//						isMissingRequiredBlocks = true;
-//					}
-//				}
-//				//all blocks in the required blocks list must be present
-//				else
-//				{
-//					for(Item blockItem : uniqueBlocksSet)
-//					{
-//						listOfRequireBlocksNotFound.remove(Block.getBlockFromItem(blockItem));
-//					}
-//
-//					if(listOfRequireBlocksNotFound.size() != 0)
-//					{
-//						isMissingRequiredBlocks = true;
-//					}
-//				}
-//
-//				//warn player that they do not have enough required blocks for the portal
-//				if(isMissingRequiredBlocks)
-//				{
-//					WorldBlender.LOGGER.log(Level.INFO, "World Blender: There are not enough required blocks in the chests. Please add the needed required blocks and then add any other unique blocks until you have "+WBConfig.uniqueBlocksNeeded+" unique blocks. The require blocks specified in the config are " + String.join(", ", REQUIRED_PORTAL_BLOCKS.stream().map(entry -> entry.getRegistryName().toString()).collect(Collectors.toList())));
-//					Text message = new LiteralText("�eWorld Blender: �fThere are not enough required blocks in the chests. Please add the needed required blocks and then add any other unique blocks until you have �c"+WBConfig.uniqueBlocksNeeded+"�f unique blocks. The require blocks specified in the config are �6" + String.join(", ", REQUIRED_PORTAL_BLOCKS.stream().map(entry -> entry.getRegistryName().toString()).collect(Collectors.toList())));
-//					event.getPlayer().sendMessage(message);
-//					return;
-//				}
-//
-//
-//
-//				//enough unique blocks were found. Make portal now
-//				if (uniqueBlocksSet.size() >= WBConfig.uniqueBlocksNeeded)
-//				{
-//					for (BlockPos blockpos : BlockPos.iterate(position, position.add(cornerOffset)))
-//					{
-//						//consume chest and contents if config says so
-//						if (WBConfig.consumeChests)
-//						{
-//							ChestBlockEntity chestTileEntity = (ChestBlockEntity) world.getBlockEntity(blockpos);
-//							for (int index = chestTileEntity.getInvSize(); index >= 0; index--)
-//							{
-//								chestTileEntity.removeInvStack(index);
-//							}
-//						}
-//						else
-//						{
-//							world.breakBlock(blockpos, true, event.getPlayer());
-//						}
-//
-//						//create portal but with cooldown so players can grab items before they get teleported
-//						world.setBlockState(blockpos, WBBlocks.WORLD_BLENDER_PORTAL.get().getDefaultState(), 3);
-//						WBPortalBlockEntity wbtile = (WBPortalBlockEntity) world.getBlockEntity(blockpos);
-//						wbtile.triggerCooldown();
-//
-//						event.getPlayer().getActiveItem().decrement(1); //consume item in hand
-//					}
-//				}
-//				//throw error and list all the invalid items in the chests
-//				else
-//				{
-//
-//					if (!event.getWorld().isClient)
-//					{
-//						String msg = "�eWorld Blender: �fThere are not enough unique block items in the chests. (stacks or duplicates are ignored) You need �c" + WBConfig.uniqueBlocksNeeded + "�f block items to make the portal but there is only �a" + uniqueBlocksSet.size() + "�f unique block items right now.";
-//
-//						if(invalidItemSet.size() > 1)
-//						{
-//							//collect the items names into a list of strings
-//							List<String> invalidItemString = new ArrayList<String>();
-//							invalidItemSet.remove(Items.AIR); //We don't need to list air
-//							invalidItemSet.stream().forEach(item -> invalidItemString.add(item.getName(new ItemStack(item)).getString()));
-//							msg += "�f Also, here is a list of non-block items that were found and should be removed: �6" + String.join(", ", invalidItemString);
-//						}
-//
-//						if(duplicateBlockSlotSet.size() != 0)
-//						{
-//							//collect the items names into a list of strings
-//							List<String> duplicateSlotString = new ArrayList<String>();
-//							duplicateBlockSlotSet.remove(Items.AIR); //We dont need to list air
-//							duplicateBlockSlotSet.stream().forEach(blockitem -> duplicateSlotString.add(blockitem.getName(new ItemStack(blockitem)).getString()));
-//							msg += "�f There are some slots that contains the same blocks and should be removed. These blocks are: �6" + String.join(", ", duplicateSlotString);
-//						}
-//
-//						WorldBlender.LOGGER.log(Level.INFO, msg);
-//						((ServerPlayerEntity)event.getPlayer()).sendMessage(new LiteralText(msg));
-//					}
-//				}
-//			}
-//		}
-//	}
+
+	public static ActionResult blockRightClick(PlayerEntity player, World world, Hand hand, HitResult hitResult)
+	{
+		if(world.isClient() || player.isSpectator()) return ActionResult.PASS;
+
+		BlockPos position = new BlockPos(hitResult.getPos());
+
+		// Checks to see if player uses right click on a chest while crouching while holding nether star
+		BlockEntity blockEntity = world.getBlockEntity(position);
+		if (player.isInSneakingPose() &&
+				blockEntity != null &&
+				WBPortalSpawning.VALID_CHEST_BLOCKS_ENTITY_TYPES.getOrDefault(blockEntity.getType(), false))
+		{
+			//checks to make sure the activation item is a real item before doing the rest of the checks
+			Identifier activationItem = new Identifier(WorldBlender.WB_CONFIG.WBPortalConfig.activationItem);
+			if (!Registry.ITEM.containsId(activationItem))
+			{
+				WorldBlender.LOGGER.log(Level.INFO, "World Blender: Warning, the activation item set in the config does not exist. Please make sure it is a valid resource location to a real item as the portal cannot be created now.");
+				Text message = new LiteralText("§eWorld Blender: §fWarning, the activation item set in the config does not exist. Please make sure it is a valid resource location to a real item as the portal cannot be created now.");
+				player.sendMessage(message, false);
+				return ActionResult.FAIL;
+			}
+			else if((player.getMainHandStack().getItem() != Registry.ITEM.get(activationItem) && hand == Hand.MAIN_HAND) ||
+					(player.getOffHandStack().getItem() != Registry.ITEM.get(activationItem) && hand == Hand.OFF_HAND))
+			{
+				return ActionResult.FAIL;
+			}
+
+
+			BlockPos.Mutable cornerOffset = new BlockPos.Mutable(1, 1, 1);
+			boolean eightChestsFound = checkForValidChests(world, position, cornerOffset);
+
+			//8 chests found, time to check their inventory.
+			if (eightChestsFound)
+			{
+				Set<Item> uniqueBlocksSet = new HashSet<>();
+				Set<Item> invalidItemSet = new HashSet<>();
+				Set<Item> duplicateBlockSlotSet = new HashSet<>();
+
+				for (BlockPos blockpos : BlockPos.iterate(position, position.add(cornerOffset)))
+				{
+					BlockEntity chestTileEntity = world.getBlockEntity(blockpos);
+					if(chestTileEntity != null &&
+							WBPortalSpawning.VALID_CHEST_BLOCKS_ENTITY_TYPES.getOrDefault(blockEntity.getType(), false))
+					{
+						for (int index = 0; index < ((Inventory) chestTileEntity).size(); index++)
+						{
+							Item item = ((Inventory) chestTileEntity).getStack(index).getItem();
+
+							//if it is a valid block, it would not return air
+							if (Block.getBlockFromItem(item) != Blocks.AIR)
+							{
+								if(uniqueBlocksSet.contains(item))
+								{
+									duplicateBlockSlotSet.add(item); // save what block is stacked
+								}
+
+								uniqueBlocksSet.add(item);
+							}
+							//not a valid block item.
+							else
+							{
+								invalidItemSet.add(item);
+							}
+						}
+					}
+				}
+
+				if(!INVALID_IDS.isEmpty())
+				{
+					WorldBlender.LOGGER.log(Level.INFO, "World Blender: Warning, error reading the required blocks config entry. Please make sure the blocks specified in that config are valid resource locations and points to real blocks as the portal cannot be created now. The problematic entries are: " + String.join(", ", INVALID_IDS));
+					Text message = new LiteralText("§eWorld Blender: §fWarning, error reading the required blocks config entry. Please make sure the blocks specified in that config are valid resource locations and points to real blocks as the portal cannot be created now. The problematic entries are: §6" + String.join(", ", INVALID_IDS));
+					player.sendMessage(message, false);
+					return ActionResult.FAIL;
+				}
+
+				List<Block> listOfRequireBlocksNotFound = new ArrayList<>(REQUIRED_PORTAL_BLOCKS);
+				boolean isMissingRequiredBlocks = false;
+
+				//all unique blocks in chests must be a part of the require blocks list
+				if(WorldBlender.WB_CONFIG.WBPortalConfig.uniqueBlocksNeeded <= REQUIRED_PORTAL_BLOCKS.size())
+				{
+					for(Item blockItem : uniqueBlocksSet)
+					{
+						listOfRequireBlocksNotFound.remove(Block.getBlockFromItem(blockItem));
+					}
+
+					if(WorldBlender.WB_CONFIG.WBPortalConfig.uniqueBlocksNeeded > REQUIRED_PORTAL_BLOCKS.size() - listOfRequireBlocksNotFound.size())
+					{
+						isMissingRequiredBlocks = true;
+					}
+				}
+				//all blocks in the required blocks list must be present
+				else
+				{
+					for(Item blockItem : uniqueBlocksSet)
+					{
+						listOfRequireBlocksNotFound.remove(Block.getBlockFromItem(blockItem));
+					}
+
+					if(listOfRequireBlocksNotFound.size() != 0)
+					{
+						isMissingRequiredBlocks = true;
+					}
+				}
+
+				//warn player that they do not have enough required blocks for the portal
+				if(isMissingRequiredBlocks)
+				{
+					WorldBlender.LOGGER.log(Level.INFO, "World Blender: There are not enough required blocks in the chests. Please add the needed required blocks and then add any other unique blocks until you have "+WorldBlender.WB_CONFIG.WBPortalConfig.uniqueBlocksNeeded+" unique blocks. The require blocks specified in the config are " + REQUIRED_PORTAL_BLOCKS.stream().map(entry -> Registry.BLOCK.getId(entry).toString()).collect(Collectors.joining(", ")));
+					Text message = new LiteralText("§eWorld Blender: §fThere are not enough required blocks in the chests. Please add the needed required blocks and then add any other unique blocks until you have §c"+WorldBlender.WB_CONFIG.WBPortalConfig.uniqueBlocksNeeded+"§f unique blocks. The require blocks specified in the config are §6" + REQUIRED_PORTAL_BLOCKS.stream().map(entry -> Registry.BLOCK.getId(entry).toString()).collect(Collectors.joining(", ")));
+					player.sendMessage(message, false);
+					return ActionResult.FAIL;
+				}
+
+
+
+				invalidItemSet.remove(Items.AIR); //We don't need to list air
+				if (invalidItemSet.size() == 0 &&
+						uniqueBlocksSet.size() >= WorldBlender.WB_CONFIG.WBPortalConfig.uniqueBlocksNeeded)
+				{
+					//enough unique blocks were found and no items are in chest. Make portal now
+					for (BlockPos blockpos : BlockPos.iterate(position, position.add(cornerOffset)))
+					{
+						//consume chest and contents if config says so
+						if (WorldBlender.WB_CONFIG.WBPortalConfig.consumeChests)
+						{
+							BlockEntity chestTileEntity = world.getBlockEntity(blockpos);
+							if(chestTileEntity != null &&
+									WBPortalSpawning.VALID_CHEST_BLOCKS_ENTITY_TYPES.getOrDefault(blockEntity.getType(), false))
+							{
+								for (int index = ((Inventory) chestTileEntity).size(); index >= 0; index--) {
+									((Inventory) chestTileEntity).removeStack(index);
+								}
+							}
+						}
+						else
+						{
+							world.breakBlock(blockpos, true, player);
+						}
+
+						//create portal but with cooldown so players can grab items before they get teleported
+						world.setBlockState(blockpos, WBBlocks.WORLD_BLENDER_PORTAL.getDefaultState(), 3);
+						WBPortalBlockEntity wbtile = (WBPortalBlockEntity) world.getBlockEntity(blockpos);
+
+						if(wbtile != null)
+							wbtile.triggerCooldown();
+
+						player.getActiveItem().decrement(1); //consume item in hand
+					}
+
+					return ActionResult.SUCCESS;
+				}
+				//throw error and list all the invalid items in the chests
+				else
+				{
+					String msg = "§eWorld Blender: §fThere are not enough unique block items in the chests. (stacks or duplicates are ignored) You need §c" + WorldBlender.WB_CONFIG.WBPortalConfig.uniqueBlocksNeeded + "§f block items to make the portal but there is only §a" + uniqueBlocksSet.size() + "§f unique block items right now.";
+
+					if(invalidItemSet.size() > 0)
+					{
+						//collect the items names into a list of strings
+						List<String> invalidItemString = new ArrayList<>();
+						invalidItemSet.forEach(item -> invalidItemString.add(item.getName(new ItemStack(item)).getString()));
+						msg += "\n§f Also, here is a list of non-block items that were found and should be removed: §6" + String.join(", ", invalidItemString);
+					}
+
+					if(duplicateBlockSlotSet.size() != 0)
+					{
+						//collect the items names into a list of strings
+						List<String> duplicateSlotString = new ArrayList<>();
+						duplicateBlockSlotSet.remove(Items.AIR); //We dont need to list air
+						duplicateBlockSlotSet.forEach(blockitem -> duplicateSlotString.add(blockitem.getName(new ItemStack(blockitem)).getString()));
+						msg += "\n§f There are some slots that contains the same blocks and should be removed. These blocks are: §6" + String.join(", ", duplicateSlotString);
+					}
+
+					WorldBlender.LOGGER.log(Level.INFO, msg);
+					player.sendMessage(new LiteralText(msg), false);
+
+					return ActionResult.FAIL;
+				}
+			}
+		}
+
+		return ActionResult.PASS;
+	}
 
 
 	/**
@@ -252,14 +270,9 @@ public class WBPortalSpawning
 					for (BlockPos blockpos : BlockPos.iterate(position, position.add(offset)))
 					{
 						// We check if the block entity class itself has 'chest in the name.
-						// Cache the result and only break if the block entity is not a chest.
 						BlockEntity blockEntity = world.getBlockEntity(blockpos);
-						if(blockEntity == null || world.getBlockState(blockpos).getBlock() instanceof Inventory){
-							eightChestsFound = false;
-							break;
-						}
-
-						if (!WBPortalSpawning.VALID_CHEST_BLOCKS_ENTITY_TYPES.getOrDefault(blockEntity.getType(), false))
+						if (blockEntity == null ||
+								!WBPortalSpawning.VALID_CHEST_BLOCKS_ENTITY_TYPES.getOrDefault(blockEntity.getType(), false))
 						{
 							eightChestsFound = false;
 							break;

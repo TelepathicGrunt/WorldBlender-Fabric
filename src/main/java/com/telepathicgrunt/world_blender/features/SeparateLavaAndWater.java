@@ -1,6 +1,5 @@
 package com.telepathicgrunt.world_blender.features;
 
-import com.mojang.serialization.Codec;
 import com.telepathicgrunt.world_blender.WorldBlender;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;

@@ -7,10 +7,10 @@ import com.telepathicgrunt.world_blender.features.WBConfiguredFeatures;
 import com.telepathicgrunt.world_blender.features.WBFeatures;
 import com.telepathicgrunt.world_blender.generation.WBBiomeProvider;
 import com.telepathicgrunt.world_blender.surfacebuilder.WBSurfaceBuilders;
-import com.telepathicgrunt.world_blender.the_blender.ConfigBlacklisting;
 import me.sargunvohra.mcmods.autoconfig1u.AutoConfig;
 import me.sargunvohra.mcmods.autoconfig1u.serializer.JanksonConfigSerializer;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.DefaultBiomeCreator;
@@ -38,6 +38,8 @@ public class WorldBlender implements ModInitializer {
 		WBConfiguredFeatures.registerConfiguredFeatures();
 		WBSurfaceBuilders.registerSurfaceBuilders();
 		WBBiomeProvider.registerBiomeProvider();
+
+		UseBlockCallback.EVENT.register(WBPortalSpawning::blockRightClick);
 	}
 
 

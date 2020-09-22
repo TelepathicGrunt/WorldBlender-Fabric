@@ -20,8 +20,6 @@ import net.minecraft.util.Tickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 
-import java.util.Objects;
-
 
 public class WBPortalBlockEntity extends BlockEntity implements Tickable
 {

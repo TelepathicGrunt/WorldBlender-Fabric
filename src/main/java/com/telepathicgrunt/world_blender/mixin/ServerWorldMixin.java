@@ -37,8 +37,8 @@ public class ServerWorldMixin {
 			at = @At(value = "TAIL"))
 	private void setupWorld(MinecraftServer server, Executor workerExecutor, LevelStorage.Session session, ServerWorldProperties properties, RegistryKey<World> registryKey, DimensionType dimensionType, WorldGenerationProgressListener worldGenerationProgressListener, ChunkGenerator chunkGenerator, boolean bl, long seed, List<Spawner> list, boolean bl2, CallbackInfo ci) {
 
-		if(WorldBlender.WB_CONFIG.WBDimensionConfig.spawnEnderDragon &&
-				registryKey.getValue().equals(WBIdentifiers.MOD_DIMENSION_ID))
+		if(registryKey.getValue().equals(WBIdentifiers.MOD_DIMENSION_ID) &&
+				WorldBlender.WB_CONFIG.WBDimensionConfig.spawnEnderDragon)
 		{
 			((DimensionTypeAccessor)dimensionType).setEnderDragonFight(true);
 			enderDragonFight = new EnderDragonFight((ServerWorld)(Object)this, server.getSaveProperties().getGeneratorOptions().getSeed(), server.getSaveProperties().getDragonFight());
@@ -50,7 +50,7 @@ public class ServerWorldMixin {
 
 	@Inject(
 			method = "Lnet/minecraft/server/world/ServerWorld;tick(Ljava/util/function/BooleanSupplier;)V",
-			at = @At(value = "TAIL")
+			at = @At(value = "HEAD")
 	)
 	private void tickAltar(CallbackInfo ci) {
 		ALTAR.tick();

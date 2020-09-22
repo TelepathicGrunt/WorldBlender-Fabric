@@ -1,7 +1,6 @@
 package com.telepathicgrunt.world_blender.generation;
 
 import com.telepathicgrunt.world_blender.WBIdentifiers;
-import com.telepathicgrunt.world_blender.generation.WBBiomeProvider;
 import net.minecraft.util.math.noise.OctaveSimplexNoiseSampler;
 import net.minecraft.world.biome.layer.type.InitLayer;
 import net.minecraft.world.biome.layer.util.LayerRandomnessSource;

@@ -43,6 +43,10 @@ public class WBPortalBlock extends BlockWithEntity
 		return new WBPortalBlockEntity();
 	}
 
+	@Override
+	public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
+		return VoxelShapes.empty();
+	}
 
 	@SuppressWarnings("resource")
 	@Override
@@ -118,7 +122,7 @@ public class WBPortalBlock extends BlockWithEntity
 				//no portal or chest was found around destination. just teleport to top land
 				if (!portalOrChestFound)
 				{
-					destPos = destinationWorld.getTopPosition(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, position);
+					destPos = destinationWorld.getTopPosition(Heightmap.Type.WORLD_SURFACE, position);
 
 					//places a portal block in World Blender so player can escape if
 					//there is no portal block and then makes it be in cooldown
