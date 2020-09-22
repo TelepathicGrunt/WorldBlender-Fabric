@@ -2,6 +2,7 @@ package com.telepathicgrunt.world_blender.blocks;
 
 import com.telepathicgrunt.world_blender.WBIdentifiers;
 import io.netty.buffer.Unpooled;
+import it.unimi.dsi.fastutil.objects.Object2ByteLinkedOpenHashMap;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
@@ -17,8 +18,12 @@ import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Tickable;
+import net.minecraft.util.function.BooleanBiFunction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.shape.VoxelShape;
+import net.minecraft.util.shape.VoxelShapes;
+import net.minecraft.world.BlockView;
 
 
 public class WBPortalBlockEntity extends BlockEntity implements Tickable
@@ -151,9 +156,16 @@ public class WBPortalBlockEntity extends BlockEntity implements Tickable
 	@Environment(EnvType.CLIENT)
 	public boolean shouldRenderFace(Direction direction)
 	{
-		return Block.shouldDrawSide(this.getCachedState(), this.world, this.getPos(), direction);
+		return true;
+		//can't get this to work properly
+		//return Block.shouldDrawSide(this.getCachedState(), this.world, this.getPos(), direction);
 	}
 
+	@Deprecated
+	@Environment(EnvType.CLIENT)
+	public boolean isSideInvisible(BlockState state, BlockState stateFrom, Direction direction) {
+		return false;
+	}
 
 	@Override
 	@Environment(EnvType.CLIENT)

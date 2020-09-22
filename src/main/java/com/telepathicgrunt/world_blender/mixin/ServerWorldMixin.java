@@ -3,6 +3,7 @@ package com.telepathicgrunt.world_blender.mixin;
 import com.telepathicgrunt.world_blender.WBIdentifiers;
 import com.telepathicgrunt.world_blender.WorldBlender;
 import com.telepathicgrunt.world_blender.dimension.AltarManager;
+import com.telepathicgrunt.world_blender.utils.ServerWorldAccess;
 import net.minecraft.entity.boss.dragon.EnderDragonFight;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.WorldGenerationProgressListener;
@@ -23,7 +24,7 @@ import java.util.List;
 import java.util.concurrent.Executor;
 
 @Mixin(ServerWorld.class)
-public class ServerWorldMixin {
+public class ServerWorldMixin implements ServerWorldAccess {
 
 	@Mutable
 	@Final
@@ -31,7 +32,12 @@ public class ServerWorldMixin {
 	private EnderDragonFight enderDragonFight;
 
 	@Unique
-	private AltarManager ALTAR = null;
+	public AltarManager ALTAR = null;
+
+	@Override
+	public AltarManager getAltar() {
+		return ALTAR;
+	}
 
 	@Inject(method = "<init>",
 			at = @At(value = "TAIL"))
@@ -48,11 +54,15 @@ public class ServerWorldMixin {
 	}
 
 
+	//Generate altar here only if enderdragon is off.
+	//Otherwise spawning our altar here before dragon will not spawn dragon. Don't ask me why.
+	//Cursed enderdragon code
 	@Inject(
 			method = "Lnet/minecraft/server/world/ServerWorld;tick(Ljava/util/function/BooleanSupplier;)V",
 			at = @At(value = "HEAD")
 	)
 	private void tickAltar(CallbackInfo ci) {
-		ALTAR.tick();
+		if(((ServerWorld)(Object)this).getRegistryKey().getValue().equals(WBIdentifiers.MOD_DIMENSION_ID) && enderDragonFight == null)
+			ALTAR.tick();
 	}
 }

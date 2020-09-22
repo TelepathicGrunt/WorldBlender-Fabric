@@ -45,7 +45,7 @@ public class WBPortalBlock extends BlockWithEntity
 
 	@Override
 	public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
-		return VoxelShapes.empty();
+		return COLLISION_BOX;
 	}
 
 	@SuppressWarnings("resource")

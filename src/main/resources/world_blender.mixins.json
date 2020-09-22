@@ -9,6 +9,7 @@
     "CarverAccessor",
     "ConfiguredCarverAccessor",
     "DimensionTypeAccessor",
+    "EnderDragonFightMixin",
     "GenerationSettingsAccessor",
     "MinecraftServerMixin",
     "RenderPhaseAccessor",

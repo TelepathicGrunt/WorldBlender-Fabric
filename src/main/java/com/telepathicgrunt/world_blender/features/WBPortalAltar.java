@@ -25,6 +25,7 @@ import java.util.Random;
 
 public class WBPortalAltar extends Feature<DefaultFeatureConfig>
 {
+	public static Structure ALTAR_TEMPLATE;
 	private static final StructurePlacementData placementSettings = (new StructurePlacementData())
 																			.setMirror(BlockMirror.NONE)
 																			.setRotation(BlockRotation.NONE)
@@ -48,8 +49,7 @@ public class WBPortalAltar extends Feature<DefaultFeatureConfig>
 			return false;
 		}
 
-		Structure template = world.toServerWorld().getStructureManager().getStructure(WBIdentifiers.ALTAR_ID);
-		if (template == null)
+		if (ALTAR_TEMPLATE == null)
 		{
 			WorldBlender.LOGGER.warn("world blender portal altar NTB does not exist!");
 			return false;
@@ -65,7 +65,7 @@ public class WBPortalAltar extends Feature<DefaultFeatureConfig>
 		}
 		
 		world.setBlockState(finalPosition.down(), Blocks.AIR.getDefaultState(), 3);
-		template.placeAndNotifyListeners(world, finalPosition.add(-5, -2, -5), placementSettings, rand);
+		ALTAR_TEMPLATE.placeAndNotifyListeners(world, finalPosition.add(-5, -2, -5), placementSettings, rand);
 		finalPosition.move(Direction.DOWN);
 		world.setBlockState(finalPosition, WBBlocks.WORLD_BLENDER_PORTAL.getDefaultState(), 3); //extra check to make sure portal is placed
 
