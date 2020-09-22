@@ -7,6 +7,7 @@ import com.telepathicgrunt.world_blender.features.WBConfiguredFeatures;
 import com.telepathicgrunt.world_blender.features.WBFeatures;
 import com.telepathicgrunt.world_blender.generation.WBBiomeProvider;
 import com.telepathicgrunt.world_blender.surfacebuilder.WBSurfaceBuilders;
+import com.telepathicgrunt.world_blender.utils.GoVote;
 import me.sargunvohra.mcmods.autoconfig1u.AutoConfig;
 import me.sargunvohra.mcmods.autoconfig1u.serializer.JanksonConfigSerializer;
 import net.fabricmc.api.ModInitializer;
@@ -26,6 +27,8 @@ public class WorldBlender implements ModInitializer {
 	// TODO: Finalized config folders and add translations for config
 	@Override
 	public void onInitialize() {
+		GoVote.init();
+
 		//Set up config
 		AutoConfig.register(WBConfig.class, JanksonConfigSerializer::new);
 		WB_CONFIG = AutoConfig.getConfigHolder(WBConfig.class).getConfig();
