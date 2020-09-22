@@ -103,8 +103,7 @@ public class GoVote {
             addGroup(s("If you are of voting age in the United States like I am,"));
             addGroup(s("then please consider voting. I say this because voting is"),
                     s("extremely important and in fact, last presidential election"));
-            addGroup(s("had a voter turnout rate of only..."));
-            addGroup(s("ONLY 55.5%!!! Like holy moley! That's crazy low!"));
+            addGroup(s("had a voter turnout rate of only 55.5%!!! Like holy moley!"));
             addGroup(LiteralText.EMPTY, s("So yeah, please vote. Take your time to research the candidates."));
             addGroup(s("Make sure you register to vote too!"),
                     s("(there are deadlines so register now before it's too late!)"));
@@ -140,9 +139,11 @@ public class GoVote {
             int dist = 12;
 
             Text note1 = s("Note: If you can't vote in the United States,").formatted(Formatting.ITALIC);
-            Text note2 = s("Please press ESC and carry on.").formatted(Formatting.ITALIC);
+            Text note2 = s("Please press ESC and let TelepathicGrunt know if").formatted(Formatting.ITALIC);
+            Text note3 = s("you can see this message while outside USA.").formatted(Formatting.ITALIC);
             drawCenteredText(mstack, this.textRenderer, note1, middle, 10, 0xFFFFFF);
             drawCenteredText(mstack, this.textRenderer, note2, middle, 22, 0xFFFFFF);
+            drawCenteredText(mstack, this.textRenderer, note3, middle, 34, 0xFFFFFF);
 
             int y = 46;
             for (int groupIdx = 0; groupIdx < message.size(); groupIdx++) {
