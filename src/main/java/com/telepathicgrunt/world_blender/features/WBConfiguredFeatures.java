@@ -18,7 +18,7 @@ public class WBConfiguredFeatures
     {
         MutableRegistry<ConfiguredFeature<?, ?>> registry = (MutableRegistry<ConfiguredFeature<?, ?>>) BuiltinRegistries.CONFIGURED_FEATURE;
 
-        Registry.register(registry, new Identifier(WorldBlender.MODID, "world_blender_portal_altar"), WB_PORTAL_ALTAR);
+        Registry.register(registry, new Identifier(WorldBlender.MODID, "portal_altar"), WB_PORTAL_ALTAR);
         Registry.register(registry, new Identifier(WorldBlender.MODID, "no_floating_liquids_or_falling_blocks"), NO_FLOATING_LIQUIDS_OR_FALLING_BLOCKS);
         Registry.register(registry, new Identifier(WorldBlender.MODID, "separate_lava_and_water"), SEPARATE_LAVA_AND_WATER);
     }

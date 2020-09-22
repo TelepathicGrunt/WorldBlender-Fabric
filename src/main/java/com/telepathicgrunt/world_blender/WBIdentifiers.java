@@ -18,5 +18,5 @@ public class WBIdentifiers {
     public static final Identifier OCEAN_BLENDED_BIOME_ID = new Identifier(WorldBlender.MODID, "ocean_blended");
     public static final Identifier FROZEN_OCEAN_BLENDED_BIOME_ID = new Identifier(WorldBlender.MODID, "frozen_ocean_blended");
 
-    public static final Identifier ALTAR_ID = new Identifier(WorldBlender.MODID, "world_blender_portal_altar");
+    public static final Identifier ALTAR_ID = new Identifier(WorldBlender.MODID, "portal_altar");
 }

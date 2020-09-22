@@ -63,7 +63,8 @@ public class WBPortalAltar extends Feature<DefaultFeatureConfig>
 			finalPosition.move(Direction.DOWN);
 			blockState = world.getBlockState(finalPosition);
 		}
-		
+
+		finalPosition.move(Direction.UP);
 		world.setBlockState(finalPosition.down(), Blocks.AIR.getDefaultState(), 3);
 		ALTAR_TEMPLATE.placeAndNotifyListeners(world, finalPosition.add(-5, -2, -5), placementSettings, rand);
 		finalPosition.move(Direction.DOWN);
