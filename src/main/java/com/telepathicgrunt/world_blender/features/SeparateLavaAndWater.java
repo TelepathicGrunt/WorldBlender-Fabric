@@ -26,7 +26,7 @@ public class SeparateLavaAndWater extends Feature<DefaultFeatureConfig>
     @Override
     public boolean generate(StructureWorldAccess world, ChunkGenerator chunkgenerator, Random rand, BlockPos position, DefaultFeatureConfig config) {
 		// this feature is completely turned off.
-		if (!WorldBlender.WB_CONFIG.WBBlendingConfig.preventLavaTouchingWater) return false;
+		if (!WorldBlender.WB_CONFIG.WBDimensionConfig.preventLavaTouchingWater) return false;
 
 		BlockPos.Mutable mutable;
 		BlockState currentBlockstate;

@@ -92,7 +92,8 @@ public class NoFloatingLiquidsOrFallingBlocks extends Feature<DefaultFeatureConf
 	public boolean generate(StructureWorldAccess world, ChunkGenerator chunkgenerator, Random rand, BlockPos position, DefaultFeatureConfig config)
 	{
 		//this feature is completely turned off.
-		if(!WorldBlender.WB_CONFIG.WBBlendingConfig.preventFallingBlocks && !WorldBlender.WB_CONFIG.WBBlendingConfig.containFloatingLiquids)
+		if(!WorldBlender.WB_CONFIG.WBDimensionConfig.preventFallingBlocks &&
+				!WorldBlender.WB_CONFIG.WBDimensionConfig.containFloatingLiquids)
 			return false;
 		
 		BlockPos.Mutable mutable;
@@ -144,7 +145,7 @@ public class NoFloatingLiquidsOrFallingBlocks extends Feature<DefaultFeatureConf
 	 */
 	private static void preventfalling(ServerWorldAccess world, BlockPos.Mutable mutable, BlockState lastBlockstate)
 	{
-		if(!WorldBlender.WB_CONFIG.WBBlendingConfig.preventFallingBlocks) return;
+		if(!WorldBlender.WB_CONFIG.WBDimensionConfig.preventFallingBlocks) return;
 		
 		if(lastBlockstate.getBlock() instanceof FallingBlock)
 		{
@@ -169,7 +170,7 @@ public class NoFloatingLiquidsOrFallingBlocks extends Feature<DefaultFeatureConf
 	 */
 	private static void liquidContaining(ServerWorldAccess world, BlockPos.Mutable mutable, BlockState lastBlockstate)
 	{
-		if(!WorldBlender.WB_CONFIG.WBBlendingConfig.containFloatingLiquids) return;
+		if(!WorldBlender.WB_CONFIG.WBDimensionConfig.containFloatingLiquids) return;
 		
 		boolean touchingLiquid = false;
 		BlockState neighboringBlockstate = null;

@@ -8,7 +8,8 @@ import net.minecraft.util.registry.RegistryKey;
 
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
-import java.util.Map;
+import java.util.Comparator;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class IdentifierPrinting
 {
@@ -33,7 +34,7 @@ public class IdentifierPrinting
 			printOutSection(printStream, registryManager.get(Registry.CONFIGURED_STRUCTURE_FEATURE_WORLDGEN), "CONFIGURED STRUCTURES");
 
 			printStream.println();
-			printOutSection(printStream, registryManager.get(Registry.CARVER_KEY), "CARVERS");
+			printOutSection(printStream, registryManager.get(Registry.CONFIGURED_CARVER_WORLDGEN), "CARVERS");
 			
 			printStream.println();
 			printOutSection(printStream, Registry.ENTITY_TYPE, "ENTITIES");
@@ -48,6 +49,8 @@ public class IdentifierPrinting
 			e.printStackTrace();
 		} 
 	}
+
+
 	/**
 	 * Will go through that registry passed in and print out all the resource locations of every entry inside of it.
 	 *
@@ -57,27 +60,29 @@ public class IdentifierPrinting
 	 */
 	private static <T> void printOutSection(PrintStream printStream, Registry<T> registry, String section)
 	{
-		String previousNameSpace = "minecraft";
-		Identifier entryID;
+		AtomicReference<String> previous_namespace = new AtomicReference<>("minecraft");
 		
 		//title of the section
 		printStream.println("######################################################################"); 
 		printStream.println("######      "+section+" RESOURCE LOCATION (IDs)        ######"); 
 		printStream.println();
 
-		for (Map.Entry<RegistryKey<T>, T> entry : registry.getEntries())
-		{
-			entryID = entry.getKey().getValue();
-			
-			// extra check to just make sure. Probably never possible to be null
-			if(entryID == null) continue;
-			
-			//prints a space between different Mod IDs
-			previousNameSpace = printSpacingBetweenMods(printStream, previousNameSpace, entryID.getNamespace());
-			
-			//prints the actual entry's resource location
-			printStream.println(entryID.toString());
-		}
+		registry.getEntries().stream().sorted(Comparator.comparing(p -> p.getKey().getValue().toString()))
+				.forEach(entry -> writeEntry(printStream, entry.getKey(), previous_namespace));
+	}
+
+	private static void writeEntry(PrintStream printStream, RegistryKey<?> entry, AtomicReference<String> previous_namespace){
+		Identifier entryID = entry.getValue();
+
+		// extra check to just make sure. Probably never possible to be null
+		if(entryID == null) return;
+
+		//prints a space between different Mod IDs
+		previous_namespace.set(printSpacingBetweenMods(printStream, previous_namespace.get(), entryID.getNamespace()));
+
+		//prints the actual entry's resource location
+		printStream.println(entryID.toString());
+
 	}
 	
 	/**

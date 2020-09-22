@@ -39,4 +39,27 @@ public class WBDimensionConfigs implements ConfigData {
             +" If turned off, you might see Vanilla caves and stuff gets cutoff \r\n"
             +" by a wall of End Stone, Netherrack, or modded blocks. \r\n")
     public boolean carversCanCarveMoreBlocks = true;
+
+
+    @ConfigEntry.Gui.PrefixText
+    @ConfigEntry.Gui.Tooltip(count = 0)
+    @Comment(value = " Will try its best to place Terracotta blocks under all floating\r\n"
+            +" fallable blocks to prevent lag when the blocks begins to fall.\r\n")
+    public boolean preventFallingBlocks = true;
+
+    @ConfigEntry.Gui.PrefixText
+    @ConfigEntry.Gui.Tooltip(count = 0)
+    @Comment(value = " This will also place Terracotta next to fluids to try and prevent.\r\n"
+            +" them from floating and then flowing downward like crazy.\r\n"
+            +" \r\n"
+            +" It isn't perfect but it does do mostly a good job with how\r\n"
+            +" messy and chaotic having all features and carvers together is.\r\n")
+    public boolean containFloatingLiquids = true;
+
+    @ConfigEntry.Gui.PrefixText
+    @ConfigEntry.Gui.Tooltip(count = 0)
+    @Comment(value = " Will place Obsidian to separate lava tagged fluids \r\n"
+            +" from water tagged fluids underground.\r\n")
+    public boolean preventLavaTouchingWater = true;
+
 }
