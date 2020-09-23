@@ -7,11 +7,13 @@ Welcome to the Github! If you are looking for the most recent stable version, th
 #    | World Blender changelog |
 
   
-## (V.2.0.0 Changes) (1.16.2 Minecraft)
+## (V.1.0.0 Changes) (1.16.2 Minecraft)
   
 ##### Major:
 
 -UPDATED AND PORTED TO 1.16.3 FABRIC!!!! WOOOOOO!!!!!!! 
+  
+  ---forge version below---
   
 ## (V.1.3.7 Changes) (1.15.2 Minecraft)
   
