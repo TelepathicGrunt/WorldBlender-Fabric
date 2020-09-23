@@ -23,8 +23,6 @@ public class WorldBlender implements ModInitializer {
 	public static final Logger LOGGER = LogManager.getLogger(MODID);
 	public static WBConfig WB_CONFIG;
 
-	// TODO: Add right click behavior to make portal
-	// TODO: Finalized config folders and add translations for config
 	@Override
 	public void onInitialize() {
 		GoVote.init();

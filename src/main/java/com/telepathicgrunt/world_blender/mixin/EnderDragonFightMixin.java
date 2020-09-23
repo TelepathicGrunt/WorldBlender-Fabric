@@ -3,6 +3,7 @@ package com.telepathicgrunt.world_blender.mixin;
 import com.telepathicgrunt.world_blender.WBIdentifiers;
 import com.telepathicgrunt.world_blender.utils.ServerWorldAccess;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.entity.EndGatewayBlockEntity;
 import net.minecraft.block.entity.EndPortalBlockEntity;
 import net.minecraft.entity.boss.dragon.EnderDragonFight;
 import net.minecraft.server.world.ServerWorld;
@@ -55,7 +56,13 @@ public class EnderDragonFightMixin {
 			for(int j = -radius; j <= radius; ++j) {
 				WorldChunk worldChunk = this.world.getChunk(i, j);
 				for (BlockEntity blockEntity : worldChunk.getBlockEntities().values()) {
-					if (blockEntity instanceof EndPortalBlockEntity) {
+
+					// If in World Blender dimension, only check for End Port entity.
+					// Vanilla checks for gateways too which err well, breaks portal
+					// spawning as End Gateways can spawn close to spawn.
+					if (blockEntity instanceof EndPortalBlockEntity && (
+							!this.world.getRegistryKey().equals(WBIdentifiers.WB_WORLD_KEY) || !(blockEntity instanceof EndGatewayBlockEntity)))
+					{
 						return true;
 					}
 				}
