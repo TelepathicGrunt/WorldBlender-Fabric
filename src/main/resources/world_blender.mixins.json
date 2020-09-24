@@ -17,7 +17,7 @@
     "ServerWorldMixin",
     "SpawnSettingsAccessor",
     "StructureManagerMixin",
-    "WeightedListMixin"
+    "WeightedBlockStateProviderMixin"
   ],
   "client": [
   ],
