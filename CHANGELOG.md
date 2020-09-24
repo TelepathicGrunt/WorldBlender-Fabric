@@ -6,6 +6,13 @@ Welcome to the Github! If you are looking for the most recent stable version, th
 ------------------------------------------------
 #    | World Blender changelog |
 
+## (V.1.0.1 Changes) (1.16.2 Minecraft)
+   
+##### Major:
+
+- Fixed crash on servers.
+
+- Attempted fixes to patch Vanilla bugs with being thread unsafe on servers with people in multiple dimensions.
   
 ## (V.1.0.0 Changes) (1.16.2 Minecraft)
   

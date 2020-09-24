@@ -25,8 +25,6 @@ public class WorldBlender implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		GoVote.init();
-
 		//Set up config
 		AutoConfig.register(WBConfig.class, JanksonConfigSerializer::new);
 		WB_CONFIG = AutoConfig.getConfigHolder(WBConfig.class).getConfig();

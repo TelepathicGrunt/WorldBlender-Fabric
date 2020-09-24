@@ -4,6 +4,7 @@ import com.telepathicgrunt.world_blender.blocks.WBBlocks;
 import com.telepathicgrunt.world_blender.blocks.WBPortalBlockEntity;
 import com.telepathicgrunt.world_blender.blocks.WBPortalBlockEntityRenderer;
 import com.telepathicgrunt.world_blender.mixin.BlockEntityRenderDispatcherInvoker;
+import com.telepathicgrunt.world_blender.utils.GoVote;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
 import net.minecraft.client.MinecraftClient;
@@ -13,6 +14,8 @@ import net.minecraft.util.math.BlockPos;
 public class WorldBlenderClient implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
+		GoVote.init();
+
 		((BlockEntityRenderDispatcherInvoker)BlockEntityRenderDispatcher.INSTANCE).callRegister(WBBlocks.WORLD_BLENDER_PORTAL_BE, new WBPortalBlockEntityRenderer(BlockEntityRenderDispatcher.INSTANCE));
 
 		// Set cooldown for portal after server says it was triggered

@@ -15,7 +15,9 @@
     "MinecraftServerMixin",
     "RenderPhaseAccessor",
     "ServerWorldMixin",
-    "SpawnSettingsAccessor"
+    "SpawnSettingsAccessor",
+    "StructureManagerMixin",
+    "WeightedListMixin"
   ],
   "client": [
   ],
