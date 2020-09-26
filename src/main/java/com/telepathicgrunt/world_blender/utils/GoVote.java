@@ -36,17 +36,28 @@ public class GoVote {
     private static boolean shownThisSession = false;
 
     private static volatile boolean markerAlreadyExists = false;
-    private static volatile String countryCode = Locale.getDefault().getCountry();
+    private static volatile String countryCode = "";
 
     public static void init() {
+
         try {
             Path path = Paths.get(MARKER_PATH);
+
+            /* NB: This is atomic. Meaning that if the file does not exist,
+             * And multiple mods run this call concurrently, only one will succeed,
+             * the rest will receive FileAlreadyExistsException
+             */
             Files.createFile(path);
-            Files.setAttribute(path, "dos:hidden", true);
-        } catch (FileAlreadyExistsException ex) {
+
+            // Set it to hidden on windows to avoid clutter
+            if (Util.getOperatingSystem() == Util.OperatingSystem.WINDOWS) {
+                Files.setAttribute(path, "dos:hidden", true);
+            }
+        } catch (Exception ex) {
             markerAlreadyExists = true;
             return;
-        } catch (IOException ignored) {}
+        }
+
 
         if (isAfterElectionDay()) {
             return;
@@ -63,7 +74,7 @@ public class GoVote {
                     Map<String, String> map = new Gson().fromJson(reader, typeToken);
                     countryCode = map.get("countryCode");
                 }
-            } catch (IOException ignored) {}
+            } catch (Exception ignored) {}
         }, "Go Vote Country Check").start();
     }
 

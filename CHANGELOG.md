@@ -13,6 +13,10 @@ Welcome to the Github! If you are looking for the most recent stable version, th
 - Fixed crash on servers.
 
 - Attempted fixes to patch Vanilla bugs with being thread unsafe on servers with people in multiple dimensions.
+
+- Fixed World Blender not pulling in other mod's structures and features they add by mixin to biomes.
+  
+- Fixed possible crash with govote screen when on macos.
   
 ## (V.1.0.0 Changes) (1.16.2 Minecraft)
   

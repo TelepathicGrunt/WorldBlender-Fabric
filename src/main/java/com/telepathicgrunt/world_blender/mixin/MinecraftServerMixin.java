@@ -28,7 +28,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.net.Proxy;
 
 
-@Mixin(MinecraftServer.class)
+@Mixin(value = MinecraftServer.class, priority = Integer.MAX_VALUE)
 public class MinecraftServerMixin {
 
     @Final
