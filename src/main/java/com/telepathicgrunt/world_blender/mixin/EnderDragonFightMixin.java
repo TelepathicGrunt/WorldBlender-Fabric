@@ -48,6 +48,7 @@ public class EnderDragonFightMixin {
 	 * Check only the center 9 chunks to prevent server hang when generating portal and EnderDragon.
 	 * But only does the speed up in World Blender's world. Otherwise, does the 64 chunk check by default.
 	 * @author TelepathicGrunt
+	 * @reason spawn end podium and altar faster in world blender dimension
 	 */
 	@Overwrite(aliases = "worldContainsEndPortal")
 	private boolean worldContainsEndPortal() {

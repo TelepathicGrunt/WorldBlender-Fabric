@@ -1,5 +1,7 @@
 package com.telepathicgrunt.world_blender.the_blender;
 
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
@@ -77,6 +79,8 @@ public class TheBlender {
 
         // free up some memory when we are done.
         FeatureGrouping.clearFeatureMaps();
+        FEATURE_MAP_CACHE.clear();
+        STRUCTURE_MAP_CACHE.clear();
     }
 
     /**
@@ -138,7 +142,7 @@ public class TheBlender {
         // add grass, flower, and other small plants now so they are generated second to last
         for (GenerationStep.Feature stage : GenerationStep.Feature.values()) {
             for (ConfiguredFeature<?, ?> grassyFlowerFeature : FeatureGrouping.SMALL_PLANT_MAP.get(stage)) {
-                if (world_blender_biomes.get(0).getGenerationSettings().getFeatures().get(stage.ordinal()).stream().noneMatch(addedConfigFeature -> FeatureGrouping.serializeAndCompareFeature(addedConfigFeature.get(), grassyFlowerFeature))) {
+                if (world_blender_biomes.get(0).getGenerationSettings().getFeatures().get(stage.ordinal()).stream().noneMatch(addedConfigFeature -> FeatureGrouping.serializeAndCompareFeature(addedConfigFeature.get(), grassyFlowerFeature, true))) {
                     world_blender_biomes.forEach(blendedBiome -> blendedBiome.getGenerationSettings().getFeatures().get(stage.ordinal()).add(() -> grassyFlowerFeature));
                 }
             }
@@ -221,6 +225,8 @@ public class TheBlender {
             // The actual main blending below
             // Welcome to hell!
 
+    private static HashBiMap<Identifier, ConfiguredFeature<?,?>> FEATURE_MAP_CACHE = HashBiMap.create();
+
 
     private static void addBiomeFeatures(Biome biome, List<Biome> world_blender_biomes, MutableRegistry<ConfiguredFeature<?, ?>> configuredFeaturesRegistry) {
         for (GenerationStep.Feature stage : GenerationStep.Feature.values()) {
@@ -228,16 +234,35 @@ public class TheBlender {
 
             for (Supplier<ConfiguredFeature<?, ?>> configuredFeatureSupplier : biome.getGenerationSettings().getFeatures().get(stage.ordinal())) {
                 ConfiguredFeature<?, ?> configuredFeature = configuredFeatureSupplier.get();
-                if (world_blender_biomes.get(0).getGenerationSettings().getFeatures().get(stage.ordinal()).stream().noneMatch(addedConfigFeature -> FeatureGrouping.serializeAndCompareFeature(addedConfigFeature.get(), configuredFeatureSupplier.get()))) {
+                if (world_blender_biomes.get(0).getGenerationSettings().getFeatures().get(stage.ordinal()).stream().noneMatch(addedConfigFeature -> FeatureGrouping.serializeAndCompareFeature(addedConfigFeature.get(), configuredFeatureSupplier.get(), true))) {
 
-                    Identifier configuredFeatureID = configuredFeaturesRegistry.getId(configuredFeature);
+                    // Have to do this computing as the feature in the registry is technically not the same
+                    // object as the feature in the biome. So I cannot get ID easily from the registry.
+                    // Instead, I have to check the JSON of the feature to find a match and store the ID of it
+                    // into a temporary map as a cache for later biomes.
+                    Identifier configuredFeatureID = FEATURE_MAP_CACHE.inverse().get(configuredFeature);
+                    if(configuredFeatureID == null){
+                        configuredFeatureID = configuredFeaturesRegistry.getId(configuredFeature);
+                        if(configuredFeatureID != null){
+                            FEATURE_MAP_CACHE.put(configuredFeatureID, configuredFeature);
+                        }
+                        else{
+                            for(Map.Entry<RegistryKey<ConfiguredFeature<?, ?>>, ConfiguredFeature<?, ?>> entry : configuredFeaturesRegistry.getEntries()){
+                                if(FeatureGrouping.serializeAndCompareFeature(entry.getValue(), configuredFeature, false)){
+                                    FEATURE_MAP_CACHE.put(entry.getKey().getValue(), entry.getValue());
+                                    configuredFeatureID = entry.getKey().getValue();
+                                }
+                            }
+                        }
+                    }
+
                     if(configuredFeatureID == null){
                         Optional<JsonElement> configuredFeatureJSON = ConfiguredFeature.CODEC.encode(configuredFeatureSupplier, JsonOps.INSTANCE, JsonOps.INSTANCE.empty()).get().left();
 
                         WorldBlender.LOGGER.log(Level.WARN, "---------------\n" +
                                 "WORLD BLENDER:\n\n" +
-                                "Found a ConfiguredFeature not registered. Some mod forgot to registered their stuff." +
-                                "Please look at the following JSON and report this registration issue to the mod that this ConfiguredFeature belongs to." +
+                                "Found a ConfiguredFeature not registered. Some mod forgot to registered their stuff.\n" +
+                                "Please look at the following JSON and report this registration issue to the mod that this ConfiguredFeature belongs to.\n" +
                                 "The json looks like: " + (configuredFeatureJSON.isPresent() ? GSON_PRINTER.toJson(configuredFeatureJSON.get()) : "Error, unable to show JSON"));
                         continue;
                     }
@@ -289,6 +314,7 @@ public class TheBlender {
         }
     }
 
+    private static HashBiMap<Identifier, ConfiguredStructureFeature<?,?>> STRUCTURE_MAP_CACHE = HashBiMap.create();
 
     private static void addBiomeStructures(Biome biome, List<Biome> world_blender_biomes, MutableRegistry<ConfiguredStructureFeature<?, ?>> configuredStructuresRegistry) {
         for (Supplier<ConfiguredStructureFeature<?, ?>> configuredStructureSupplier : biome.getGenerationSettings().getStructureFeatures()) {
@@ -297,7 +323,27 @@ public class TheBlender {
             // Having multiple configured structures of the same structure spawns only the last one it seems. Booo mojang boooooo. I want multiple village types in 1 biome!
             if (world_blender_biomes.get(0).getGenerationSettings().getStructureFeatures().stream().noneMatch(addedConfiguredStructure -> addedConfiguredStructure.get().feature == configuredStructure.feature)) {
 
-                Identifier configuredStructureID = configuredStructuresRegistry.getId(configuredStructure);
+                // Have to do this computing as the feature in the registry is technically not the same
+                // object as the feature in the biome. So I cannot get ID easily from the registry.
+                // Instead, I have to check the JSON of the feature to find a match and store the ID of it
+                // into a temporary map as a cache for later biomes.
+                Identifier configuredStructureID = STRUCTURE_MAP_CACHE.inverse().get(configuredStructure);
+
+                if(configuredStructureID == null){
+                    configuredStructureID = configuredStructuresRegistry.getId(configuredStructure);
+                    if(configuredStructureID != null){
+                        STRUCTURE_MAP_CACHE.put(configuredStructureID, configuredStructure);
+                    }
+                    else {
+                        for (Map.Entry<RegistryKey<ConfiguredStructureFeature<?, ?>>, ConfiguredStructureFeature<?, ?>> entry : configuredStructuresRegistry.getEntries()) {
+                            if (FeatureGrouping.serializeAndCompareStructureJSONOnly(entry.getValue(), configuredStructure)) {
+                                STRUCTURE_MAP_CACHE.put(entry.getKey().getValue(), entry.getValue());
+                                configuredStructureID = entry.getKey().getValue();
+                            }
+                        }
+                    }
+                }
+
                 if(configuredStructureID == null){
                     Optional<JsonElement> configuredStructureJSON = ConfiguredStructureFeature.CODEC.encode(configuredStructure, JsonOps.INSTANCE, JsonOps.INSTANCE.empty()).get().left();
 

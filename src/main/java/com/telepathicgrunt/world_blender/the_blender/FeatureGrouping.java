@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 import com.mojang.serialization.JsonOps;
 import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.world.gen.feature.ConfiguredFeature;
+import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
 
 import java.util.*;
 
@@ -73,7 +74,7 @@ public class FeatureGrouping
 	public static boolean checksAndAddSmallPlantFeatures(GenerationStep.Feature stage, ConfiguredFeature<?, ?> configuredFeature) 
 	{
 		//if small plant is already added, skip it
-		if(SMALL_PLANT_MAP.get(stage).stream().anyMatch(vanillaConfigFeature -> serializeAndCompareFeature(vanillaConfigFeature, configuredFeature)))
+		if(SMALL_PLANT_MAP.get(stage).stream().anyMatch(vanillaConfigFeature -> serializeAndCompareFeature(vanillaConfigFeature, configuredFeature, true)))
 		{
 			return false;
 		}
@@ -111,7 +112,7 @@ public class FeatureGrouping
 	public static boolean checksAndAddLargePlantFeatures(GenerationStep.Feature stage, ConfiguredFeature<?, ?> configuredFeature) 
 	{
 		//if large plant is already added, skip it
-		if(LARGE_PLANT_MAP.get(stage).stream().anyMatch(vanillaConfigFeature -> serializeAndCompareFeature(vanillaConfigFeature, configuredFeature)))
+		if(LARGE_PLANT_MAP.get(stage).stream().anyMatch(vanillaConfigFeature -> serializeAndCompareFeature(vanillaConfigFeature, configuredFeature, true)))
 		{
 			return false;
 		}
@@ -236,7 +237,7 @@ public class FeatureGrouping
 	 * Will serialize (if possible) both features and check if they are the same feature.
 	 * If cannot serialize, compare the feature itself to see if it is the same.
 	 */
-	public static boolean serializeAndCompareFeature(ConfiguredFeature<?, ?> configuredFeature1, ConfiguredFeature<?, ?> configuredFeature2) {
+	public static boolean serializeAndCompareFeature(ConfiguredFeature<?, ?> configuredFeature1, ConfiguredFeature<?, ?> configuredFeature2, boolean doDeepJSONCheck) {
 
 		Optional<JsonElement> optionalJsonElement1 = ConfiguredFeature.CODEC.encode(() -> configuredFeature1, JsonOps.INSTANCE, JsonOps.INSTANCE.empty()).get().left();
 		Optional<JsonElement> optionalJsonElement2 = ConfiguredFeature.CODEC.encode(() -> configuredFeature2, JsonOps.INSTANCE, JsonOps.INSTANCE.empty()).get().left();
@@ -249,9 +250,33 @@ public class FeatureGrouping
 			JsonElement configuredFeatureJSON2 = optionalJsonElement2.get();
 
 			return configuredFeatureJSON1.toString().equals(configuredFeatureJSON2.toString()) ||
-					getsFeatureName(configuredFeatureJSON1).equals(getsFeatureName(configuredFeatureJSON2));
+					(doDeepJSONCheck && getsFeatureName(configuredFeatureJSON1).equals(getsFeatureName(configuredFeatureJSON2)));
 		}
 
-		return false;
+		return configuredFeature1.equals(configuredFeature2);
+	}
+
+
+	/**
+	 * Will serialize (if possible) both features and check if they are the same feature.
+	 * If cannot serialize, compare the feature itself to see if it is the same.
+	 */
+
+	public static boolean serializeAndCompareStructureJSONOnly(ConfiguredStructureFeature<?, ?> configuredStructure1, ConfiguredStructureFeature<?, ?> configuredStructure2) {
+
+		Optional<JsonElement> optionalJsonElement1 = ConfiguredStructureFeature.CODEC.encode(configuredStructure1, JsonOps.INSTANCE, JsonOps.INSTANCE.empty()).get().left();
+		Optional<JsonElement> optionalJsonElement2 = ConfiguredStructureFeature.CODEC.encode(configuredStructure2, JsonOps.INSTANCE, JsonOps.INSTANCE.empty()).get().left();
+
+		// Compare the JSON to see if it's the exact same ConfiguredFeature.
+		if(optionalJsonElement1.isPresent() &&
+				optionalJsonElement2.isPresent())
+		{
+			JsonElement configuredFeatureJSON1 = optionalJsonElement1.get();
+			JsonElement configuredFeatureJSON2 = optionalJsonElement2.get();
+
+			return configuredFeatureJSON1.toString().equals(configuredFeatureJSON2.toString());
+		}
+
+		return configuredStructure1.equals(configuredStructure2);
 	}
 }

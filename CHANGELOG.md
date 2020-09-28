@@ -6,6 +6,29 @@ Welcome to the Github! If you are looking for the most recent stable version, th
 ------------------------------------------------
 #    | World Blender changelog |
 
+## (V.1.0.2 Changes) (1.16.3 Minecraft)
+   
+##### Blender:
+
+- Fixed modded features and structures so that they spawn in World blender now.
+  Also fixed Log spam with other worldgen mod. They were registering their 
+  stuff but the features themselves are different from the ones in the registry.
+  A workaround was done for that.
+  
+- Mostly fixed bug where entering a world after leaving without exiting Minecraft
+  on single player would break World Blender and fill the dimension with duplicate
+  configured features.
+
+##### Misc:
+
+- Jar-in-jar'd Modmuss's Voyager to fix a rare bug that crashes servers
+  running Java 11 when they try to load two chunks with structures in 
+  two dimensions at the same time.
+
+- Jar-in-jar'd Draylar's Angerable Patch to fix a mojang bug where angerable
+  entities in mob spawners will spam the logs like heck and won't render the
+  mob in the spawner itself.
+
 ## (V.1.0.1 Changes) (1.16.3 Minecraft)
    
 ##### Major:

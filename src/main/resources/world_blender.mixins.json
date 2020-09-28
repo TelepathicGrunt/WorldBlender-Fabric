@@ -16,7 +16,6 @@
     "RenderPhaseAccessor",
     "ServerWorldMixin",
     "SpawnSettingsAccessor",
-    "StructureManagerMixin",
     "WeightedBlockStateProviderMixin"
   ],
   "client": [
