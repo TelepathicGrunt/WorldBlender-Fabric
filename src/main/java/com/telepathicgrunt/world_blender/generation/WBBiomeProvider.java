@@ -31,12 +31,10 @@ public class WBBiomeProvider extends BiomeSource
 
 	public static final Codec<WBBiomeProvider> CODEC =
 			RecordCodecBuilder.create((instance) -> instance.group(
-					Codec.LONG.fieldOf("seed").stable().forGetter((WBBiomeProvider) -> WBBiomeProvider.SEED),
 					RegistryLookupCodec.of(Registry.BIOME_KEY).forGetter((biomeSource) -> biomeSource.BIOME_REGISTRY))
 					.apply(instance, instance.stable(WBBiomeProvider::new)));
 
 	private final BiomeLayerSampler BIOME_SAMPLER;
-	private final long SEED;
 	private final Registry<Biome> BIOME_REGISTRY;
 	protected static Registry<Biome> LAYERS_BIOME_REGISTRY;
 	private static final List<RegistryKey<Biome>> BIOMES = ImmutableList.of(
@@ -46,11 +44,14 @@ public class WBBiomeProvider extends BiomeSource
 			RegistryKey.of(Registry.BIOME_KEY, WBIdentifiers.OCEAN_BLENDED_BIOME_ID),
 			RegistryKey.of(Registry.BIOME_KEY, WBIdentifiers.FROZEN_OCEAN_BLENDED_BIOME_ID));
 
+	public WBBiomeProvider(Registry<Biome> biomeRegistry) {
+		// find a way to pass in world seed here
+		this(0, biomeRegistry);
+	}
 
 	public WBBiomeProvider(long seed, Registry<Biome> biomeRegistry) {
 		super(BIOMES.stream().map((registryKey) -> () -> (Biome)biomeRegistry.get(registryKey)));
 		MainBiomeLayer.setSeed(seed);
-		this.SEED = seed;
 		this.BIOME_REGISTRY = biomeRegistry;
 		WBBiomeProvider.LAYERS_BIOME_REGISTRY = biomeRegistry;
 		this.BIOME_SAMPLER = buildWorldProcedure(seed);
