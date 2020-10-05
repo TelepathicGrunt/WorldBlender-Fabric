@@ -6,6 +6,12 @@ Welcome to the Github! If you are looking for the most recent stable version, th
 ------------------------------------------------
 #    | World Blender changelog |
 
+## (V.1.0.3 Changes) (1.16.3 Minecraft)
+   
+    Dimension:
+
+- Cleaned up the json format for the dimension's json file.
+
 ## (V.1.0.2 Changes) (1.16.3 Minecraft)
    
 ##### Blender:
