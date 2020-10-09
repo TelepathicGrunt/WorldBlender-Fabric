@@ -6,6 +6,16 @@ Welcome to the Github! If you are looking for the most recent stable version, th
 ------------------------------------------------
 #    | World Blender changelog |
 
+
+## (V.1.0.4 Changes) (1.16.3 Minecraft)
+    
+    Backend:
+
+- Applied fix that now lets WorldBlender stop giving
+  false positive warnings for unregistered worldgen 
+  stuff from other mods that are indeed registered.
+
+   
 ## (V.1.0.3 Changes) (1.16.3 Minecraft)
    
     Dimension:

@@ -19,10 +19,7 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnGroup;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.DynamicRegistryManager;
-import net.minecraft.util.registry.MutableRegistry;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.util.registry.*;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.SpawnSettings;
 import net.minecraft.world.gen.GenerationStep;
@@ -236,11 +233,18 @@ public class TheBlender {
                 ConfiguredFeature<?, ?> configuredFeature = configuredFeatureSupplier.get();
                 if (world_blender_biomes.get(0).getGenerationSettings().getFeatures().get(stage.ordinal()).stream().noneMatch(addedConfigFeature -> FeatureGrouping.serializeAndCompareFeature(addedConfigFeature.get(), configuredFeatureSupplier.get(), true))) {
 
-                    // Have to do this computing as the feature in the registry is technically not the same
-                    // object as the feature in the biome. So I cannot get ID easily from the registry.
-                    // Instead, I have to check the JSON of the feature to find a match and store the ID of it
-                    // into a temporary map as a cache for later biomes.
-                    Identifier configuredFeatureID = FEATURE_MAP_CACHE.inverse().get(configuredFeature);
+                    Identifier configuredFeatureID = configuredFeaturesRegistry.getId(configuredFeature);
+                    if(configuredFeatureID == null){
+                        configuredFeatureID = BuiltinRegistries.CONFIGURED_FEATURE.getId(configuredFeature);
+                    }
+                    if(configuredFeatureID == null){
+                        configuredFeatureID = FEATURE_MAP_CACHE.inverse().get(configuredFeature);
+                    }
+
+                    // The cache is to prevent unregistered configuredfeatures
+                    // from being added multiple times by storing its json as an
+                    // ID in the cache. This only gets triggered when we find
+                    // that specific unregistered configuredfeature for the first time
                     if(configuredFeatureID == null){
                         configuredFeatureID = configuredFeaturesRegistry.getId(configuredFeature);
                         if(configuredFeatureID != null){
@@ -327,8 +331,18 @@ public class TheBlender {
                 // object as the feature in the biome. So I cannot get ID easily from the registry.
                 // Instead, I have to check the JSON of the feature to find a match and store the ID of it
                 // into a temporary map as a cache for later biomes.
-                Identifier configuredStructureID = STRUCTURE_MAP_CACHE.inverse().get(configuredStructure);
+                Identifier configuredStructureID = configuredStructuresRegistry.getId(configuredStructure);
+                if(configuredStructureID == null){
+                    configuredStructureID = BuiltinRegistries.CONFIGURED_STRUCTURE_FEATURE.getId(configuredStructure);
+                }
+                if(configuredStructureID == null){
+                    configuredStructureID = STRUCTURE_MAP_CACHE.inverse().get(configuredStructure);
+                }
 
+                // The cache is to prevent unregistered configuredstructures
+                // from being added multiple times by storing its json as an
+                // ID in the cache. This only gets triggered when we find
+                // that specific unregistered configuredstructures for the first time
                 if(configuredStructureID == null){
                     configuredStructureID = configuredStructuresRegistry.getId(configuredStructure);
                     if(configuredStructureID != null){
