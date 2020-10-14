@@ -60,10 +60,21 @@ public class WBPortalSpawning
 		//find all entity types that are most likely chests
 		for(BlockEntityType<?> blockEntityType : Registry.BLOCK_ENTITY_TYPE)
 		{
-			WBPortalSpawning.VALID_CHEST_BLOCKS_ENTITY_TYPES.put(
-					blockEntityType,
-					Objects.requireNonNull(blockEntityType.instantiate()).getClass().getSimpleName().toLowerCase().contains("chest") &&
-							blockEntityType.instantiate() instanceof Inventory);
+			try{
+				BlockEntity blockEntity = blockEntityType.instantiate();
+				if(blockEntity != null) {
+					WBPortalSpawning.VALID_CHEST_BLOCKS_ENTITY_TYPES.put(
+							blockEntityType,
+							blockEntity.getClass().getSimpleName().toLowerCase().contains("chest") &&
+									blockEntityType.instantiate() instanceof Inventory);
+				}
+			}
+			catch(Throwable e){
+				Identifier erroringBlockEntityTypeID = Registry.BLOCK_ENTITY_TYPE.getId(blockEntityType);
+				if(erroringBlockEntityTypeID != null){
+					WorldBlender.LOGGER.log(Level.WARN, "Failed to check if "+erroringBlockEntityTypeID+" is a chest. If is not a chest, ignore this message. If it is, let telepathicGrunt (World Blender dev) know this.");
+				}
+			}
 		}
 	}
 

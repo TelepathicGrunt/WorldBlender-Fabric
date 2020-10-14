@@ -7,7 +7,6 @@ import com.telepathicgrunt.world_blender.features.WBConfiguredFeatures;
 import com.telepathicgrunt.world_blender.features.WBFeatures;
 import com.telepathicgrunt.world_blender.generation.WBBiomeProvider;
 import com.telepathicgrunt.world_blender.surfacebuilder.WBSurfaceBuilders;
-import com.telepathicgrunt.world_blender.utils.GoVote;
 import me.sargunvohra.mcmods.autoconfig1u.AutoConfig;
 import me.sargunvohra.mcmods.autoconfig1u.serializer.JanksonConfigSerializer;
 import net.fabricmc.api.ModInitializer;

@@ -8,6 +8,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.StructureWorldAccess;
+import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.feature.DefaultFeatureConfig;
 import net.minecraft.world.gen.feature.Feature;
@@ -27,7 +28,7 @@ public class SeparateLavaAndWater extends Feature<DefaultFeatureConfig>
     public boolean generate(StructureWorldAccess world, ChunkGenerator chunkgenerator, Random rand, BlockPos position, DefaultFeatureConfig config) {
 		// this feature is completely turned off.
 		if (!WorldBlender.WB_CONFIG.WBDimensionConfig.preventLavaTouchingWater) return false;
-
+		world.getBiome(position).getGenerationSettings().getFeatures().get(GenerationStep.Feature.TOP_LAYER_MODIFICATION.ordinal()).stream().anyMatch(supplier -> supplier.get().equals(WBConfiguredFeatures.SEPARATE_LAVA_AND_WATER));
 		BlockPos.Mutable mutable;
 		BlockState currentBlockstate;
 		BlockState neighboringBlockstate;

@@ -5,6 +5,7 @@ import com.telepathicgrunt.world_blender.utils.ServerWorldAccess;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.EndGatewayBlockEntity;
 import net.minecraft.block.entity.EndPortalBlockEntity;
+import net.minecraft.block.pattern.BlockPattern;
 import net.minecraft.entity.boss.dragon.EnderDragonFight;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.world.chunk.WorldChunk;
@@ -12,6 +13,8 @@ import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 @Mixin(EnderDragonFight.class)
 public class EnderDragonFightMixin {
@@ -71,5 +74,23 @@ public class EnderDragonFightMixin {
 		}
 
 		return false;
+	}
+
+
+	/*
+	 * Needed so that the portal check does not recognize a pattern in the
+	 * Bedrock floor of World Blender's dimensiion as if it is an End Podium.
+	 *
+	 * This was the cause of End Podium and Altar not spawning in WB dimension randomly.
+	 */
+	@Inject(
+			method = "findEndPortal()Lnet/minecraft/block/pattern/BlockPattern$Result;",
+			at = @At(value = "INVOKE", target = "Lnet/minecraft/block/pattern/BlockPattern;searchAround(Lnet/minecraft/world/WorldView;Lnet/minecraft/util/math/BlockPos;)Lnet/minecraft/block/pattern/BlockPattern$Result;"),
+			locals = LocalCapture.CAPTURE_FAILHARD,
+			cancellable = true
+	)
+	private void doNotCheckWBBedrockFloor(CallbackInfoReturnable<BlockPattern.Result> cir, int i, int l) {
+		if(l < 5 && world.getRegistryKey().getValue().equals(WBIdentifiers.MOD_DIMENSION_ID))
+			cir.setReturnValue(null); // Skip checking the bedrock layer
 	}
 }

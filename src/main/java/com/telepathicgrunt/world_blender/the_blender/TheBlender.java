@@ -1,32 +1,33 @@
 package com.telepathicgrunt.world_blender.the_blender;
 
-import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.mojang.serialization.JsonOps;
+import com.telepathicgrunt.world_blender.WBIdentifiers;
 import com.telepathicgrunt.world_blender.WorldBlender;
 import com.telepathicgrunt.world_blender.features.WBConfiguredFeatures;
-import com.telepathicgrunt.world_blender.mixin.CarverAccessor;
-import com.telepathicgrunt.world_blender.mixin.ConfiguredCarverAccessor;
-import com.telepathicgrunt.world_blender.mixin.GenerationSettingsAccessor;
-import com.telepathicgrunt.world_blender.mixin.SpawnSettingsAccessor;
+import com.telepathicgrunt.world_blender.mixin.*;
 import com.telepathicgrunt.world_blender.surfacebuilder.BlendedSurfaceBuilder;
 import com.telepathicgrunt.world_blender.surfacebuilder.WBSurfaceBuilders;
 import com.telepathicgrunt.world_blender.the_blender.ConfigBlacklisting.BlacklistType;
 import net.minecraft.block.Block;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnGroup;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.*;
+import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.SpawnSettings;
 import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.world.gen.GenerationStep.Carver;
 import net.minecraft.world.gen.carver.ConfiguredCarver;
+import net.minecraft.world.gen.chunk.StructureConfig;
 import net.minecraft.world.gen.feature.ConfiguredFeature;
 import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
+import net.minecraft.world.gen.feature.StructureFeature;
 import net.minecraft.world.gen.surfacebuilder.SurfaceConfig;
 import net.minecraft.world.gen.surfacebuilder.TernarySurfaceConfig;
 import org.apache.logging.log4j.Level;
@@ -488,6 +489,28 @@ public class TheBlender {
             if (!((BlendedSurfaceBuilder) WBSurfaceBuilders.BLENDED_SURFACE_BUILDER).containsConfig(surfaceConfig)) {
                 ((BlendedSurfaceBuilder) WBSurfaceBuilders.BLENDED_SURFACE_BUILDER).addConfig(surfaceConfig);
             }
+        }
+    }
+
+
+
+    //--------------------------------------------------------------
+    // An attempt to make sure we always have the spacing config for all structures
+
+    public static void addDimensionalSpacing(Map<RegistryKey<World>, ServerWorld> worlds) {
+        Map<StructureFeature<?>, StructureConfig> tempMap = new HashMap<>();
+        ServerWorld WBServerWorld = worlds.get(WBIdentifiers.WB_WORLD_KEY);
+
+        if(WBServerWorld != null){
+            for(Map.Entry<RegistryKey<World>, ServerWorld> serverWorldEntry : worlds.entrySet()){
+                // These maps map be immutable for some chunk generators. Our own won't be unless
+                // someone messes with it. I take no chances so defensive programming incoming!
+                tempMap.putAll(serverWorldEntry.getValue().getChunkManager().getChunkGenerator().getStructuresConfig().getStructures());
+            }
+
+            // Set the structure spacing config in wb dimension and clear map so next saved world is fresh.
+            ((StructuresConfigAccessor)WBServerWorld.getChunkManager().getChunkGenerator().getStructuresConfig())
+                    .setStructureConfigMap(tempMap);
         }
     }
 }
