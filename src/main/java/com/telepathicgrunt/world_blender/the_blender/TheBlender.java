@@ -398,14 +398,10 @@ public class TheBlender {
 
                     Identifier configuredCarverID = configuredCarversRegistry.getId(configuredCarver);
                     if(configuredCarverID == null){
-                        Optional<JsonElement> configuredStructureJSON = ConfiguredCarver.CODEC.encode(configuredCarver, JsonOps.INSTANCE, JsonOps.INSTANCE.empty()).get().left();
+                        configuredCarverID = BuiltinRegistries.CONFIGURED_CARVER.getId(configuredCarver);
+                    }
+                    if(configuredCarverID == null){
 
-                        WorldBlender.LOGGER.log(Level.WARN, "---------------\n" +
-                                "WORLD BLENDER:\n\n" +
-                                "Found a ConfiguredCarver not registered. Some mod forgot to registered their stuff." +
-                                "Please look at the following JSON and report this registration issue to the mod that this ConfiguredCarver belongs to." +
-                                "The json looks like: " + (configuredStructureJSON.isPresent() ? GSON_PRINTER.toJson(configuredStructureJSON.get()) : "Error, unable to show JSON"));
-                        continue;
                     }
 
                     // blacklisted by carver list
