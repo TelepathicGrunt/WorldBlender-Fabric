@@ -1,8 +1,5 @@
 package com.telepathicgrunt.world_blender.the_blender;
 
-import com.google.common.collect.HashBiMap;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.mojang.serialization.JsonOps;
 import com.telepathicgrunt.world_blender.WBIdentifiers;
@@ -48,6 +45,8 @@ public class TheBlender {
      * Kickstarts the blender. Should always be ran in MinecraftServer's init which is before the world is loaded
      */
     public static void blendTheWorld(DynamicRegistryManager.Impl registryManager){
+        if(!registryManager.getOptional(Registry.BIOME_KEY).isPresent()) return;
+
         List<Biome> world_blender_biomes = registryManager.getOptional(Registry.BIOME_KEY).get().getEntries().stream()
                 .filter(entry -> entry.getKey().getValue().getNamespace().equals(WorldBlender.MODID))
                 .map(Map.Entry::getValue)
@@ -82,8 +81,8 @@ public class TheBlender {
             // Add extra info to the log.
             String errorReport = "\n****************** World Blender ******************" +
                     "\n\n Found some unregistered ConfiguredFeatures, ConfiguredStructures, and/or" +
-                    "\n ConfiguredCarvers. These stuff may cause things to not spawn in WorldBlender's" +
-                    "\n dimension as unregistered stuff can wipe out everyone else's registered stuff from biomes." +
+                    "\n ConfiguredCarvers. These unregistered stuff will not spawn in WorldBlender's dimension" +
+                    "\n as unregistered stuff can wipe out everyone else's registered stuff from biomes." +
                     "\n Here are the following that will not show up in WB's dimension: \n   " +
                     COLLECTED_UNREGISTERED_STUFF.stream().sorted().collect(Collectors.joining("\n")) + "\n\n";
 
@@ -93,8 +92,6 @@ public class TheBlender {
 
         // free up some memory when we are done.
         FeatureGrouping.clearFeatureMaps();
-        FEATURE_MAP_CACHE.clear();
-        STRUCTURE_MAP_CACHE.clear();
         COLLECTED_UNREGISTERED_STUFF.clear();
     }
 
@@ -149,10 +146,10 @@ public class TheBlender {
         addBiomeCarvers(biome, world_blender_biomes, dynamicRegistryManager.get(Registry.CONFIGURED_CARVER_WORLDGEN));
 
         //////////////////////// SPAWNER/////////////////////////
-        addBiomeNaturalMobs(biome, world_blender_biomes, Registry.ENTITY_TYPE);
+        addBiomeNaturalMobs(biome, world_blender_biomes);
 
         //////////////////////// SURFACE/////////////////////////
-        addBiomeSurfaceConfig(biome, biomeID, Registry.BLOCK);
+        addBiomeSurfaceConfig(biome, biomeID);
     }
 
 
@@ -254,9 +251,6 @@ public class TheBlender {
             // The actual main blending below
             // Welcome to hell!
 
-    private static HashBiMap<Identifier, ConfiguredFeature<?,?>> FEATURE_MAP_CACHE = HashBiMap.create();
-
-
     private static void addBiomeFeatures(Biome biome, List<Biome> world_blender_biomes, MutableRegistry<ConfiguredFeature<?, ?>> configuredFeaturesRegistry) {
         for (GenerationStep.Feature stage : GenerationStep.Feature.values()) {
             if(stage.ordinal() >= biome.getGenerationSettings().getFeatures().size()) break;
@@ -268,28 +262,6 @@ public class TheBlender {
                     Identifier configuredFeatureID = configuredFeaturesRegistry.getId(configuredFeature);
                     if(configuredFeatureID == null){
                         configuredFeatureID = BuiltinRegistries.CONFIGURED_FEATURE.getId(configuredFeature);
-                    }
-                    if(configuredFeatureID == null){
-                        configuredFeatureID = FEATURE_MAP_CACHE.inverse().get(configuredFeature);
-                    }
-
-                    // The cache is to prevent unregistered configuredfeatures
-                    // from being added multiple times by storing its json as an
-                    // ID in the cache. This only gets triggered when we find
-                    // that specific unregistered configuredfeature for the first time
-                    if(configuredFeatureID == null){
-                        configuredFeatureID = configuredFeaturesRegistry.getId(configuredFeature);
-                        if(configuredFeatureID != null){
-                            FEATURE_MAP_CACHE.put(configuredFeatureID, configuredFeature);
-                        }
-                        else{
-                            for(Map.Entry<RegistryKey<ConfiguredFeature<?, ?>>, ConfiguredFeature<?, ?>> entry : configuredFeaturesRegistry.getEntries()){
-                                if(FeatureGrouping.serializeAndCompareFeature(entry.getValue(), configuredFeature, false)){
-                                    FEATURE_MAP_CACHE.put(entry.getKey().getValue(), entry.getValue());
-                                    configuredFeatureID = entry.getKey().getValue();
-                                }
-                            }
-                        }
                     }
 
                     if(configuredFeatureID == null){
@@ -345,7 +317,6 @@ public class TheBlender {
         }
     }
 
-    private static HashBiMap<Identifier, ConfiguredStructureFeature<?,?>> STRUCTURE_MAP_CACHE = HashBiMap.create();
 
     private static void addBiomeStructures(Biome biome, List<Biome> world_blender_biomes, MutableRegistry<ConfiguredStructureFeature<?, ?>> configuredStructuresRegistry) {
         for (Supplier<ConfiguredStructureFeature<?, ?>> configuredStructureSupplier : biome.getGenerationSettings().getStructureFeatures()) {
@@ -361,28 +332,6 @@ public class TheBlender {
                 Identifier configuredStructureID = configuredStructuresRegistry.getId(configuredStructure);
                 if(configuredStructureID == null){
                     configuredStructureID = BuiltinRegistries.CONFIGURED_STRUCTURE_FEATURE.getId(configuredStructure);
-                }
-                if(configuredStructureID == null){
-                    configuredStructureID = STRUCTURE_MAP_CACHE.inverse().get(configuredStructure);
-                }
-
-                // The cache is to prevent unregistered configuredstructures
-                // from being added multiple times by storing its json as an
-                // ID in the cache. This only gets triggered when we find
-                // that specific unregistered configuredstructures for the first time
-                if(configuredStructureID == null){
-                    configuredStructureID = configuredStructuresRegistry.getId(configuredStructure);
-                    if(configuredStructureID != null){
-                        STRUCTURE_MAP_CACHE.put(configuredStructureID, configuredStructure);
-                    }
-                    else {
-                        for (Map.Entry<RegistryKey<ConfiguredStructureFeature<?, ?>>, ConfiguredStructureFeature<?, ?>> entry : configuredStructuresRegistry.getEntries()) {
-                            if (FeatureGrouping.serializeAndCompareStructureJSONOnly(entry.getValue(), configuredStructure)) {
-                                STRUCTURE_MAP_CACHE.put(entry.getKey().getValue(), entry.getValue());
-                                configuredStructureID = entry.getKey().getValue();
-                            }
-                        }
-                    }
                 }
 
                 if(configuredStructureID == null){
@@ -445,13 +394,13 @@ public class TheBlender {
     }
 
 
-    private static void addBiomeNaturalMobs(Biome biome, List<Biome> world_blender_biomes, MutableRegistry<EntityType<?>> entityTypeRegistry) {
+    private static void addBiomeNaturalMobs(Biome biome, List<Biome> world_blender_biomes) {
         for (SpawnGroup spawnGroup : SpawnGroup.values()) {
             for (SpawnSettings.SpawnEntry spawnEntry : biome.getSpawnSettings().getSpawnEntry(spawnGroup)) {
                 if (world_blender_biomes.get(0).getSpawnSettings().getSpawnEntry(spawnGroup).stream().noneMatch(spawn -> spawn.type == spawnEntry.type)) {
 
                     //no check needed for if entitytype is null because it is impossible for it to be null without Minecraft blowing up
-                    Identifier entityTypeID = entityTypeRegistry.getId(spawnEntry.type);
+                    Identifier entityTypeID = Registry.ENTITY_TYPE.getId(spawnEntry.type);
 
                     // blacklisted by natural spawn list
                     if (ConfigBlacklisting.isResourceLocationBlacklisted(ConfigBlacklisting.BlacklistType.SPAWN, entityTypeID)) {
@@ -470,7 +419,7 @@ public class TheBlender {
     }
 
 
-    private static void addBiomeSurfaceConfig(Biome biome, Identifier biomeID, MutableRegistry<Block> blockRegistry) {
+    private static void addBiomeSurfaceConfig(Biome biome, Identifier biomeID) {
 
         // return early if biome's is turned off by the vanilla surface configs.
         if (biomeID.getNamespace().equals("minecraft")) {
@@ -487,7 +436,7 @@ public class TheBlender {
             TernarySurfaceConfig surfaceConfig = (TernarySurfaceConfig) biome.getGenerationSettings().getSurfaceConfig();
 
             // blacklisted by surface list. Checks top block
-            if (ConfigBlacklisting.isResourceLocationBlacklisted(ConfigBlacklisting.BlacklistType.SURFACE_BLOCK, blockRegistry.getId(surfaceConfig.getTopMaterial().getBlock()))) {
+            if (ConfigBlacklisting.isResourceLocationBlacklisted(ConfigBlacklisting.BlacklistType.SURFACE_BLOCK, Registry.BLOCK.getId(surfaceConfig.getTopMaterial().getBlock()))) {
                 return;
             }
 
@@ -501,7 +450,7 @@ public class TheBlender {
             SurfaceConfig surfaceConfig = biome.getGenerationSettings().getSurfaceConfig();
 
             // blacklisted by surface list. Checks top block
-            if (ConfigBlacklisting.isResourceLocationBlacklisted(ConfigBlacklisting.BlacklistType.SURFACE_BLOCK, blockRegistry.getId(surfaceConfig.getTopMaterial().getBlock()))) {
+            if (ConfigBlacklisting.isResourceLocationBlacklisted(ConfigBlacklisting.BlacklistType.SURFACE_BLOCK, Registry.BLOCK.getId(surfaceConfig.getTopMaterial().getBlock()))) {
                 return;
             }
 
