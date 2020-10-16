@@ -34,12 +34,15 @@ import org.apache.logging.log4j.Level;
 
 import java.util.*;
 import java.util.function.Supplier;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 
 public class TheBlender {
 
-    private static final Gson GSON_PRINTER = new GsonBuilder().setPrettyPrinting().create();
+    private static final Set<String> COLLECTED_UNREGISTERED_STUFF = new HashSet<>(); // not perfect but will try its best to show possible problematic mods.
+    private static final Pattern WORLDGEN_OBJECT_REGEX = Pattern.compile("\"(?:Name|type|location)\": \"([a-z_:]+)\"");
 
     /**
      * Kickstarts the blender. Should always be ran in MinecraftServer's init which is before the world is loaded
@@ -75,11 +78,39 @@ public class TheBlender {
         // wrap up the last bits that still needs to be blended but after the biome loop
         TheBlender.completeBlending(world_blender_biomes, registryManager.getOptional(Registry.CONFIGURED_FEATURE_WORLDGEN).get());
 
+        if(COLLECTED_UNREGISTERED_STUFF.size() != 0){
+            // Add extra info to the log.
+            String errorReport = "\n****************** World Blender ******************" +
+                    "\n\n Found some unregistered ConfiguredFeatures, ConfiguredStructures, and/or" +
+                    "\n ConfiguredCarvers. These stuff may cause things to not spawn in WorldBlender's" +
+                    "\n dimension as unregistered stuff can wipe out everyone else's registered stuff from biomes." +
+                    "\n Here are the following that will not show up in WB's dimension: \n   " +
+                    COLLECTED_UNREGISTERED_STUFF.stream().sorted().collect(Collectors.joining("\n")) + "\n\n";
+
+            // Log it to the latest.log file.
+            WorldBlender.LOGGER.log(Level.ERROR, errorReport);
+        }
+
         // free up some memory when we are done.
         FeatureGrouping.clearFeatureMaps();
         FEATURE_MAP_CACHE.clear();
         STRUCTURE_MAP_CACHE.clear();
+        COLLECTED_UNREGISTERED_STUFF.clear();
     }
+
+    /**
+     * Helper method to pull out the base feature/structure/carver name from the
+     * stringified json of the unregistered form. Store result into COLLECTED_UNREGISTERED_STUFF
+     */
+    private static void extractModNames(String unconfigured_worldgen_object) {
+        Matcher match = WORLDGEN_OBJECT_REGEX.matcher(unconfigured_worldgen_object);
+        while(match.find()) {
+            if(!match.group(1).contains("minecraft:")){
+                COLLECTED_UNREGISTERED_STUFF.add(match.group(1));
+            }
+        }
+    }
+
 
     /**
      * blends the given biome into WB biomes
@@ -263,12 +294,7 @@ public class TheBlender {
 
                     if(configuredFeatureID == null){
                         Optional<JsonElement> configuredFeatureJSON = ConfiguredFeature.CODEC.encode(configuredFeatureSupplier, JsonOps.INSTANCE, JsonOps.INSTANCE.empty()).get().left();
-
-                        WorldBlender.LOGGER.log(Level.WARN, "---------------\n" +
-                                "WORLD BLENDER:\n\n" +
-                                "Found a ConfiguredFeature not registered. Some mod forgot to registered their stuff.\n" +
-                                "Please look at the following JSON and report this registration issue to the mod that this ConfiguredFeature belongs to.\n" +
-                                "The json looks like: " + (configuredFeatureJSON.isPresent() ? GSON_PRINTER.toJson(configuredFeatureJSON.get()) : "Error, unable to show JSON"));
+                        configuredFeatureJSON.ifPresent(json -> extractModNames(json.toString()));
                         continue;
                     }
 
@@ -361,12 +387,7 @@ public class TheBlender {
 
                 if(configuredStructureID == null){
                     Optional<JsonElement> configuredStructureJSON = ConfiguredStructureFeature.CODEC.encode(configuredStructure, JsonOps.INSTANCE, JsonOps.INSTANCE.empty()).get().left();
-
-                    WorldBlender.LOGGER.log(Level.WARN, "---------------\n" +
-                            "WORLD BLENDER:\n\n" +
-                            "Found a ConfiguredStructure not registered. Some mod forgot to registered their stuff." +
-                            "Please look at the following JSON and report this registration issue to the mod that this ConfiguredStructure belongs to." +
-                            "The json looks like: " + (configuredStructureJSON.isPresent() ? GSON_PRINTER.toJson(configuredStructureJSON.get()) : "Error, unable to show JSON"));
+                    configuredStructureJSON.ifPresent(json -> extractModNames(json.toString()));
                     continue;
                 }
 
@@ -401,7 +422,9 @@ public class TheBlender {
                         configuredCarverID = BuiltinRegistries.CONFIGURED_CARVER.getId(configuredCarver);
                     }
                     if(configuredCarverID == null){
-
+                        Optional<JsonElement> configuredCarverJSON = ConfiguredCarver.CODEC.encode(configuredCarver, JsonOps.INSTANCE, JsonOps.INSTANCE.empty()).get().left();
+                        configuredCarverJSON.ifPresent(json -> extractModNames(json.toString()));
+                        continue;
                     }
 
                     // blacklisted by carver list
