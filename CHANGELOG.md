@@ -9,6 +9,11 @@ Welcome to the Github! If you are looking for the most recent stable version, th
  
 ## (V.1.0.6 Changes) (1.16.3 Minecraft)
      
+##### Portal:
+
+- Make crouch right clicking without activation item not 
+  deny the item's behavior.
+
 ##### SurfaceBuilders:
  
 - Added null check in case mods put null into their surfacebuilder

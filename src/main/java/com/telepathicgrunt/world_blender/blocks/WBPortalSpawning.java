@@ -103,7 +103,7 @@ public class WBPortalSpawning
 			else if((player.getMainHandStack().getItem() != Registry.ITEM.get(activationItem) && hand == Hand.MAIN_HAND) ||
 					(player.getOffHandStack().getItem() != Registry.ITEM.get(activationItem) && hand == Hand.OFF_HAND))
 			{
-				return ActionResult.FAIL;
+				return ActionResult.PASS;
 			}
 
 
