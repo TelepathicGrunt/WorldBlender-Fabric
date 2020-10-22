@@ -6,6 +6,15 @@ Welcome to the Github! If you are looking for the most recent stable version, th
 ------------------------------------------------
 #    | World Blender changelog |
 
+ 
+## (V.1.0.6 Changes) (1.16.3 Minecraft)
+     
+##### SurfaceBuilders:
+ 
+- Added null check in case mods put null into their surfacebuilder
+  config when they really should not be doing that.
+  
+  
 ## (V.1.0.5 Changes) (1.16.3 Minecraft)
      
 ##### Config:

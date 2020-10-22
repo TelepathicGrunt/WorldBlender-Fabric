@@ -437,7 +437,7 @@ public class TheBlender {
             TernarySurfaceConfig surfaceConfig = (TernarySurfaceConfig) biome.getGenerationSettings().getSurfaceConfig();
 
             // blacklisted by surface list. Checks top block
-            if (ConfigBlacklisting.isResourceLocationBlacklisted(ConfigBlacklisting.BlacklistType.SURFACE_BLOCK, Registry.BLOCK.getId(surfaceConfig.getTopMaterial().getBlock()))) {
+            if (surfaceConfig.getTopMaterial() == null || ConfigBlacklisting.isResourceLocationBlacklisted(ConfigBlacklisting.BlacklistType.SURFACE_BLOCK, Registry.BLOCK.getId(surfaceConfig.getTopMaterial().getBlock()))) {
                 return;
             }
 
@@ -451,7 +451,7 @@ public class TheBlender {
             SurfaceConfig surfaceConfig = biome.getGenerationSettings().getSurfaceConfig();
 
             // blacklisted by surface list. Checks top block
-            if (ConfigBlacklisting.isResourceLocationBlacklisted(ConfigBlacklisting.BlacklistType.SURFACE_BLOCK, Registry.BLOCK.getId(surfaceConfig.getTopMaterial().getBlock()))) {
+            if (surfaceConfig.getTopMaterial() == null || ConfigBlacklisting.isResourceLocationBlacklisted(ConfigBlacklisting.BlacklistType.SURFACE_BLOCK, Registry.BLOCK.getId(surfaceConfig.getTopMaterial().getBlock()))) {
                 return;
             }
 
