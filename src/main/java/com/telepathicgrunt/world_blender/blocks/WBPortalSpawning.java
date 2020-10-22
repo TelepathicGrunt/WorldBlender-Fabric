@@ -63,10 +63,11 @@ public class WBPortalSpawning
 			try{
 				BlockEntity blockEntity = blockEntityType.instantiate();
 				if(blockEntity != null) {
+					boolean hasChestName = blockEntity.getClass().getSimpleName().toLowerCase().contains("chest");
+					boolean isInventory = blockEntity instanceof Inventory;
 					WBPortalSpawning.VALID_CHEST_BLOCKS_ENTITY_TYPES.put(
 							blockEntityType,
-							blockEntity.getClass().getSimpleName().toLowerCase().contains("chest") &&
-									blockEntityType.instantiate() instanceof Inventory);
+							hasChestName && isInventory);
 				}
 			}
 			catch(Throwable e){

@@ -14,6 +14,10 @@ Welcome to the Github! If you are looking for the most recent stable version, th
 - Added null check in case mods put null into their surfacebuilder
   config when they really should not be doing that.
   
+##### Mod Compat:
+ 
+- Fixed possible issues with other mod's Block Entities.
+
   
 ## (V.1.0.5 Changes) (1.16.3 Minecraft)
      

@@ -5,6 +5,7 @@ import com.mojang.authlib.minecraft.MinecraftSessionService;
 import com.mojang.datafixers.DataFixer;
 import com.telepathicgrunt.world_blender.WBIdentifiers;
 import com.telepathicgrunt.world_blender.WorldBlender;
+import com.telepathicgrunt.world_blender.blocks.WBPortalSpawning;
 import com.telepathicgrunt.world_blender.features.WBPortalAltar;
 import com.telepathicgrunt.world_blender.the_blender.IdentifierPrinting;
 import com.telepathicgrunt.world_blender.the_blender.TheBlender;
@@ -62,7 +63,6 @@ public class MinecraftServerMixin {
                 IdentifierPrinting.printAllIdentifiers(impl);
             }
         }
-
     }
 
     @Inject(
@@ -71,5 +71,6 @@ public class MinecraftServerMixin {
     )
     private void modifyBiomeRegistry(WorldGenerationProgressListener worldGenerationProgressListener, CallbackInfo ci) {
         TheBlender.addDimensionalSpacing(worlds);
+        WBPortalSpawning.generateRequiredBlockList(WorldBlender.WB_CONFIG.WBPortalConfig.requiredBlocksInChests);
     }
 }
