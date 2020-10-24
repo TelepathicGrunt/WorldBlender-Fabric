@@ -20,6 +20,7 @@
     "WeightedBlockStateProviderMixin"
   ],
   "client": [
+    "PistonBlockEntityRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1
