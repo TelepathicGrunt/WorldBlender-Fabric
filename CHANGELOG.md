@@ -13,6 +13,9 @@ Welcome to the Github! If you are looking for the most recent stable version, th
 - Fixed serverside crash when attempting to make portal. 
   Special thanks to adoxentor for finding this crash!
 
+- Fixed crash with Pistons because I didn't register
+  my Block Entity Renderer properly.
+
  
 ## (V.1.0.6 Changes) (1.16.3 Minecraft)
      

@@ -10,7 +10,6 @@ import com.telepathicgrunt.world_blender.surfacebuilder.BlendedSurfaceBuilder;
 import com.telepathicgrunt.world_blender.surfacebuilder.WBSurfaceBuilders;
 import com.telepathicgrunt.world_blender.the_blender.ConfigBlacklisting.BlacklistType;
 import net.minecraft.block.Block;
-import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnGroup;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;

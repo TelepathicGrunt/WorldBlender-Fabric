@@ -3,12 +3,11 @@ package com.telepathicgrunt.world_blender;
 import com.telepathicgrunt.world_blender.blocks.WBBlocks;
 import com.telepathicgrunt.world_blender.blocks.WBPortalBlockEntity;
 import com.telepathicgrunt.world_blender.blocks.WBPortalBlockEntityRenderer;
-import com.telepathicgrunt.world_blender.mixin.BlockEntityRenderDispatcherInvoker;
 import com.telepathicgrunt.world_blender.utils.GoVote;
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry;
 import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
 import net.minecraft.util.math.BlockPos;
 
 public class WorldBlenderClient implements ClientModInitializer {
@@ -16,7 +15,7 @@ public class WorldBlenderClient implements ClientModInitializer {
 	public void onInitializeClient() {
 		GoVote.init();
 
-		((BlockEntityRenderDispatcherInvoker)BlockEntityRenderDispatcher.INSTANCE).callRegister(WBBlocks.WORLD_BLENDER_PORTAL_BE, new WBPortalBlockEntityRenderer(BlockEntityRenderDispatcher.INSTANCE));
+		BlockEntityRendererRegistry.INSTANCE.register(WBBlocks.WORLD_BLENDER_PORTAL_BE, WBPortalBlockEntityRenderer::new);
 
 		// Set cooldown for portal after server says it was triggered
 		ClientSidePacketRegistry.INSTANCE.register(WBIdentifiers.PORTAL_COOLDOWN_PACKET_ID,
