@@ -93,7 +93,7 @@ public class WBPortalSpawning
 		{
 			//checks to make sure the activation item is a real item before doing the rest of the checks
 			Identifier activationItem = new Identifier(WorldBlender.WB_CONFIG.WBPortalConfig.activationItem);
-			if (!Registry.ITEM.containsId(activationItem))
+			if (Registry.ITEM.getOrEmpty(activationItem).isPresent())
 			{
 				WorldBlender.LOGGER.log(Level.INFO, "World Blender: Warning, the activation item set in the config does not exist. Please make sure it is a valid resource location to a real item as the portal cannot be created now.");
 				Text message = new LiteralText("§eWorld Blender: §fWarning, the activation item set in the config does not exist. Please make sure it is a valid resource location to a real item as the portal cannot be created now.");
