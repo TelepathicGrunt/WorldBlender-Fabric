@@ -8,7 +8,7 @@ import net.minecraft.util.math.Vec3d;
 @Environment(EnvType.CLIENT)
 public class WBSkyProperty extends SkyProperties {
     public WBSkyProperty() {
-        super(155, false, SkyType.NORMAL, true, true);
+        super(155, true, SkyType.NORMAL, false, false);
     }
 
     @Override

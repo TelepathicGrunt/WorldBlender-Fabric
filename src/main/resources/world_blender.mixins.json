@@ -19,6 +19,7 @@
     "WeightedBlockStateProviderMixin"
   ],
   "client": [
+    "SkyPropertiesAccessor"
   ],
   "injectors": {
     "defaultRequire": 1
