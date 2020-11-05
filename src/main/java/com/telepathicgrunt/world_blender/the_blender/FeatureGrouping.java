@@ -42,7 +42,7 @@ public class FeatureGrouping
 	 */
 	public static boolean isLaggyFeature(ConfiguredFeature<?, ?> configuredFeature)
 	{
-		Optional<JsonElement> optionalConfiguredFeatureJSON = ConfiguredFeature.CODEC.encode(() -> configuredFeature, JsonOps.INSTANCE, JsonOps.INSTANCE.empty()).get().left();
+		Optional<JsonElement> optionalConfiguredFeatureJSON = ConfiguredFeature.CODEC.encode(configuredFeature, JsonOps.INSTANCE, JsonOps.INSTANCE.empty()).get().left();
 
 		if(optionalConfiguredFeatureJSON.isPresent()){
 			JsonElement configuredFeatureJSON = optionalConfiguredFeatureJSON.get();
@@ -84,7 +84,7 @@ public class FeatureGrouping
 		}
 
 
-		Optional<JsonElement> optionalConfiguredFeatureJSON = ConfiguredFeature.CODEC.encode(() -> configuredFeature, JsonOps.INSTANCE, JsonOps.INSTANCE.empty()).get().left();
+		Optional<JsonElement> optionalConfiguredFeatureJSON = ConfiguredFeature.CODEC.encode(configuredFeature, JsonOps.INSTANCE, JsonOps.INSTANCE.empty()).get().left();
 
 		if(optionalConfiguredFeatureJSON.isPresent()) {
 			JsonElement configuredFeatureJSON = optionalConfiguredFeatureJSON.get();
@@ -122,7 +122,7 @@ public class FeatureGrouping
 		}
 
 
-		Optional<JsonElement> optionalConfiguredFeatureJSON = ConfiguredFeature.CODEC.encode(() -> configuredFeature, JsonOps.INSTANCE, JsonOps.INSTANCE.empty()).get().left();
+		Optional<JsonElement> optionalConfiguredFeatureJSON = ConfiguredFeature.CODEC.encode(configuredFeature, JsonOps.INSTANCE, JsonOps.INSTANCE.empty()).get().left();
 
 		if(optionalConfiguredFeatureJSON.isPresent()) {
 			JsonElement configuredFeatureJSON = optionalConfiguredFeatureJSON.get();
@@ -246,8 +246,8 @@ public class FeatureGrouping
 	 */
 	public static boolean serializeAndCompareFeature(ConfiguredFeature<?, ?> configuredFeature1, ConfiguredFeature<?, ?> configuredFeature2, boolean doDeepJSONCheck) {
 
-		Optional<JsonElement> optionalJsonElement1 = ConfiguredFeature.CODEC.encode(() -> configuredFeature1, JsonOps.INSTANCE, JsonOps.INSTANCE.empty()).get().left();
-		Optional<JsonElement> optionalJsonElement2 = ConfiguredFeature.CODEC.encode(() -> configuredFeature2, JsonOps.INSTANCE, JsonOps.INSTANCE.empty()).get().left();
+		Optional<JsonElement> optionalJsonElement1 = ConfiguredFeature.CODEC.encode(configuredFeature1, JsonOps.INSTANCE, JsonOps.INSTANCE.empty()).get().left();
+		Optional<JsonElement> optionalJsonElement2 = ConfiguredFeature.CODEC.encode(configuredFeature2, JsonOps.INSTANCE, JsonOps.INSTANCE.empty()).get().left();
 
 		// Compare the JSON to see if it's the exact same ConfiguredFeature.
 		if(optionalJsonElement1.isPresent() &&

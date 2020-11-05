@@ -10,7 +10,6 @@
     "DimensionTypeAccessor",
     "EnderDragonFightMixin",
     "GenerationSettingsAccessor",
-    "GoVoteMixin",
     "MinecraftServerMixin",
     "RenderPhaseAccessor",
     "ServerWorldMixin",

@@ -6,6 +6,24 @@ Welcome to the Github! If you are looking for the most recent stable version, th
 ------------------------------------------------
 #    | World Blender changelog |
 
+## (V.1.0.9 Changes) (1.16.4 Minecraft)
+
+##### Features:
+- Optimized World Blender's feature slightly.
+
+##### Portal:
+- You now can specify multiple activation items! 
+  Just separate their identifiers with a comma.
+  If you make activation item config empty, any 
+  crouch right clicking can make the portal now too.
+  
+##### Config:
+- Clarified and fixed some config comments.
+
+##### Misc:
+- Removed vote screen as voting is over.
+
+
 ## (V.1.0.8 Changes) (1.16.3 Minecraft)
 
 ##### Dimension:
@@ -14,7 +32,7 @@ Welcome to the Github! If you are looking for the most recent stable version, th
 ##### Features:
 - Fixed Coral not spawning in dimension.
 
-  
+
 ## (V.1.0.7 Changes) (1.16.3 Minecraft)
      
 ##### Portal:

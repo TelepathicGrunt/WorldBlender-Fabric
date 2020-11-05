@@ -37,7 +37,6 @@ dependencies {
 	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
-	// Fabric API. This is technically optional, but you probably want it anyway.
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
 	modImplementation "me.shedaniel.cloth:config-2:${project.cloth_config_version}"
@@ -122,7 +121,13 @@ processResources {
 			File file = it
 			jsonMinified++
 			def oldLength = file.length()
-			file.text = JsonOutput.toJson(new JsonSlurper().parse(file))
+			try{
+				file.text = JsonOutput.toJson(new JsonSlurper().parse(file))
+			}
+			catch(Exception e){
+				System.out.println("Parsing JSON error in " + file.name)
+				throw e
+			}
 			jsonBytesSaved += oldLength - file.length()
 		}
 

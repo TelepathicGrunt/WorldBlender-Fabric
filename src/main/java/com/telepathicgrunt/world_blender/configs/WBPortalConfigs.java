@@ -10,9 +10,11 @@ public class WBPortalConfigs implements ConfigData {
 
     @ConfigEntry.Gui.PrefixText
     @ConfigEntry.Gui.Tooltip(count = 0)
-    @Comment(value = " Item that you need in your hand when you're crouching and right\r\n"
+    @Comment(value = " Item(s) that you need in your hand when you're crouching and right\r\n"
             +" clicking a chest block to begin the portal creation process.\r\n"
-            +" This activation item will then be consumed.\r\n"
+            +" This activation item will then be consumed. You can specify more\r\n"
+            +" than 1 item that can be used to make the portal. Just separate the\r\n"
+            +" item identifiers with a comma.\r\n"
             +" \r\n"
             +" NOTE: the 8 chests needs to be in a 2x2 pattern before this mod "
             +" starts checking the contents of the chests and then create the"
@@ -48,14 +50,14 @@ public class WBPortalConfigs implements ConfigData {
 
     @ConfigEntry.Gui.PrefixText
     @ConfigEntry.Gui.Tooltip(count = 0)
-    @Comment(value = " At least many unique block items are needed to be in the eight\r\n"
-            +" chests (or other blocks with chest tag) to create the portal. \r\n"
+    @Comment(value = "Kinds of block items needed to be in the eight\r\n"
+            +" chests (or other chest tagged blocks) to create the portal. \r\n"
             +" \r\n"
             +" Items with no block form will be ignored and not counted but still be consumed.\r\n"
             +" \r\n"
-            +" If you set this to beyond 216 (maximum slots four 8 chests), make\r\n"
-            +" sure you have a mod that has a chest that has much more inventory "
-            +" slots to fill or else you cannot ")
+            +" If you set this to beyond 216 (the maximum number of slots in 8 vanilla chests),\r\n"
+            +" make sure you have a mod that has a chest that has much more inventory "
+            +" slots to fill or else you cannot create the portal.")
     @ConfigEntry.BoundedDiscrete(min = 0, max = 1000)
     public int uniqueBlocksNeeded = 216;
 

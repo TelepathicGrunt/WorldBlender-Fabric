@@ -9,8 +9,8 @@
     "TelepathicGrunt"
   ],
   "contact": {
-    "homepage": "---",
-    "sources": "---"
+    "homepage": "https://www.curseforge.com/minecraft/mc-mods/world-blender-fabric",
+    "sources": "https://github.com/TelepathicGrunt/WorldBlender-Fabric"
   },
 
   "license": "LGPLv3",
@@ -33,11 +33,8 @@
   ],
 
   "depends": {
-    "fabricloader": ">=0.7.4",
-    "fabric": "*",
-    "minecraft": "1.16.x"
-  },
-  "suggests": {
-    "flamingo": "*"
+    "fabricloader": ">=0.10.6",
+    "fabric": ">=0.25.0",
+    "minecraft": ">=1.16.2"
   }
 }

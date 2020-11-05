@@ -265,7 +265,7 @@ public class TheBlender {
                     }
 
                     if(configuredFeatureID == null){
-                        Optional<JsonElement> configuredFeatureJSON = ConfiguredFeature.CODEC.encode(configuredFeatureSupplier, JsonOps.INSTANCE, JsonOps.INSTANCE.empty()).get().left();
+                        Optional<JsonElement> configuredFeatureJSON = ConfiguredFeature.CODEC.encode(configuredFeatureSupplier.get(), JsonOps.INSTANCE, JsonOps.INSTANCE.empty()).get().left();
                         configuredFeatureJSON.ifPresent(json -> extractModNames(json.toString()));
                         continue;
                     }

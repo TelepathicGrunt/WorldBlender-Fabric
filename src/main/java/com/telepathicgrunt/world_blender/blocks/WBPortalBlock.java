@@ -33,7 +33,7 @@ public class WBPortalBlock extends BlockWithEntity
 	
 	protected WBPortalBlock()
 	{
-		super(Block.Settings.of(Material.PORTAL, MaterialColor.BLACK).noCollision().lightLevel((blockState) -> 6).strength(-1.0F, 3600000.0F).dropsNothing());
+		super(Block.Settings.of(Material.PORTAL, MaterialColor.BLACK).noCollision().luminance((blockState) -> 6).strength(-1.0F, 3600000.0F).dropsNothing());
 	}
 
 

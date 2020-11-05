@@ -96,7 +96,7 @@ public class NoFloatingLiquidsOrFallingBlocks extends Feature<DefaultFeatureConf
 				!WorldBlender.WB_CONFIG.WBDimensionConfig.containFloatingLiquids)
 			return false;
 		
-		BlockPos.Mutable mutable;
+		BlockPos.Mutable mutable = new BlockPos.Mutable();
 		BlockState currentBlockstate;
 		BlockState lastBlockstate = Blocks.STONE.getDefaultState();
 		
@@ -104,7 +104,7 @@ public class NoFloatingLiquidsOrFallingBlocks extends Feature<DefaultFeatureConf
 		{
 			for(int z = 0; z < 16; z++)
 			{
-				mutable = new BlockPos.Mutable(position.getX() + x, 0, position.getZ() + z);
+				mutable.set(position.getX() + x, 0, position.getZ() + z);
 				mutable.move(Direction.UP, Math.max(world.getTopY(Heightmap.Type.WORLD_SURFACE, mutable.getX(), mutable.getZ()), chunkgenerator.getSeaLevel()));
 				
 				//checks the column downward

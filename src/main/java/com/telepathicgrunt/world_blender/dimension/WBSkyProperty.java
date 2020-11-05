@@ -12,7 +12,7 @@ public class WBSkyProperty extends SkyProperties {
     }
 
     @Override
-    public Vec3d adjustSkyColor(Vec3d color, float sunHeight) {
+    public Vec3d adjustFogColor(Vec3d color, float sunHeight) {
         return color.multiply(sunHeight * 0.85F + 0.06F, sunHeight * 0.90F + 0.06F, sunHeight * 0.89F + 0.10F);
     }
 

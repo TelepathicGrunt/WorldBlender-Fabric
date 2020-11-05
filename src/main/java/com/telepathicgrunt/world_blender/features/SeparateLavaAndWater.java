@@ -29,13 +29,13 @@ public class SeparateLavaAndWater extends Feature<DefaultFeatureConfig>
 		// this feature is completely turned off.
 		if (!WorldBlender.WB_CONFIG.WBDimensionConfig.preventLavaTouchingWater) return false;
 		world.getBiome(position).getGenerationSettings().getFeatures().get(GenerationStep.Feature.TOP_LAYER_MODIFICATION.ordinal()).stream().anyMatch(supplier -> supplier.get().equals(WBConfiguredFeatures.SEPARATE_LAVA_AND_WATER));
-		BlockPos.Mutable mutable;
+		BlockPos.Mutable mutable = new BlockPos.Mutable();
 		BlockState currentBlockstate;
 		BlockState neighboringBlockstate;
 
 		for (int x = 0; x < 16; x++) {
 			for (int z = 0; z < 16; z++) {
-				mutable = new BlockPos.Mutable(position.getX() + x, 0, position.getZ() + z);
+				mutable.set(position.getX() + x, 0, position.getZ() + z);
 				mutable.move(Direction.UP, Math.max(world.getTopY(Heightmap.Type.WORLD_SURFACE, mutable.getX(), mutable.getZ()), chunkgenerator.getSeaLevel()));
 
 				// checks the column downward

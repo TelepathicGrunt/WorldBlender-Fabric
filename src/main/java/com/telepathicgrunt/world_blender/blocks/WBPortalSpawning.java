@@ -15,6 +15,7 @@ import net.minecraft.item.Items;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.hit.HitResult;
@@ -92,17 +93,28 @@ public class WBPortalSpawning
 				WBPortalSpawning.VALID_CHEST_BLOCKS_ENTITY_TYPES.getOrDefault(blockEntity.getType(), false))
 		{
 			//checks to make sure the activation item is a real item before doing the rest of the checks
-			Identifier activationItem = new Identifier(WorldBlender.WB_CONFIG.WBPortalConfig.activationItem);
-			if (Registry.ITEM.getOrEmpty(activationItem).isPresent())
-			{
-				WorldBlender.LOGGER.log(Level.INFO, "World Blender: Warning, the activation item set in the config does not exist. Please make sure it is a valid resource location to a real item as the portal cannot be created now.");
-				Text message = new LiteralText("§eWorld Blender: §fWarning, the activation item set in the config does not exist. Please make sure it is a valid resource location to a real item as the portal cannot be created now.");
-				player.sendMessage(message, false);
-				return ActionResult.FAIL;
+			String[] activationItems = WorldBlender.WB_CONFIG.WBPortalConfig.activationItem.split(",");
+			Arrays.parallelSetAll(activationItems, (i) -> activationItems[i].trim().toLowerCase(Locale.ROOT).replace(' ', '_'));
+			boolean validItem = false;
+
+			for(String itemString : activationItems){
+				Identifier activationItem = new Identifier(itemString);
+				if (!Registry.ITEM.getOrEmpty(activationItem).isPresent())
+				{
+					WorldBlender.LOGGER.log(Level.INFO, "World Blender: Warning, the activation item set in the config does not exist. Please make sure " + itemString + " is a valid resource location to a real item as the portal cannot be created now.");
+					LiteralText message = new LiteralText(Formatting.YELLOW + "World Blender: " + Formatting.WHITE + "Warning, the activation item set in the config does not exist. Please make sure " + Formatting.YELLOW + itemString + Formatting.WHITE + " is a valid resource location to a real item as the portal cannot be created now.");
+					player.sendMessage(message, false);
+					return ActionResult.FAIL;
+				}
+				else if((player.getMainHandStack().getItem().equals(Registry.ITEM.get(activationItem)) && hand == Hand.MAIN_HAND) ||
+						(player.getOffHandStack().getItem().equals(Registry.ITEM.get(activationItem)) && hand == Hand.OFF_HAND))
+				{
+					validItem = true;
+					break;
+				}
 			}
-			else if((player.getMainHandStack().getItem() != Registry.ITEM.get(activationItem) && hand == Hand.MAIN_HAND) ||
-					(player.getOffHandStack().getItem() != Registry.ITEM.get(activationItem) && hand == Hand.OFF_HAND))
-			{
+
+			if(activationItems.length != 0 && !validItem){
 				return ActionResult.PASS;
 			}
 
