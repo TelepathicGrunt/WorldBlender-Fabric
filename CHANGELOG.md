@@ -6,6 +6,12 @@ Welcome to the Github! If you are looking for the most recent stable version, th
 ------------------------------------------------
 #    | World Blender changelog |
 
+## (V.1.0.10 Changes) (1.16.4 Minecraft)
+
+##### Dimension:
+- Fixed possible issue with End Podium or Altar not spawning.
+
+
 ## (V.1.0.9 Changes) (1.16.4 Minecraft)
 
 ##### Features:
