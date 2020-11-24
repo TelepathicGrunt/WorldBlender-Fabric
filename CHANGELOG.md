@@ -11,6 +11,13 @@ Welcome to the Github! If you are looking for the most recent stable version, th
 ##### Dimension:
 - Fixed possible issue with End Podium or Altar not spawning.
 
+##### Config:
+- Adjusted some config comments.
+
+##### Backend:
+- Removed Angerable Patch as it is better for other mods 
+  to depend on it instead of World Blender.
+
 
 ## (V.1.0.9 Changes) (1.16.4 Minecraft)
 
