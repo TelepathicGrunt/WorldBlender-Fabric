@@ -34,7 +34,7 @@ import java.net.Proxy;
 import java.util.Map;
 
 
-@Mixin(value = MinecraftServer.class, priority = Integer.MAX_VALUE)
+@Mixin(value = MinecraftServer.class, priority = (Integer.MAX_VALUE - 1))
 public class MinecraftServerMixin {
 
     @Final
@@ -71,6 +71,6 @@ public class MinecraftServerMixin {
     )
     private void modifyBiomeRegistry(WorldGenerationProgressListener worldGenerationProgressListener, CallbackInfo ci) {
         TheBlender.addDimensionalSpacing(worlds);
-        WBPortalSpawning.generateRequiredBlockList(WorldBlender.WB_CONFIG.WBPortalConfig.requiredBlocksInChests);
+        WBPortalSpawning.generateRequiredBlockList(worlds.get(World.OVERWORLD), WorldBlender.WB_CONFIG.WBPortalConfig.requiredBlocksInChests);
     }
 }

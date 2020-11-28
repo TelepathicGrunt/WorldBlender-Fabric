@@ -26,9 +26,6 @@ repositories {
 		name "Siphalor's Maven"
 		url "https://maven.siphalor.de"
 	}
-	flatDir {
-		dirs 'deps'
-	}
 }
 
 dependencies {
@@ -49,8 +46,6 @@ dependencies {
 
 	modImplementation 'com.github.modmuss50:Voyager:1.0.0'
 	include 'com.github.modmuss50:Voyager:1.0.0'
-
-	//modImplementation 'com.telepathicgrunt.repurposedstructures:repurposed_structures-1.16.3:1.6.1'
 }
 
 processResources {

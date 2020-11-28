@@ -4,6 +4,7 @@ import com.telepathicgrunt.world_blender.WorldBlender;
 import it.unimi.dsi.fastutil.objects.Object2BooleanArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockEntityProvider;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
@@ -12,6 +13,7 @@ import net.minecraft.inventory.Inventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
@@ -38,7 +40,7 @@ public class WBPortalSpawning
 	 * Takes config string and chops it up into individual entries and returns the array of the entries.
 	 * Splits the incoming string on commas, trims white spaces on end, turns inside whitespace to _, and lowercases entry.
 	 */
-	public static void generateRequiredBlockList(String configEntry) {
+	public static void generateRequiredBlockList(ServerWorld serverWorld, String configEntry) {
 		String[] entriesArray = configEntry.split(",");
 		Arrays.parallelSetAll(entriesArray, (i) -> entriesArray[i].trim().toLowerCase(Locale.ROOT).replace(' ', '_'));
 		
@@ -59,22 +61,30 @@ public class WBPortalSpawning
 		}
 
 		//find all entity types that are most likely chests
-		for(BlockEntityType<?> blockEntityType : Registry.BLOCK_ENTITY_TYPE)
-		{
-			try{
-				BlockEntity blockEntity = blockEntityType.instantiate();
-				if(blockEntity != null) {
-					boolean hasChestName = blockEntity.getClass().getSimpleName().toLowerCase().contains("chest");
-					boolean isInventory = blockEntity instanceof Inventory;
-					WBPortalSpawning.VALID_CHEST_BLOCKS_ENTITY_TYPES.put(
-							blockEntityType,
-							hasChestName && isInventory);
+		for(Block block : Registry.BLOCK) {
+			if(block instanceof BlockEntityProvider){
+				Identifier blockId = Registry.BLOCK.getId(block);
+
+				try{
+					BlockEntity blockEntity = ((BlockEntityProvider) block).createBlockEntity(serverWorld);
+
+					if(blockEntity != null) {
+						Identifier blockEntityId = Registry.BLOCK_ENTITY_TYPE.getId(blockEntity.getType());
+
+						if(blockEntityId != null) {
+							boolean hasChestName = blockId.getPath().contains("chest") || blockEntityId.getPath().contains("chest");
+							boolean isInventory = blockEntity instanceof Inventory;
+							WBPortalSpawning.VALID_CHEST_BLOCKS_ENTITY_TYPES.put(
+									blockEntity.getType(),
+									hasChestName && isInventory);
+						}
+						else{
+							throw new Exception();
+						}
+					}
 				}
-			}
-			catch(Throwable e){
-				Identifier erroringBlockEntityTypeID = Registry.BLOCK_ENTITY_TYPE.getId(blockEntityType);
-				if(erroringBlockEntityTypeID != null){
-					WorldBlender.LOGGER.log(Level.WARN, "Failed to check if "+erroringBlockEntityTypeID+" is a chest. If is not a chest, ignore this message. If it is, let telepathicGrunt (World Blender dev) know this.");
+				catch(Throwable e){
+					WorldBlender.LOGGER.log(Level.WARN, "Failed to check if "+blockId+" is a chest. If is not a chest, ignore this message. If it is, let telepathicGrunt (World Blender dev) know this.");
 				}
 			}
 		}
