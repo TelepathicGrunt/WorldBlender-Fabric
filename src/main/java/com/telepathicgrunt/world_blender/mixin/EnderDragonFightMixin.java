@@ -2,6 +2,7 @@ package com.telepathicgrunt.world_blender.mixin;
 
 import com.telepathicgrunt.world_blender.WBIdentifiers;
 import com.telepathicgrunt.world_blender.blocks.WBPortalBlockEntity;
+import com.telepathicgrunt.world_blender.dimension.EnderDragonFightModification;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.pattern.BlockPattern;
 import net.minecraft.entity.boss.dragon.EnderDragonFight;
@@ -19,21 +20,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(EnderDragonFight.class)
 public class EnderDragonFightMixin {
 
-	@Mutable
-	@Final
-	@Shadow
-	private ServerWorld world;
-
-	@Final
-	@Shadow
-	private BlockPattern endPortalPattern;
-
-	@Mutable
-	@Shadow
-	private BlockPos exitPortalLocation;
 
 
-	/**
+	/*
 	 * Skip doing the laggy chunk checks. We will do a different check for portal in findEndPortal
 	 */
 	@Inject(
@@ -42,7 +31,7 @@ public class EnderDragonFightMixin {
 			cancellable = true
 	)
 	private void worldContainsEndPortal(CallbackInfoReturnable<Boolean> cir) {
-		if(this.world.getRegistryKey().equals(WBIdentifiers.WB_WORLD_KEY)){
+		if(((EnderDragonFightAccessor)this).getworld().getRegistryKey().equals(WBIdentifiers.WB_WORLD_KEY)){
 			cir.setReturnValue(false);
 		}
 	}
@@ -53,6 +42,8 @@ public class EnderDragonFightMixin {
 	 * Bedrock floor of World Blender's dimension as if it is an End Podium.
 	 *
 	 * This was the cause of End Podium and Altar not spawning in WB dimension randomly.
+	 *
+	 * We also moved the code into it's own class so if it crash or lags, my mod's class shows up in stacktrace.
 	 */
 	@Inject(
 			method = "findEndPortal()Lnet/minecraft/block/pattern/BlockPattern$Result;",
@@ -60,26 +51,7 @@ public class EnderDragonFightMixin {
 			cancellable = true
 	)
 	private void findEndPortal(CallbackInfoReturnable<BlockPattern.Result> cir) {
-		if(world.getRegistryKey().getValue().equals(WBIdentifiers.MOD_DIMENSION_ID)){
-			WorldChunk worldChunk = this.world.getChunk(0, 0);
-
-			for(BlockEntity blockEntity : worldChunk.getBlockEntities().values()) {
-				if (blockEntity instanceof WBPortalBlockEntity) {
-					if(!((WBPortalBlockEntity) blockEntity).isRemoveable()){
-						BlockPattern.Result blockpattern = this.endPortalPattern.searchAround(this.world, blockEntity.getPos());
-						if (blockpattern != null) {
-							BlockPos blockpos = blockpattern.translate(3, 7, 3).getBlockPos();
-							if (this.exitPortalLocation == null && blockpos.getX() == 0 && blockpos.getZ() == 0) {
-								this.exitPortalLocation = blockpos;
-							}
-
-							cir.setReturnValue(blockpattern);
-						}
-					}
-				}
-			}
-
-			cir.setReturnValue(null); // Skip checking the bedrock layer
-		}
+		BlockPattern.Result result = EnderDragonFightModification.findEndPortal((EnderDragonFight)(Object)this, cir.getReturnValue());
+		if(cir.getReturnValue() != result) cir.setReturnValue(result);
 	}
 }

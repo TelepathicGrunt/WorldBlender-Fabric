@@ -6,6 +6,11 @@ Welcome to the Github! If you are looking for the most recent stable version, th
 ------------------------------------------------
 #    | World Blender changelog |
 
+## (V.1.0.12 Changes) (1.16.4 Minecraft)
+
+##### Backend:
+- Moved some of my code around so if it causes issues, it now shows up in stacktraces for easier debugging.
+
 ## (V.1.0.11 Changes) (1.16.4 Minecraft)
 
 ##### Portal:
