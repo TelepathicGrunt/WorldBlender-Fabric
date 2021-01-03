@@ -13,7 +13,6 @@ public enum MainBiomeLayer implements InitLayer
 {
 	INSTANCE;
 
-
 	private static OctaveSimplexNoiseSampler perlinGen;
 //	private double max = -100000;
 //	private double min = 100000;

@@ -46,6 +46,10 @@ dependencies {
 
 	modImplementation 'com.github.modmuss50:Voyager:1.0.0'
 	include 'com.github.modmuss50:Voyager:1.0.0'
+
+	modImplementation('com.github.qouteall.ImmersivePortalsMod:imm_ptl_core:1.16-SNAPSHOT') {
+		exclude module: 'fabric-api'
+	}
 }
 
 processResources {

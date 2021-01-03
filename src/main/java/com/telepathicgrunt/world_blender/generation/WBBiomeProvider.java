@@ -18,6 +18,7 @@ import net.minecraft.world.biome.layer.ScaleLayer;
 import net.minecraft.world.biome.layer.util.*;
 import net.minecraft.world.biome.source.BiomeLayerSampler;
 import net.minecraft.world.biome.source.BiomeSource;
+import net.minecraft.world.gen.feature.StructureFeature;
 
 import java.util.List;
 import java.util.function.LongFunction;
@@ -72,9 +73,8 @@ public class WBBiomeProvider extends BiomeSource
 		return layerFactory;
 	}
 
-
 	public Biome getBiomeForNoiseGen(int x, int y, int z) {
-		return this.sample(WBBiomeProvider.LAYERS_BIOME_REGISTRY, x, z);
+		return this.sample(this.BIOME_REGISTRY, x, z);
 	}
 
 	public Biome sample(Registry<Biome> registry, int i, int j) {

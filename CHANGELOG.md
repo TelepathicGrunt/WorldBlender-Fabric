@@ -8,8 +8,15 @@ Welcome to the Github! If you are looking for the most recent stable version, th
 
 ## (V.1.0.12 Changes) (1.16.4 Minecraft)
 
+##### Blender:
+- Switched to using a Set in backend to massively improve World Blender's speed at world startup.
+
+- Removed code that parsed and printed out other mod's unregistered worldgen stuff. 
+  This is done to try and speed up World Blender a bit at world startup.
+
 ##### Backend:
 - Moved some of my code around so if it causes issues, it now shows up in stacktraces for easier debugging.
+
 
 ## (V.1.0.11 Changes) (1.16.4 Minecraft)
 
