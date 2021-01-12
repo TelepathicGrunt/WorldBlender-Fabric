@@ -20,6 +20,8 @@ Welcome to the Github! If you are looking for the most recent stable version, th
   
 - Reworked backend so that the Biome Source now uses the world's seed by default. Add `"seed":` entry to "biome_source" to specify a fixed seed for biome placement. 
 
+- Optimized and combined NoFloatingLiquidsOrFallingBlocks and SeparateLavaAndWater features into antiFloatingBlocksAndSeparateLiquids feature to be faster.
+
 ##### Structures:
 - Fixed Ocean Monuments not spawning in World Blender's dimension.
 
