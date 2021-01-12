@@ -247,12 +247,11 @@ public class WBBlendingConfigs implements ConfigData {
     @ConfigEntry.Gui.PrefixText
     @ConfigEntry.Gui.Tooltip(count = 0)
     @Comment(value = " Dumps all resource locations (IDs) for all mods into a new file\r\n"
-            +" called identifierDump.txt and can be found by looking below\r\n"
-            +" the saves and mods folder in Minecraft's folder. The file is made if"
-            +" you set this option to true and then run modded Minecraft until you"
-            +" reach the title menu.\r\n"
+            +" at config/world_blender-identifier_dump.txt and can be found by\r\n"
+            +"  looking in the config folder in Minecraft's folder. The file is made\r\n"
+            +" if you set this option to true and started a world.\r\n"
             +"\r\n"
-            +" Use this option to look up the resource location or name of features,"
+            +" Use this option to look up the resource location or name of registered features,"
             +" biomes, blocks, carvers, structures, or entities that you want to blacklist.\r\n")
     public boolean identifierDump = false;
 }

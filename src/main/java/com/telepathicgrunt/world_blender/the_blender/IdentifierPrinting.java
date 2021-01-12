@@ -23,7 +23,7 @@ public class IdentifierPrinting
 	 */
 	public static void printAllIdentifiers(DynamicRegistryManager registryManager)
 	{
-		try(PrintStream printStream = new PrintStream("identifierDump.txt"))
+		try(PrintStream printStream = new PrintStream("config/world_blender-identifier_dump.txt"))
 		{ 
 			printOutSection(printStream, registryManager.get(Registry.BIOME_KEY), "BIOMES");
 
