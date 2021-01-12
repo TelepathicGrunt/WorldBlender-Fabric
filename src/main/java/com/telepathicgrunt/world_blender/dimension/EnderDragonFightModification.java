@@ -18,7 +18,7 @@ public class EnderDragonFightModification {
      * This was the cause of End Podium and Altar not spawning in WB dimension randomly.
      */
     public static BlockPattern.Result findEndPortal(EnderDragonFight enderDragonFight, BlockPattern.Result blockPattern) {
-        if(((EnderDragonFightAccessor)enderDragonFight).wb_getworld().getRegistryKey().getValue().equals(WBIdentifiers.MOD_DIMENSION_ID)){
+        if(((EnderDragonFightAccessor)enderDragonFight).wb_getworld().getRegistryKey().equals(WBIdentifiers.WB_WORLD_KEY)){
             WorldChunk worldChunk = ((EnderDragonFightAccessor)enderDragonFight).wb_getworld().getChunk(0, 0);
 
             for(BlockEntity blockEntity : worldChunk.getBlockEntities().values()) {
