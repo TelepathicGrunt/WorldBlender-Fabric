@@ -1,7 +1,5 @@
 package com.telepathicgrunt.world_blender.the_blender;
 
-import com.google.gson.JsonElement;
-import com.mojang.serialization.JsonOps;
 import com.telepathicgrunt.world_blender.WBIdentifiers;
 import com.telepathicgrunt.world_blender.WorldBlender;
 import com.telepathicgrunt.world_blender.features.WBConfiguredFeatures;
@@ -26,12 +24,9 @@ import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
 import net.minecraft.world.gen.feature.StructureFeature;
 import net.minecraft.world.gen.surfacebuilder.SurfaceConfig;
 import net.minecraft.world.gen.surfacebuilder.TernarySurfaceConfig;
-import org.apache.logging.log4j.Level;
 
 import java.util.*;
 import java.util.function.Supplier;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 
@@ -162,14 +157,14 @@ public class TheBlender {
             //get all carvable blocks
             for (Carver carverStage : GenerationStep.Carver.values()) {
                 for (Supplier<ConfiguredCarver<?>> carver : world_blender_biomes.get(0).getGenerationSettings().getCarversForStep(carverStage)) {
-                    allBlocksToCarve.addAll(((CarverAccessor)((ConfiguredCarverAccessor)carver.get()).getcarver()).getalwaysCarvableBlocks());
+                    allBlocksToCarve.addAll(((CarverAccessor)((ConfiguredCarverAccessor)carver.get()).wb_getcarver()).wb_getalwaysCarvableBlocks());
                 }
             }
 
             //update all carvers to carve the complete list of stuff to carve
             for (Carver carverStage : GenerationStep.Carver.values()) {
                 for (Supplier<ConfiguredCarver<?>> carver : world_blender_biomes.get(0).getGenerationSettings().getCarversForStep(carverStage)) {
-                    ((CarverAccessor)((ConfiguredCarverAccessor)carver.get()).getcarver()).setalwaysCarvableBlocks(allBlocksToCarve);
+                    ((CarverAccessor)((ConfiguredCarverAccessor)carver.get()).wb_getcarver()).wb_setalwaysCarvableBlocks(allBlocksToCarve);
                 }
             }
         }
@@ -189,7 +184,7 @@ public class TheBlender {
      */
     private static void makeBiomeMutable(Biome biome){
         // Make the structure and features list mutable for modification late
-        List<List<Supplier<ConfiguredFeature<?, ?>>>> tempFeature = ((GenerationSettingsAccessor)biome.getGenerationSettings()).getGSFeatures();
+        List<List<Supplier<ConfiguredFeature<?, ?>>>> tempFeature = ((GenerationSettingsAccessor)biome.getGenerationSettings()).wb_getGSFeatures();
         List<List<Supplier<ConfiguredFeature<?, ?>>>> mutableGenerationStages = new ArrayList<>();
 
         // Fill in generation stages so there are at least 10 or else Minecraft crashes.
@@ -203,21 +198,21 @@ public class TheBlender {
         }
 
         // Make the Structure and GenerationStages (features) list mutable for modification later
-        ((GenerationSettingsAccessor)biome.getGenerationSettings()).setGSFeatures(mutableGenerationStages);
-        ((GenerationSettingsAccessor)biome.getGenerationSettings()).setGSStructureFeatures(new ArrayList<>(((GenerationSettingsAccessor)biome.getGenerationSettings()).getGSStructureFeatures()));
-        ((GenerationSettingsAccessor)biome.getGenerationSettings()).setGSStructureFeatures(new ArrayList<>(((GenerationSettingsAccessor)biome.getGenerationSettings()).getGSStructureFeatures()));
+        ((GenerationSettingsAccessor)biome.getGenerationSettings()).wb_setGSFeatures(mutableGenerationStages);
+        ((GenerationSettingsAccessor)biome.getGenerationSettings()).wb_setGSStructureFeatures(new ArrayList<>(((GenerationSettingsAccessor)biome.getGenerationSettings()).wb_getGSStructureFeatures()));
+        ((GenerationSettingsAccessor)biome.getGenerationSettings()).wb_setGSStructureFeatures(new ArrayList<>(((GenerationSettingsAccessor)biome.getGenerationSettings()).wb_getGSStructureFeatures()));
 
-        ((GenerationSettingsAccessor)biome.getGenerationSettings()).setCarvers(new HashMap<>(((GenerationSettingsAccessor)biome.getGenerationSettings()).getCarvers()));
+        ((GenerationSettingsAccessor)biome.getGenerationSettings()).wb_setCarvers(new HashMap<>(((GenerationSettingsAccessor)biome.getGenerationSettings()).wb_getCarvers()));
         for(Carver carverGroup : Carver.values()){
-            ((GenerationSettingsAccessor) biome.getGenerationSettings()).getCarvers().put(carverGroup, new ArrayList<>(biome.getGenerationSettings().getCarversForStep(carverGroup)));
+            ((GenerationSettingsAccessor) biome.getGenerationSettings()).wb_getCarvers().put(carverGroup, new ArrayList<>(biome.getGenerationSettings().getCarversForStep(carverGroup)));
         }
 
-        ((SpawnSettingsAccessor)biome.getSpawnSettings()).setSpawners(new HashMap<>(((SpawnSettingsAccessor) biome.getSpawnSettings()).getSpawners()));
+        ((SpawnSettingsAccessor)biome.getSpawnSettings()).wb_setSpawners(new HashMap<>(((SpawnSettingsAccessor) biome.getSpawnSettings()).wb_getSpawners()));
         for(SpawnGroup spawnGroup : SpawnGroup.values()){
-            ((SpawnSettingsAccessor) biome.getSpawnSettings()).getSpawners().put(spawnGroup, new ArrayList<>(biome.getSpawnSettings().getSpawnEntry(spawnGroup)));
+            ((SpawnSettingsAccessor) biome.getSpawnSettings()).wb_getSpawners().put(spawnGroup, new ArrayList<>(biome.getSpawnSettings().getSpawnEntry(spawnGroup)));
         }
 
-        ((SpawnSettingsAccessor)biome.getSpawnSettings()).setSpawnCosts(new HashMap<>(((SpawnSettingsAccessor) biome.getSpawnSettings()).getSpawnCosts()));
+        ((SpawnSettingsAccessor)biome.getSpawnSettings()).wb_setSpawnCosts(new HashMap<>(((SpawnSettingsAccessor) biome.getSpawnSettings()).wb_getSpawnCosts()));
     }
 
 
@@ -472,7 +467,7 @@ public class TheBlender {
 
             // Set the structure spacing config in wb dimension and clear map so next saved world is fresh.
             ((StructuresConfigAccessor)WBServerWorld.getChunkManager().getChunkGenerator().getStructuresConfig())
-                    .setStructureConfigMap(tempMap);
+                    .wb_setStructureConfigMap(tempMap);
         }
     }
 }

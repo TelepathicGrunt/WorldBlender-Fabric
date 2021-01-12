@@ -8,5 +8,5 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 public interface DimensionTypeAccessor {
 
     @Accessor("hasEnderDragonFight")
-    void setEnderDragonFight(boolean hasDragon);
+    void wb_setEnderDragonFight(boolean hasDragon);
 }

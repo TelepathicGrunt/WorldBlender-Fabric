@@ -13,6 +13,10 @@ Welcome to the Github! If you are looking for the most recent stable version, th
 
 - Removed code that parsed and printed out other mod's unregistered worldgen stuff. 
   This is done to try and speed up World Blender a bit at world startup.
+  
+##### Mixins:
+-Prefixed all my accessor and invoker mixins due to this bug in mixins that could cause a crash with other mods for same named mixins.
+ https://github.com/SpongePowered/Mixin/issues/430
 
 ##### Backend:
 - Moved some of my code around so if it causes issues, it now shows up in stacktraces for easier debugging.

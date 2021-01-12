@@ -18,7 +18,6 @@ import net.minecraft.world.biome.layer.ScaleLayer;
 import net.minecraft.world.biome.layer.util.*;
 import net.minecraft.world.biome.source.BiomeLayerSampler;
 import net.minecraft.world.biome.source.BiomeSource;
-import net.minecraft.world.gen.feature.StructureFeature;
 
 import java.util.List;
 import java.util.function.LongFunction;
@@ -78,7 +77,7 @@ public class WBBiomeProvider extends BiomeSource
 	}
 
 	public Biome sample(Registry<Biome> registry, int i, int j) {
-		int k = ((BiomeLayerSamplerAccessor)this.BIOME_SAMPLER).getSampler().sample(i, j);
+		int k = ((BiomeLayerSamplerAccessor)this.BIOME_SAMPLER).wb_getSampler().sample(i, j);
 		Biome biome = registry.get(k);
 		if (biome == null) {
 			//fallback to builtin registry if dynamic registry doesnt have biome

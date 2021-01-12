@@ -18,14 +18,14 @@ import java.util.Set;
 public interface EnderDragonFightAccessor {
 
     @Accessor("world")
-    ServerWorld getworld();
+    ServerWorld wb_getworld();
 
     @Accessor("endPortalPattern")
-    BlockPattern getendPortalPattern();
+    BlockPattern wb_getendPortalPattern();
 
     @Accessor("exitPortalLocation")
-    BlockPos getexitPortalLocation();
+    BlockPos wb_getexitPortalLocation();
 
     @Accessor("exitPortalLocation")
-    void setexitPortalLocation(BlockPos pos);
+    void wb_setexitPortalLocation(BlockPos pos);
 }

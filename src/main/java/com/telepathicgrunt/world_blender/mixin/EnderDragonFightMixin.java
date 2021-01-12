@@ -1,18 +1,10 @@
 package com.telepathicgrunt.world_blender.mixin;
 
 import com.telepathicgrunt.world_blender.WBIdentifiers;
-import com.telepathicgrunt.world_blender.blocks.WBPortalBlockEntity;
 import com.telepathicgrunt.world_blender.dimension.EnderDragonFightModification;
-import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.pattern.BlockPattern;
 import net.minecraft.entity.boss.dragon.EnderDragonFight;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.chunk.WorldChunk;
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Mutable;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
@@ -31,7 +23,7 @@ public class EnderDragonFightMixin {
 			cancellable = true
 	)
 	private void worldContainsEndPortal(CallbackInfoReturnable<Boolean> cir) {
-		if(((EnderDragonFightAccessor)this).getworld().getRegistryKey().equals(WBIdentifiers.WB_WORLD_KEY)){
+		if(((EnderDragonFightAccessor)this).wb_getworld().getRegistryKey().equals(WBIdentifiers.WB_WORLD_KEY)){
 			cir.setReturnValue(false);
 		}
 	}

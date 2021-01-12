@@ -15,7 +15,7 @@ import net.minecraft.util.math.BlockPos;
 public class WorldBlenderClient implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
-		SkyPropertiesAccessor.getBY_IDENTIFIER().put(new Identifier(WorldBlender.MODID, "sky_property"), new WBSkyProperty());
+		SkyPropertiesAccessor.wb_getBY_IDENTIFIER().put(new Identifier(WorldBlender.MODID, "sky_property"), new WBSkyProperty());
 		BlockEntityRendererRegistry.INSTANCE.register(WBBlocks.WORLD_BLENDER_PORTAL_BE, WBPortalBlockEntityRenderer::new);
 
 		// Set cooldown for portal after server says it was triggered

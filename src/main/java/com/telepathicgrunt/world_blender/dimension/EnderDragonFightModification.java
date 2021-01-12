@@ -18,17 +18,17 @@ public class EnderDragonFightModification {
      * This was the cause of End Podium and Altar not spawning in WB dimension randomly.
      */
     public static BlockPattern.Result findEndPortal(EnderDragonFight enderDragonFight, BlockPattern.Result blockPattern) {
-        if(((EnderDragonFightAccessor)enderDragonFight).getworld().getRegistryKey().getValue().equals(WBIdentifiers.MOD_DIMENSION_ID)){
-            WorldChunk worldChunk = ((EnderDragonFightAccessor)enderDragonFight).getworld().getChunk(0, 0);
+        if(((EnderDragonFightAccessor)enderDragonFight).wb_getworld().getRegistryKey().getValue().equals(WBIdentifiers.MOD_DIMENSION_ID)){
+            WorldChunk worldChunk = ((EnderDragonFightAccessor)enderDragonFight).wb_getworld().getChunk(0, 0);
 
             for(BlockEntity blockEntity : worldChunk.getBlockEntities().values()) {
                 if (blockEntity instanceof WBPortalBlockEntity) {
                     if(!((WBPortalBlockEntity) blockEntity).isRemoveable()){
-                        BlockPattern.Result blockpattern = ((EnderDragonFightAccessor)enderDragonFight).getendPortalPattern().searchAround(((EnderDragonFightAccessor)enderDragonFight).getworld(), blockEntity.getPos());
+                        BlockPattern.Result blockpattern = ((EnderDragonFightAccessor)enderDragonFight).wb_getendPortalPattern().searchAround(((EnderDragonFightAccessor)enderDragonFight).wb_getworld(), blockEntity.getPos());
                         if (blockpattern != null) {
                             BlockPos blockpos = blockpattern.translate(3, 7, 3).getBlockPos();
-                            if (((EnderDragonFightAccessor)enderDragonFight).getexitPortalLocation() == null && blockpos.getX() == 0 && blockpos.getZ() == 0) {
-                                ((EnderDragonFightAccessor)enderDragonFight).setexitPortalLocation(blockpos);
+                            if (((EnderDragonFightAccessor)enderDragonFight).wb_getexitPortalLocation() == null && blockpos.getX() == 0 && blockpos.getZ() == 0) {
+                                ((EnderDragonFightAccessor)enderDragonFight).wb_setexitPortalLocation(blockpos);
                             }
 
                             return blockpattern;

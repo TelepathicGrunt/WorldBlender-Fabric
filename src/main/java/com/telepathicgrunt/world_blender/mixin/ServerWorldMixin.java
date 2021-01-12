@@ -46,7 +46,7 @@ public class ServerWorldMixin implements ServerWorldAccess {
 		if(registryKey.getValue().equals(WBIdentifiers.MOD_DIMENSION_ID) &&
 				WorldBlender.WB_CONFIG.WBDimensionConfig.spawnEnderDragon)
 		{
-			((DimensionTypeAccessor)dimensionType).setEnderDragonFight(true);
+			((DimensionTypeAccessor)dimensionType).wb_setEnderDragonFight(true);
 			enderDragonFight = new EnderDragonFight((ServerWorld)(Object)this, server.getSaveProperties().getGeneratorOptions().getSeed(), server.getSaveProperties().getDragonFight());
 		}
 

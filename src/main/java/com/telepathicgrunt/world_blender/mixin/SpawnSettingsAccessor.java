@@ -13,16 +13,16 @@ import java.util.Map;
 public interface SpawnSettingsAccessor {
 
     @Accessor("spawners")
-    Map<SpawnGroup, List<SpawnSettings.SpawnEntry>> getSpawners();
+    Map<SpawnGroup, List<SpawnSettings.SpawnEntry>> wb_getSpawners();
 
     @Accessor("spawners")
-    void setSpawners(Map<SpawnGroup, List<SpawnSettings.SpawnEntry>> features);
+    void wb_setSpawners(Map<SpawnGroup, List<SpawnSettings.SpawnEntry>> features);
 
 
     @Accessor("spawnCosts")
-    Map<EntityType<?>, SpawnSettings.SpawnDensity> getSpawnCosts();
+    Map<EntityType<?>, SpawnSettings.SpawnDensity> wb_getSpawnCosts();
 
     @Accessor("spawnCosts")
-    void setSpawnCosts(Map<EntityType<?>, SpawnSettings.SpawnDensity>  structureFeatures);
+    void wb_setSpawnCosts(Map<EntityType<?>, SpawnSettings.SpawnDensity> structureFeatures);
 
 }
