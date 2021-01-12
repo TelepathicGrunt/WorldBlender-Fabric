@@ -5,7 +5,7 @@ import com.telepathicgrunt.world_blender.blocks.WBPortalSpawning;
 import com.telepathicgrunt.world_blender.configs.WBConfig;
 import com.telepathicgrunt.world_blender.features.WBConfiguredFeatures;
 import com.telepathicgrunt.world_blender.features.WBFeatures;
-import com.telepathicgrunt.world_blender.generation.WBBiomeProvider;
+import com.telepathicgrunt.world_blender.dimension.WBBiomeProvider;
 import com.telepathicgrunt.world_blender.surfacebuilder.WBSurfaceBuilders;
 import me.sargunvohra.mcmods.autoconfig1u.AutoConfig;
 import me.sargunvohra.mcmods.autoconfig1u.serializer.JanksonConfigSerializer;
