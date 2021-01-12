@@ -34,5 +34,4 @@ public interface GenerationSettingsAccessor {
 
     @Accessor("carvers")
     void wb_setCarvers(Map<GenerationStep.Carver, List<Supplier<ConfiguredCarver<?>>>> features);
-
 }

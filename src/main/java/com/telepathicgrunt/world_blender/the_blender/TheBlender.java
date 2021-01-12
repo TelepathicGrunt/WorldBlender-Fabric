@@ -42,14 +42,24 @@ public class TheBlender {
     public static void blendTheWorld(DynamicRegistryManager.Impl registryManager){
         if(!registryManager.getOptional(Registry.BIOME_KEY).isPresent()) return;
 
-        List<Biome> world_blender_biomes = registryManager.getOptional(Registry.BIOME_KEY).get().getEntries().stream()
+        List<Biome> worldBlenderBiomes = registryManager.getOptional(Registry.BIOME_KEY).get().getEntries().stream()
                 .filter(entry -> entry.getKey().getValue().getNamespace().equals(WorldBlender.MODID))
                 .map(Map.Entry::getValue)
                 .collect(Collectors.toList());
 
         // Only world blender biomes will be mutable
-        world_blender_biomes.forEach(TheBlender::makeBiomeMutable);
+        worldBlenderBiomes.forEach(TheBlender::makeBiomeMutable);
 
+        // Clear out world blender biomes of everything.
+        if(WorldBlender.WB_CONFIG.WBBlendingConfig.cleanSlateWBBiomesAtStartup){
+            worldBlenderBiomes.forEach(biome -> {
+                biome.getGenerationSettings().getFeatures().forEach(List::clear);
+                biome.getGenerationSettings().getStructureFeatures().clear();
+                ((GenerationSettingsAccessor)biome.getGenerationSettings()).wb_getCarvers().forEach((stage, list) -> list.clear());
+                ((SpawnSettingsAccessor)biome.getSpawnSettings()).wb_getSpawnCosts().clear();
+                ((SpawnSettingsAccessor)biome.getSpawnSettings()).wb_getSpawners().forEach((group, list) -> list.clear());
+            });
+        }
 
         // Reset these before biome loop
         ConfigBlacklisting.setupBlackLists();
@@ -63,14 +73,14 @@ public class TheBlender {
                 // begin blending into our biomes
                 TheBlender.mainBlending(
                         biomeEntry.getValue(), // Biome
-                        world_blender_biomes, // WB biomes
+                        worldBlenderBiomes, // WB biomes
                         biomeEntry.getKey().getValue(), // Identifier
                         registryManager); // all the registries
             }
         }
 
         // wrap up the last bits that still needs to be blended but after the biome loop
-        TheBlender.completeBlending(world_blender_biomes, registryManager.getOptional(Registry.CONFIGURED_FEATURE_WORLDGEN).get());
+        TheBlender.completeBlending(worldBlenderBiomes, registryManager.getOptional(Registry.CONFIGURED_FEATURE_WORLDGEN).get());
 
         // free up some memory when we are done.
         FeatureGrouping.clearFeatureMaps();

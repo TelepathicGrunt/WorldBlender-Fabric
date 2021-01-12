@@ -22,6 +22,10 @@ Welcome to the Github! If you are looking for the most recent stable version, th
 
 - Optimized and combined NoFloatingLiquidsOrFallingBlocks and SeparateLavaAndWater features into antiFloatingBlocksAndSeparateLiquids feature to be faster.
 
+- Added cleanSlateWBBiomesAtStartup config option (defaults to true) which will make sure WB biomes 
+  are completely cleared of all other mod's stuff before the blender runs and fills it with everything. 
+  Can help with some mod incompatibility issues.
+  
 ##### Structures:
 - Fixed Ocean Monuments not spawning in World Blender's dimension.
 

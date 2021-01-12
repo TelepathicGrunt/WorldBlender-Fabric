@@ -238,6 +238,14 @@ public class WBBlendingConfigs implements ConfigData {
 
     @ConfigEntry.Gui.PrefixText
     @ConfigEntry.Gui.Tooltip(count = 0)
+    @Comment(value = " Use this if another mod is adding stuff to World Blender's biomes \r\n" +
+            " and World Blender's blacklisting config is not working. This option \r\n" +
+            " will wipe clear WB's biomes so they have absolutely nothing in it \r\n" +
+            " and then it will import everyone else's stuff based on it's blacklist.\r\n")
+    public boolean cleanSlateWBBiomesAtStartup = true;
+
+    @ConfigEntry.Gui.PrefixText
+    @ConfigEntry.Gui.Tooltip(count = 0)
     @Comment(value = " Dumps all resource locations (IDs) for all mods into a new file\r\n"
             +" called identifierDump.txt and can be found by looking below\r\n"
             +" the saves and mods folder in Minecraft's folder. The file is made if"
