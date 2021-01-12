@@ -12,6 +12,7 @@
     "EnderDragonFightMixin",
     "GenerationSettingsAccessor",
     "MinecraftServerMixin",
+    "OceanMonumentStructureMixin",
     "RenderPhaseAccessor",
     "ServerWorldMixin",
     "SpawnSettingsAccessor",
