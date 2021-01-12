@@ -49,10 +49,13 @@ public class WBPortalAltar extends Feature<DefaultFeatureConfig>
 			return false;
 		}
 
-		if (ALTAR_TEMPLATE == null)
-		{
-			WorldBlender.LOGGER.warn("world blender portal altar NTB does not exist!");
-			return false;
+		if (ALTAR_TEMPLATE == null) {
+			ALTAR_TEMPLATE = world.toServerWorld().getServer().getStructureManager().getStructure(WBIdentifiers.ALTAR_ID);
+
+			if (ALTAR_TEMPLATE == null) {
+				WorldBlender.LOGGER.warn("world blender portal altar NTB does not exist!");
+				return false;
+			}
 		}
 		
 		BlockPos.Mutable finalPosition = new BlockPos.Mutable().set(world.getTopPosition(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, position));

@@ -39,10 +39,6 @@ public class MinecraftServerMixin {
 
     @Final
     @Shadow
-    private StructureManager structureManager;
-
-    @Final
-    @Shadow
     private Map<RegistryKey<World>, ServerWorld> worlds;
 
     @Inject(
@@ -54,14 +50,14 @@ public class MinecraftServerMixin {
                                      DataFixer dataFixer, ServerResourceManager serverResourceManager,
                                      MinecraftSessionService minecraftSessionService, GameProfileRepository gameProfileRepository,
                                      UserCache userCache, WorldGenerationProgressListenerFactory worldGenerationProgressListenerFactory,
-                                     CallbackInfo ci) {
+                                     CallbackInfo ci)
+    {
+        if(WorldBlender.WB_CONFIG.WBBlendingConfig.identifierDump){
+            IdentifierPrinting.printAllIdentifiers(impl);
+        }
 
         if(impl.getOptional(Registry.BIOME_KEY).isPresent()) {
             TheBlender.blendTheWorld(impl);
-            WBPortalAltar.ALTAR_TEMPLATE = structureManager.getStructure(WBIdentifiers.ALTAR_ID);
-            if(WorldBlender.WB_CONFIG.WBBlendingConfig.identifierDump){
-                IdentifierPrinting.printAllIdentifiers(impl);
-            }
         }
     }
 
