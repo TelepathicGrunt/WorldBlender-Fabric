@@ -82,15 +82,15 @@ public class WBBiomeProvider extends BiomeSource
 	}
 
 	public Biome getBiomeForNoiseGen(int x, int y, int z) {
-		int k = ((BiomeLayerSamplerAccessor)this.biomeSampler).wb_getSampler().sample(x, z);
-		Biome biome = this.biomeRegistry.get(k);
+		int biomeRawID = ((BiomeLayerSamplerAccessor)this.biomeSampler).wb_getSampler().sample(x, z);
+		Biome biome = this.biomeRegistry.get(biomeRawID);
 		if (biome == null) {
 			//fallback to builtin registry if dynamic registry doesnt have biome
 			if (SharedConstants.isDevelopment) {
-				throw Util.throwOrPause(new IllegalStateException("Unknown biome id: " + k));
+				throw Util.throwOrPause(new IllegalStateException("Unknown biome id: " + biomeRawID));
 			}
 			else {
-				return this.biomeRegistry.get(BuiltinBiomes.fromRawId(0));
+				return this.biomeRegistry.get(BuiltinBiomes.fromRawId(biomeRawID));
 			}
 		}
 		else {
