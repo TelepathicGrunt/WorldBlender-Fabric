@@ -5,9 +5,14 @@
 <p style="text-align: center;"><strong><a href="https://www.curseforge.com/minecraft/mc-mods/worldblender">[Click here for the 1.16.4 Forge version of this mod!]</a></strong></p>
 <p>&nbsp;</p>
 <p>&nbsp;</p>
-<p style="text-align: center;"><strong><span style="color: #800000;">Recent News:</span></strong>&nbsp;<strong>Activation item config can</strong></p>
-<p style="text-align: center;"><strong>now take multiple item entries!</strong></p>
-<p style="text-align: center;"><strong>Report any bugs please!</strong></p>
+<p style="text-align: center;"><strong><span style="color: #800000;">Recent News:</span></strong>&nbsp;<strong>MASSIVE UPDATE!</strong></p>
+<p style="text-align: center;"><strong>- Faster world startup times now!</strong></p>
+<p style="text-align: center;"><strong>- All Vanilla Village types now spawn!</strong></p>
+<p style="text-align: center;"><strong>- Fixed bug that prevented Ocean Monuments from spawning!</strong></p>
+<p style="text-align: center;"><strong>- And more! See the changelog for more info!</strong></p>
+<p style="text-align: center;">&nbsp;</p>
+<p style="text-align: center;"><strong>Will not work with Immersive Portals v0.60 </strong></p>
+<p style="text-align: center;"><strong>However, their next update will fix this!</strong></p>
 <p>&nbsp;</p>
 <p>&nbsp;</p>
 <p style="text-align: center;"><strong><em><br /></em><span style="font-size: 14px; color: #993300;"><span style="font-size: 18px;">GENERAL NOTE:</span> <em><br /></em></span></strong></p>
@@ -33,10 +38,35 @@
 <p>&nbsp;</p>
 <p><span style="font-size: 14px;">&nbsp; &nbsp;Inside the dimension, you will find massive webs of different kinds of surfaces all filled to the brim with trees, grass, and structures. But take notice of the Nether surface path that has End surfaces on each side. That Nether path is the main walkway through the dimension as no other surfaces can interrupt that pathway. So follow that red road and explore the insanity of the world! Also, if you got modded ores mod on, all the ores will be added as well as long as they are able to spawn in Stone! And lastly, the biomes will have imported every mob's spawn entry so there's no telling what will spawn! Though animals seem to not spawn very often due to all the trees and plants covering all the Grass Blocks so you may have to burn down some forests or blacklist many plant features in the config to increase animal spawning.</span></p>
 <p>&nbsp;</p>
-<p><span style="font-size: 14px;">&nbsp; &nbsp;Currently as of right now, here is the alphabetical list of 1.16.3 mods that does work with the latest version of World Blender. Let me know if another mod works with World Blender and I'll add it to this list!</span></p>
+<p><span style="font-size: 14px;">&nbsp; &nbsp;Currently as of right now, here is an alphabetical list of 1.16.3/4 mods that does work with the latest version of World Blender. Let me know if another mod works with World Blender and I'll add it to this list!</span></p>
 <p style="font-size: 14px;">&nbsp;<br /><strong>COMPATIBLE MODS LIST:</strong></p>
 <div class="spoiler">
-<p><span style="font-size: 1.2rem;">Please help! College drained my time out of me like a vampire! Let me know what mods works with World Blender! (Or doesn't work)<br /><br /><span style="font-size: 14px;"><strong>-<a href="https://www.curseforge.com/minecraft/mc-mods/repurposed-structures-fabric"> Repurposed Structures (Fabric)</a></strong></span></span></p>
+<p><span style="font-size: 1.2rem;">Please help! College drained my time out of me like a vampire! Let me know what mods works with World Blender! (Or doesn't work)<br /><br /></span></p>
+<p><span style="font-size: 14px;"><strong>-<a href="https://www.curseforge.com/minecraft/mc-mods/adventurez"> AdventureZ</a></strong></span></p>
+<p><span style="font-size: 14px;"><strong>-<a href="https://www.curseforge.com/minecraft/mc-mods/applied-energistics-2"> Applied Energistics 2</a></strong> (blacklist their appliedenergistics2:meteorite structure from World Blender's dimension by WB's config and AE2's config. Otherwise, the meteorite will cause the world to hang. Or put on <a href="https://www.curseforge.com/minecraft/mc-mods/phosphor">Phosphor </a>which will prevent the hang.)</span></p>
+<p><span style="font-size: 14px;"><strong>-<a href="https://www.curseforge.com/minecraft/mc-mods/artifacts-fabric"> Artifacts (Fabric)</a></strong></span></p>
+<p><span style="font-size: 14px;"><strong>-<a href="https://www.curseforge.com/minecraft/mc-mods/basic-nether-ores"> Basic Nether Ores</a></strong></span></p>
+<p><span style="font-size: 14px;"><strong>-<a href="https://www.curseforge.com/minecraft/mc-mods/biome-makeover"> Biome Makeover</a></strong></span></p>
+<p><span style="font-size: 14px;"><strong>-<a href="https://www.curseforge.com/minecraft/mc-mods/charm"> Charm</a></strong></span></p>
+<p><span style="font-size: 14px;"><strong>-<a href="https://www.curseforge.com/minecraft/mc-mods/cinderscapes"> Cinderscapes</a></strong></span></p>
+<p><span style="font-size: 14px;"><strong>-<a href="https://www.curseforge.com/minecraft/mc-mods/dark-dungeons"> Dark Dungeons (Fabric)</a></strong></span></p>
+<p><span style="font-size: 14px;"><strong>-<a href="https://www.curseforge.com/minecraft/mc-mods/draylars-battle-towers"> Draylar's Battle Towers</a></strong></span></p>
+<p><span style="font-size: 14px;"><strong>-<a href="https://www.curseforge.com/minecraft/mc-mods/heart-of-the-machine"> Heart of the Machine</a></strong></span></p>
+<p><span style="font-size: 14px;"><strong>-<a href="https://www.curseforge.com/minecraft/mc-mods/mo-structures"> Mo' Structures</a></strong></span></p>
+<p><span style="font-size: 14px;"><strong>-<a href="https://www.curseforge.com/minecraft/mc-mods/more-berries"> More Berries</a></strong></span></p>
+<p><span style="font-size: 14px;"><strong>-<a href="https://www.curseforge.com/minecraft/mc-mods/mythicmetals"> Mythic Metals</a></strong></span></p>
+<p><span style="font-size: 14px;"><strong>-<a href="https://www.curseforge.com/minecraft/mc-mods/oh-the-biomes-youll-go-fabric"> Oh The Biomes You'll Go [FABRIC]</a></strong></span></p>
+<p><span style="font-size: 14px;"><strong>-<a href="https://www.curseforge.com/minecraft/mc-mods/queks-end/files/3090797"> Quek's End</a></strong></span></p>
+<p><span style="font-size: 14px;"><strong>-<a href="https://www.curseforge.com/minecraft/mc-mods/repurposed-structures-fabric"> Repurposed Structures (Fabric)</a></strong></span></p>
+<p><span style="font-size: 14px;"><strong>-<a href="https://www.curseforge.com/minecraft/mc-mods/terrestria"> Terrestria</a></strong></span></p>
+<p><span style="font-size: 14px;"><strong>-<a href="https://www.curseforge.com/minecraft/mc-mods/the-bumblezone-fabric"> The Bumblezone</a></strong></span></p>
+<p><span style="font-size: 14px;"><strong>-<a href="https://www.curseforge.com/minecraft/mc-mods/the-parakeet-mod"> The Parakeet Mod</a></strong></span></p>
+<p><span style="font-size: 14px;"><strong>-<a href="https://www.curseforge.com/minecraft/mc-mods/this-rocks"> This Rocks!</a></strong></span></p>
+<p><span style="font-size: 14px;"><strong>-<a href="https://www.curseforge.com/minecraft/mc-mods/traverse"> Traverse</a></strong></span></p>
+<p><span style="font-size: 14px;"><strong>-<a href="https://www.curseforge.com/minecraft/mc-mods/wild-explorer"> Wild Explorer</a></strong></span></p>
+<p><span style="font-size: 14px;"><strong>-<a href="https://www.curseforge.com/minecraft/mc-mods/woods-and-mires"> Woods and Mires</a></strong></span></p>
+<p><span style="font-size: 14px;"><strong>-<a href="https://www.curseforge.com/minecraft/mc-mods/yungs-better-caves-fabric"> YUNG's Better Caves (Fabric)</a></strong></span></p>
+<p><span style="font-size: 14px;"><strong>-<a href="https://www.curseforge.com/minecraft/mc-mods/yungs-better-mineshafts-fabric"> YUNG's Better Mineshafts (Fabric)</a></strong></span></p>
 </div>
 <p>&nbsp;</p>
 <p><span style="font-size: 14px;"><strong>&nbsp; &nbsp; Also, be sure to check out the images page for several screenshots of what the world looks like! And yes, you can use this mod in a modpack or download and modify the source code. It is all under LGPL (a license) so you can do whatever you want as long as you make your mod's codebase also open sourced. </strong></span></p>
@@ -69,7 +99,7 @@
 <p><span style="font-size: 16px;"><strong>&nbsp;</strong></span></p>
 <p><span style="font-size: 16px;"><strong>-blacklist certain mod's or vanilla features, structures, carvers, surfaces, and natural mob spawns by using keywords, using the resource location (ID) of the thing itself, or using the resource location of the mod itself.</strong></span></p>
 <p>&nbsp;</p>
-<p><span style="font-size: 16px;"><strong>-print out all resource locations of everything registered to help you with making a blacklist easily.</strong></span></p>
+<p><span style="font-size: 16px;"><strong>-print out all identifiers of everything registered to help you with making a blacklist easily.</strong></span></p>
 <p><span style="font-size: 16px;"><strong>&nbsp; &nbsp;</strong></span></p>
 <p><span style="font-size: 16px;"><strong>-change how many kinds of blocks are needed to make the portal, specify required blocks that needs to be in the chests, what activation item(s) is needed, and whether the portal should drop the chests and its contents instead of consuming it.</strong></span></p>
 <p>&nbsp;</p>
@@ -87,6 +117,9 @@
 <p>&nbsp;</p>
 <p style="color: #009b7c;"><strong>*If you find an issue, glitch, or have a suggestion about my mod, let me know! But if you don't have a GitHub account to report in the Issue tab above, just comment what the problem is below and I'll try and get back to you ASAP! :)&nbsp;</strong></p>
 <p>&nbsp;</p>
-<p><span style="font-size: 24px; color: #ff9900;"><strong>Discord Link for my channel about my mods! :&nbsp;<a class="anchor-3Z-8Bb anchorUnderlineOnHover-2ESHQB" style="font-size: 24px; color: #ff9900;" tabindex="0" title="https://discord.gg/4eHptfV" role="button" href="https://discord.gg/4eHptfV" target="_blank" rel="noopener noreferrer">https://discord.gg/4eHptfV</a></strong></span></p>
+<p>&nbsp;</p>
+<p><span style="font-size: 24px;"><strong>Discord Link for my channel about my mods! :&nbsp;</strong></span></p>
+<p><span style="font-size: 24px;"><strong><a class="anchor-3Z-8Bb anchorUnderlineOnHover-2ESHQB" style="font-size: 24px;" tabindex="0" title="https://discord.gg/4eHptfV" role="button" href="https://discord.gg/4eHptfV" target="_blank" rel="noopener noreferrer">https://discord.gg/4eHptfV</a></strong></span></p>
+<p><span style="font-size: 24px;"><strong><a class="anchor-3Z-8Bb anchorUnderlineOnHover-2ESHQB" style="font-size: 24px;" tabindex="0" title="https://discord.gg/4eHptfV" role="button" href="https://discord.gg/4eHptfV" target="_blank" rel="noopener noreferrer"><img src="https://beeimg.com/images/g00282193071.png" alt="discord-logo-png-free-transparent-png-logos-discord-png-logo-300_300 (PNG)  | BeeIMG" width="92" height="92" /></a></strong></span></p>
 <h3><span style="font-size: 24px; color: #333399;"><strong>&nbsp;<br /><span style="font-size: 12px;">Checkout this guy's mod spotlight of World Blender where if you go to 4:07, you can see a great example of how chaotic the world becomes when tons of mods are used together with World Blender! :D</span></strong></span></h3>
 <p><iframe allowfullscreen="allowfullscreen" src="https://www.youtube.com/embed/mvJQ9S89dMQ?wmode=transparent" height="358" width="638"></iframe></p>
