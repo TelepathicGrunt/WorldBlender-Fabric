@@ -46,10 +46,6 @@ dependencies {
 
 	modImplementation 'com.github.modmuss50:Voyager:1.0.0'
 	include 'com.github.modmuss50:Voyager:1.0.0'
-
-	modImplementation('com.github.qouteall.ImmersivePortalsMod:imm_ptl_core:1.16-SNAPSHOT') {
-		exclude module: 'fabric-api'
-	}
 }
 
 // ensure that the encoding is set to UTF-8, no matter what the system default is

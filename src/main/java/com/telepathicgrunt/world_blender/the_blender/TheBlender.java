@@ -305,7 +305,7 @@ public class TheBlender {
             if(!CHECKED_WORLDGEN_OBJECTS.contains(configuredStructureSupplier)){
 
                 // Having multiple configured structures of the same structure spawns only the last one it seems. Booo mojang boooooo. I want multiple village types in 1 biome!
-                if (worldBlenderBiomes.get(0).getGenerationSettings().getStructureFeatures().stream().noneMatch(addedConfiguredStructure -> addedConfiguredStructure.get().feature == configuredStructure.feature)) {
+                if (worldBlenderBiomes.get(0).getGenerationSettings().getStructureFeatures().stream().noneMatch(addedConfiguredStructure -> addedConfiguredStructure.get() == configuredStructure)) {
 
                     // Have to do this computing as the feature in the registry is technically not the same
                     // object as the feature in the biome. So I cannot get ID easily from the registry.

@@ -14,6 +14,10 @@ Welcome to the Github! If you are looking for the most recent stable version, th
 - Removed code that parsed and printed out other mod's unregistered worldgen stuff. 
   This is done to try and speed up World Blender a bit at world startup.
   
+- Found a way to spawn all forms of Villages and Ocean Ruins in a single biome! 
+  Before, there was a quirk with how multiple ConfiguredStructures with the same
+  base Structure will not spawn all ConfiguredStructure forms when in a single biome.
+  
 ##### Dimension:
 - Biome size now can be changed with a datapack! Add `"biome_size": 2` entry to data/world_blender/dimension/world_blender.json
   and put the entry inside "biome_source". Change the 2 to a larger number for bigger biomes!

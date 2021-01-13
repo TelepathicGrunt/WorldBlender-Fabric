@@ -1,16 +1,11 @@
 package com.telepathicgrunt.world_blender.mixin;
 
-import com.telepathicgrunt.world_blender.WBIdentifiers;
-import com.telepathicgrunt.world_blender.dimension.EnderDragonFightModification;
-import net.minecraft.block.pattern.BlockPattern;
-import net.minecraft.entity.boss.dragon.EnderDragonFight;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.chunk.light.LightingProvider;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(LightingProvider.class)
 public class LightingProviderMixin {

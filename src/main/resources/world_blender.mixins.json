@@ -6,6 +6,8 @@
   "mixins": [
     "BiomeLayerSamplerAccessor",
     "CarverAccessor",
+    "ChunkGeneratorAccessor",
+    "ChunkGeneratorMixin",
     "ConfiguredCarverAccessor",
     "DimensionTypeAccessor",
     "EnderDragonFightAccessor",
