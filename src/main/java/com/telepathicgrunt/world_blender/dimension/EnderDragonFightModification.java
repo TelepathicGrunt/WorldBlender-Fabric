@@ -2,7 +2,7 @@ package com.telepathicgrunt.world_blender.dimension;
 
 import com.telepathicgrunt.world_blender.WBIdentifiers;
 import com.telepathicgrunt.world_blender.blocks.WBPortalBlockEntity;
-import com.telepathicgrunt.world_blender.mixin.EnderDragonFightAccessor;
+import com.telepathicgrunt.world_blender.mixin.dimensions.EnderDragonFightAccessor;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.pattern.BlockPattern;
 import net.minecraft.entity.boss.dragon.EnderDragonFight;

@@ -4,7 +4,7 @@ import com.google.common.collect.ImmutableList;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.telepathicgrunt.world_blender.WBIdentifiers;
-import com.telepathicgrunt.world_blender.mixin.BiomeLayerSamplerAccessor;
+import com.telepathicgrunt.world_blender.mixin.worldgen.BiomeLayerSamplerAccessor;
 import com.telepathicgrunt.world_blender.utils.WorldSeedHolder;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;

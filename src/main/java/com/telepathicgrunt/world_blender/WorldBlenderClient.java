@@ -4,7 +4,7 @@ import com.telepathicgrunt.world_blender.blocks.WBBlocks;
 import com.telepathicgrunt.world_blender.blocks.WBPortalBlockEntity;
 import com.telepathicgrunt.world_blender.blocks.WBPortalBlockEntityRenderer;
 import com.telepathicgrunt.world_blender.dimension.WBSkyProperty;
-import com.telepathicgrunt.world_blender.mixin.SkyPropertiesAccessor;
+import com.telepathicgrunt.world_blender.mixin.dimensions.SkyPropertiesAccessor;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry;
 import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;

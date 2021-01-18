@@ -2,7 +2,7 @@ package com.telepathicgrunt.world_blender.blocks;
 
 import com.google.common.collect.ImmutableList;
 import com.telepathicgrunt.world_blender.blocks.WBRenderTexturingState.WBPortalTexturingState;
-import com.telepathicgrunt.world_blender.mixin.RenderPhaseAccessor;
+import com.telepathicgrunt.world_blender.mixin.blocks.RenderPhaseAccessor;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.render.*;
