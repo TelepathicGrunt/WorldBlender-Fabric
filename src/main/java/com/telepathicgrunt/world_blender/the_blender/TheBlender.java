@@ -36,6 +36,18 @@ public class TheBlender {
     private static final Set<Supplier<?>> CHECKED_WORLDGEN_OBJECTS = new HashSet<>();
     private static final Set<SpawnSettings.SpawnEntry> CHECKED_MOBS = new HashSet<>();
 
+    // Prevent modded mobs from drowning out vanilla or other mod's mobs.
+    private static final Map<SpawnGroup, Integer> MAX_WEIGHT_PER_GROUP = createWeightMap();
+    private static Map<SpawnGroup, Integer> createWeightMap() {
+        Map<SpawnGroup, Integer> tempMap = new HashMap<>();
+        tempMap.put(SpawnGroup.CREATURE, 15);
+        tempMap.put(SpawnGroup.MONSTER, 120);
+        tempMap.put(SpawnGroup.WATER_AMBIENT, 30);
+        tempMap.put(SpawnGroup.WATER_CREATURE, 12);
+        tempMap.put(SpawnGroup.AMBIENT, 15);
+        return tempMap;
+    }
+
     /**
      * Kickstarts the blender. Should always be ran in MinecraftServer's init which is before the world is loaded
      */
@@ -399,11 +411,18 @@ public class TheBlender {
                             continue;
                         }
 
+                        int maxWeight = MAX_WEIGHT_PER_GROUP.getOrDefault(spawnGroup, ((EntryAccessor)spawnEntry).getWeight());
+                        SpawnSettings.SpawnEntry newEntry = new SpawnSettings.SpawnEntry(
+                                spawnEntry.type,
+                                Math.max(Math.min((((EntryAccessor)spawnEntry).getWeight()), maxWeight), 1), // Cap the weight and make sure it isn't too low
+                                spawnEntry.minGroupSize,
+                                spawnEntry.maxGroupSize);
+
                         if (entityTypeID.getNamespace().equals("minecraft")) {
                             if (WorldBlender.WB_CONFIG.WBBlendingConfig.allowVanillaSpawns)
-                                worldBlenderBiomes.forEach(blendedBiome -> blendedBiome.getSpawnSettings().getSpawnEntry(spawnGroup).add(spawnEntry));
+                                worldBlenderBiomes.forEach(blendedBiome -> blendedBiome.getSpawnSettings().getSpawnEntry(spawnGroup).add(newEntry));
                         } else if (WorldBlender.WB_CONFIG.WBBlendingConfig.allowModdedSpawns) {
-                            worldBlenderBiomes.forEach(blendedBiome -> blendedBiome.getSpawnSettings().getSpawnEntry(spawnGroup).add(spawnEntry));
+                            worldBlenderBiomes.forEach(blendedBiome -> blendedBiome.getSpawnSettings().getSpawnEntry(spawnGroup).add(newEntry));
                         }
                     }
 

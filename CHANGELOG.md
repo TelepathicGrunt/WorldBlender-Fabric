@@ -1,4 +1,4 @@
-# Made for Minecraft v.1.16.4
+# Made for Minecraft v.1.16.5
 # Created by TelepathicGrunt
 
 Welcome to the Github! If you are looking for the most recent stable version, then checkout the master branch! Branches dedicated to the latest version of Minecraft may be unstable or broken as I test and experiment so stick with the master branch instead.
@@ -7,11 +7,19 @@ Welcome to the Github! If you are looking for the most recent stable version, th
 #    | World Blender changelog |
 
 
+## (V.2.0.2 Changes) (1.16.5 Minecraft)
+
+##### Blender:
+
+- Imported mobs will now get their spawn weights capped so it is not much higher than vanilla's most weight mob for their category.
+  This will prevent mod's mobs from crowding out both vanill and other mod's mobs too much.
+
+
 ## (V.2.0.1 Changes) (1.16.4 Minecraft)
 
 ##### Dimension:
 
--Switched to a safer mixin to get the world's seed if no seed is specified in the JSON.
+- Switched to a safer mixin to get the world's seed if no seed is specified in the JSON.
 
 
 ## (V.2.0.0 Changes) (1.16.4 Minecraft)
