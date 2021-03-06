@@ -6,6 +6,12 @@ Welcome to the Github! If you are looking for the most recent stable version, th
 ------------------------------------------------
 #    | World Blender changelog |
 
+## (V.2.1.1 Changes) (1.16.5 Minecraft)
+
+##### Misc:
+- Now will show dependency screen if Cloth API is not on.
+
+
 ## (V.2.1.0 Changes) (1.16.5 Minecraft)
 
 ##### Major:
