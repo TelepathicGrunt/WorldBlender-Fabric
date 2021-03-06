@@ -129,7 +129,7 @@ public class WBPortalBlockEntityRenderer extends BlockEntityRenderer<WBPortalBlo
 	public static final Identifier MAIN_TEXTURE =     new Identifier("textures/misc/enchanted_item_glint.png");
 	public static final Identifier ADDITIVE_TEXTURE = new Identifier("textures/misc/forcefield.png");
 	private static final Random RANDOM = new Random(31100L);
-	private static final BufferBuilder[] BUFFER_BUILDERS = new BufferBuilder[10];
+	private static final BufferBuilder[] BUFFER_BUILDERS = new BufferBuilder[9];
 	private static final RenderLayer[] WB_RENDER_TYPE = IntStream.range(0, 9).mapToObj((index) ->
 			getWBPortal(index + 1)).toArray(RenderLayer[]::new);
 
@@ -169,7 +169,7 @@ public class WBPortalBlockEntityRenderer extends BlockEntityRenderer<WBPortalBlo
 
 		BufferBuilder builder = new BufferBuilder(renderLayer.getExpectedBufferSize());
 		builder.begin(renderLayer.getDrawMode(), renderLayer.getVertexFormat());
-		BUFFER_BUILDERS[layer] = builder;
+		BUFFER_BUILDERS[layer - 1] = builder;
 		return renderLayer;
 	}
 }
