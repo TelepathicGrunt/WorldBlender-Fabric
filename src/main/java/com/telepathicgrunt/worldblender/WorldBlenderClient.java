@@ -6,6 +6,7 @@ import com.telepathicgrunt.worldblender.blocks.WBPortalBlockEntityRenderer;
 import com.telepathicgrunt.worldblender.dimension.WBSkyProperty;
 import com.telepathicgrunt.worldblender.mixin.dimensions.SkyPropertiesAccessor;
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
@@ -19,15 +20,18 @@ public class WorldBlenderClient implements ClientModInitializer {
 		SkyPropertiesAccessor.wb_getBY_IDENTIFIER().put(new Identifier(WorldBlender.MODID, "sky_property"), new WBSkyProperty());
 
 		BlockEntityRendererRegistry.INSTANCE.register(WBBlocks.WORLD_BLENDER_PORTAL_BE, WBPortalBlockEntityRenderer::new);
-		WorldRenderEvents.END.register((worldRenderContext) -> WBPortalBlockEntityRenderer.drawBuffers());
+		WorldRenderEvents.BEFORE_BLOCK_OUTLINE.register((worldRenderContext, hitResult) -> {
+			WBPortalBlockEntityRenderer.drawBuffers();
+			return true;
+		});
 
 		// Set cooldown for portal after server says it was triggered
-		ClientSidePacketRegistry.INSTANCE.register(WBIdentifiers.PORTAL_COOLDOWN_PACKET_ID,
-				(packetContext, attachedData) -> {
-					BlockPos blockPos = attachedData.readBlockPos();
-					float cooldown = attachedData.readFloat();
+		ClientPlayNetworking.registerGlobalReceiver(WBIdentifiers.PORTAL_COOLDOWN_PACKET_ID,
+				(client, handler, buf, responseSender) -> {
+					BlockPos blockPos = buf.readBlockPos();
+					float cooldown = buf.readFloat();
 
-					packetContext.getTaskQueue().execute(() -> {
+					client.execute(() -> {
 						WBPortalBlockEntity wbPortalBlockEntity = null;
 
 						if (MinecraftClient.getInstance().world != null)
