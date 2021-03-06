@@ -50,11 +50,11 @@ public class WBPortalBlockEntityRenderer extends BlockEntityRenderer<WBPortalBlo
 		double distance = tileEntity.getPos().getSquaredDistance(this.dispatcher.camera.getPos(), true);
 		int passes = this.getPasses(distance);
 		Matrix4f matrix4f = modelMatrix.peek().getModel();
-		this.drawColor(tileEntity, 0.1F, matrix4f, renderBuffer.getBuffer(WB_RENDER_TYPE[0]));
+		this.drawColor(tileEntity, 0.1F, matrix4f, BUFFER_BUILDERS[0]);
 
 		for (int currentPass = 1; currentPass < passes; ++currentPass)
 		{
-			this.drawColor(tileEntity, 2.0F / (20 - currentPass), matrix4f, renderBuffer.getBuffer(WB_RENDER_TYPE[currentPass]));
+			this.drawColor(tileEntity, 2.0F / (20 - currentPass), matrix4f, BUFFER_BUILDERS[currentPass]);
 		}
 	}
 
