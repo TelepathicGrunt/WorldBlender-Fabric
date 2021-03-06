@@ -33,7 +33,7 @@ public class WBPortalBlockEntityRenderer extends BlockEntityRenderer<WBPortalBlo
 		if (wasRendered) {
 			// Should only be run if render has been called at least once
 			wasRendered = false;
-			for (int i = 0; i < 16; i++) {
+			for (int i = 0; i < 9; i++) {
 				RenderLayer layer = WB_RENDER_TYPE[i];
 				BufferBuilder buf = BUFFER_BUILDERS[i];
 				layer.draw(buf, 0, 0, 0);
@@ -46,6 +46,7 @@ public class WBPortalBlockEntityRenderer extends BlockEntityRenderer<WBPortalBlo
 	@Override
 	public void render(WBPortalBlockEntity tileEntity, float partialTicks, MatrixStack modelMatrix, VertexConsumerProvider renderBuffer, int combinedLightIn, int combinedOverlayIn)
 	{
+		wasRendered = true;
 		RANDOM.setSeed(31100L);
 		double distance = tileEntity.getPos().getSquaredDistance(this.dispatcher.camera.getPos(), true);
 		int passes = this.getPasses(distance);
