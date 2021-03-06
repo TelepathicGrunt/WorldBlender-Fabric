@@ -1,4 +1,4 @@
-package com.telepathicgrunt.worldblender.mixin;
+package com.telepathicgrunt.worldblender.mixin.worldgen;
 
 import net.minecraft.entity.SpawnGroup;
 import net.minecraft.world.biome.SpawnSettings;

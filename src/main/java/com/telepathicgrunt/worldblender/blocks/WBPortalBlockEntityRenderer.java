@@ -28,28 +28,13 @@ public class WBPortalBlockEntityRenderer extends BlockEntityRenderer<WBPortalBlo
 
 	// Culling optimization by Comp500
 	// https://github.com/comp500/PolyDungeons/blob/master/src/main/java/polydungeons/block/entity/DecorativeEndBlockEntity.java
-	// Self contained buffers for batching draw calls per layer
-	private static final RenderLayer[] RENDER_LAYERS = new RenderLayer[16];
-	private static final BufferBuilder[] BUFFER_BUILDERS = new BufferBuilder[16];
-
-	static {
-		for (int i = 0; i < 16; i++) {
-			// Initialise each buffer and layer
-			RenderLayer layer = RenderLayer.getEndPortal(i + 1);
-			BufferBuilder builder = new BufferBuilder(layer.getExpectedBufferSize());
-			builder.begin(layer.getDrawMode(), layer.getVertexFormat());
-			RENDER_LAYERS[i] = layer;
-			BUFFER_BUILDERS[i] = builder;
-		}
-	}
-
 	private static boolean wasRendered = false;
 	public static void drawBuffers() {
 		if (wasRendered) {
 			// Should only be run if render has been called at least once
 			wasRendered = false;
 			for (int i = 0; i < 16; i++) {
-				RenderLayer layer = RENDER_LAYERS[i];
+				RenderLayer layer = WB_RENDER_TYPE[i];
 				BufferBuilder buf = BUFFER_BUILDERS[i];
 				layer.draw(buf, 0, 0, 0);
 				// Set up the buffer builder to be ready to accept vertices again
@@ -65,11 +50,11 @@ public class WBPortalBlockEntityRenderer extends BlockEntityRenderer<WBPortalBlo
 		double distance = tileEntity.getPos().getSquaredDistance(this.dispatcher.camera.getPos(), true);
 		int passes = this.getPasses(distance);
 		Matrix4f matrix4f = modelMatrix.peek().getModel();
-		this.drawColor(tileEntity, 0.1F, matrix4f, renderBuffer.getBuffer(WB_RENDER_TYPE.get(0)));
+		this.drawColor(tileEntity, 0.1F, matrix4f, renderBuffer.getBuffer(WB_RENDER_TYPE[0]));
 
 		for (int currentPass = 1; currentPass < passes; ++currentPass)
 		{
-			this.drawColor(tileEntity, 2.0F / (20 - currentPass), matrix4f, renderBuffer.getBuffer(WB_RENDER_TYPE.get(currentPass)));
+			this.drawColor(tileEntity, 2.0F / (20 - currentPass), matrix4f, renderBuffer.getBuffer(WB_RENDER_TYPE[currentPass]));
 		}
 	}
 
@@ -144,10 +129,10 @@ public class WBPortalBlockEntityRenderer extends BlockEntityRenderer<WBPortalBlo
 	public static final Identifier MAIN_TEXTURE =     new Identifier("textures/misc/enchanted_item_glint.png");
 	public static final Identifier ADDITIVE_TEXTURE = new Identifier("textures/misc/forcefield.png");
 	private static final Random RANDOM = new Random(31100L);
-	private static final List<RenderLayer> WB_RENDER_TYPE = IntStream.range(0, 9).mapToObj((index) ->
-			getWBPortal(index + 1)).collect(ImmutableList.toImmutableList());
+	private static final BufferBuilder[] BUFFER_BUILDERS = new BufferBuilder[10];
+	private static final RenderLayer[] WB_RENDER_TYPE = IntStream.range(0, 9).mapToObj((index) ->
+			getWBPortal(index + 1)).toArray(RenderLayer[]::new);
 
-	
 	public static RenderLayer getWBPortal(int layer)
 	{
 		RenderPhase.Transparency renderstate$transparencystate;
@@ -168,7 +153,7 @@ public class WBPortalBlockEntityRenderer extends BlockEntityRenderer<WBPortalBlo
 			renderstate$texturestate = new RenderPhase.Texture(ADDITIVE_TEXTURE, false, false);
 		}
 
-		return RenderLayer.of(
+		RenderLayer renderLayer = RenderLayer.of(
 				"world_blender_portal",
 				VertexFormats.POSITION_COLOR,
 				7,
@@ -181,5 +166,10 @@ public class WBPortalBlockEntityRenderer extends BlockEntityRenderer<WBPortalBlo
 						.texturing(new WBPortalTexturingState(layer))
 						.fog(RenderPhaseAccessor.wb_getBLACK_FOG())
 						.build(false));
+
+		BufferBuilder builder = new BufferBuilder(renderLayer.getExpectedBufferSize());
+		builder.begin(renderLayer.getDrawMode(), renderLayer.getVertexFormat());
+		BUFFER_BUILDERS[layer] = builder;
+		return renderLayer;
 	}
 }

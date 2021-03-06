@@ -6,6 +6,15 @@ Welcome to the Github! If you are looking for the most recent stable version, th
 ------------------------------------------------
 #    | World Blender changelog |
 
+## (V.2.1.2 Changes) (1.16.5 Minecraft)
+
+##### Block:
+- World Blender Portal block rendering is now optimized thanks to comp500! Special thanks to them!
+
+##### Misc:
+- Fixed several mixins not being clientside when they should be.
+
+
 ## (V.2.1.1 Changes) (1.16.5 Minecraft)
 
 ##### Misc:

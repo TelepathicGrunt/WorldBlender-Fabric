@@ -5,7 +5,7 @@ import com.telepathicgrunt.worldblender.WBIdentifiers;
 import com.telepathicgrunt.worldblender.WorldBlender;
 import com.telepathicgrunt.worldblender.configs.WBBlendingConfigs;
 import com.telepathicgrunt.worldblender.features.WBConfiguredFeatures;
-import com.telepathicgrunt.worldblender.mixin.BuilderAccessor;
+import com.telepathicgrunt.worldblender.mixin.worldgen.BuilderAccessor;
 import com.telepathicgrunt.worldblender.mixin.worldgen.*;
 import com.telepathicgrunt.worldblender.surfacebuilder.SurfaceBlender;
 import com.telepathicgrunt.worldblender.theblender.ConfigBlacklisting.BlacklistType;

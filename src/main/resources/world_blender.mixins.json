@@ -4,9 +4,6 @@
   "package": "com.telepathicgrunt.worldblender.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "BuilderAccessor",
-    "blocks.RenderPhaseAccessor",
-    "dimensions.ClientWorldMixin",
     "dimensions.DimensionTypeAccessor",
     "dimensions.EnderDragonFightAccessor",
     "dimensions.EnderDragonFightMixin",
@@ -15,6 +12,7 @@
     "dimensions.MinecraftServerMixin",
     "dimensions.ServerWorldMixin",
     "worldgen.BiomeLayerSamplerAccessor",
+    "worldgen.BuilderAccessor",
     "worldgen.CarverAccessor",
     "worldgen.ChunkGeneratorAccessor",
     "worldgen.ChunkGeneratorMixin",
@@ -27,6 +25,8 @@
     "worldgen.WeightedBlockStateProviderMixin"
   ],
   "client": [
+    "blocks.RenderPhaseAccessor",
+    "dimensions.ClientWorldMixin",
     "dimensions.SkyPropertiesAccessor"
   ],
   "injectors": {
