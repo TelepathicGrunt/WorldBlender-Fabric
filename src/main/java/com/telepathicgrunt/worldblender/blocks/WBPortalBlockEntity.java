@@ -6,6 +6,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
 import net.fabricmc.fabric.api.server.PlayerStream;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.Entity;
@@ -18,12 +19,19 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Tickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.world.World;
 
 
 public class WBPortalBlockEntity extends BlockEntity implements Tickable
 {
 	private float teleportCooldown = 300;
 	private boolean removeable = true;
+
+	// Culling optimization by Comp500
+	// https://github.com/comp500/PolyDungeons/blob/master/src/main/java/polydungeons/block/entity/DecorativeEndBlockEntity.java
+	private final Direction[] FACINGS = Direction.values();
+	private int cachedCullFaces = 0;
+	private boolean hasCachedFaces = false;
 
 
 	public WBPortalBlockEntity()
@@ -150,9 +158,7 @@ public class WBPortalBlockEntity extends BlockEntity implements Tickable
 	@Environment(EnvType.CLIENT)
 	public boolean shouldRenderFace(Direction direction)
 	{
-		return true;
-		//can't get this to work properly
-		//return Block.shouldDrawSide(this.getCachedState(), this.world, this.getPos(), direction);
+		return shouldDrawSide(direction);
 	}
 
 	@Deprecated
@@ -190,4 +196,45 @@ public class WBPortalBlockEntity extends BlockEntity implements Tickable
 		return this.toTag(new CompoundTag());
 	}
 
+	@Environment(EnvType.CLIENT)
+	public void updateCullFaces() {
+		assert world != null;
+		hasCachedFaces = true;
+		int mask;
+		for (Direction dir : FACINGS) {
+			mask = 1 << dir.getId();
+			if (Block.shouldDrawSide(getCachedState(), world, getPos(), dir)) {
+				cachedCullFaces |= mask;
+			} else {
+				cachedCullFaces &= ~mask;
+			}
+		}
+	}
+
+	@Environment(EnvType.CLIENT)
+	public boolean shouldDrawSide(Direction direction) {
+		// Cull faces that are not visible
+		if (!hasCachedFaces) {
+			updateCullFaces();
+		}
+		return (cachedCullFaces & (1 << direction.getId())) != 0;
+	}
+
+	@Environment(EnvType.CLIENT)
+	public static void updateCullCache(BlockPos pos, World world) {
+		updateCullCacheNeighbor(pos.up(), world);
+		updateCullCacheNeighbor(pos.down(), world);
+		updateCullCacheNeighbor(pos.north(), world);
+		updateCullCacheNeighbor(pos.east(), world);
+		updateCullCacheNeighbor(pos.south(), world);
+		updateCullCacheNeighbor(pos.west(), world);
+	}
+
+	@Environment(EnvType.CLIENT)
+	public static void updateCullCacheNeighbor(BlockPos pos, World world) {
+		BlockEntity be = world.getBlockEntity(pos);
+		if (be instanceof WBPortalBlockEntity) {
+			((WBPortalBlockEntity) be).updateCullFaces();
+		}
+	}
 }

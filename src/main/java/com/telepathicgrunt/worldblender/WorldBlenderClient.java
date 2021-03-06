@@ -7,6 +7,7 @@ import com.telepathicgrunt.worldblender.dimension.WBSkyProperty;
 import com.telepathicgrunt.worldblender.mixin.dimensions.SkyPropertiesAccessor;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.Identifier;
@@ -34,5 +35,7 @@ public class WorldBlenderClient implements ClientModInitializer {
 							wbPortalBlockEntity.setCoolDown(cooldown);
 					});
 				});
+
+		WorldRenderEvents.END.register((worldRenderContext) -> WBPortalBlockEntityRenderer.drawBuffers());
 	}
 }

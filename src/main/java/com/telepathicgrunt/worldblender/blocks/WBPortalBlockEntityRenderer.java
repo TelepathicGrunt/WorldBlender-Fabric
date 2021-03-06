@@ -26,6 +26,38 @@ public class WBPortalBlockEntityRenderer extends BlockEntityRenderer<WBPortalBlo
 		super(dispatcher);
 	}
 
+	// Culling optimization by Comp500
+	// https://github.com/comp500/PolyDungeons/blob/master/src/main/java/polydungeons/block/entity/DecorativeEndBlockEntity.java
+	// Self contained buffers for batching draw calls per layer
+	private static final RenderLayer[] RENDER_LAYERS = new RenderLayer[16];
+	private static final BufferBuilder[] BUFFER_BUILDERS = new BufferBuilder[16];
+
+	static {
+		for (int i = 0; i < 16; i++) {
+			// Initialise each buffer and layer
+			RenderLayer layer = RenderLayer.getEndPortal(i + 1);
+			BufferBuilder builder = new BufferBuilder(layer.getExpectedBufferSize());
+			builder.begin(layer.getDrawMode(), layer.getVertexFormat());
+			RENDER_LAYERS[i] = layer;
+			BUFFER_BUILDERS[i] = builder;
+		}
+	}
+
+	private static boolean wasRendered = false;
+	public static void drawBuffers() {
+		if (wasRendered) {
+			// Should only be run if render has been called at least once
+			wasRendered = false;
+			for (int i = 0; i < 16; i++) {
+				RenderLayer layer = RENDER_LAYERS[i];
+				BufferBuilder buf = BUFFER_BUILDERS[i];
+				layer.draw(buf, 0, 0, 0);
+				// Set up the buffer builder to be ready to accept vertices again
+				buf.begin(layer.getDrawMode(), layer.getVertexFormat());
+			}
+		}
+	}
+
 	@Override
 	public void render(WBPortalBlockEntity tileEntity, float partialTicks, MatrixStack modelMatrix, VertexConsumerProvider renderBuffer, int combinedLightIn, int combinedOverlayIn)
 	{
@@ -40,7 +72,6 @@ public class WBPortalBlockEntityRenderer extends BlockEntityRenderer<WBPortalBlo
 			this.drawColor(tileEntity, 2.0F / (20 - currentPass), matrix4f, renderBuffer.getBuffer(WB_RENDER_TYPE.get(currentPass)));
 		}
 	}
-
 
 	private void drawColor(WBPortalBlockEntity tileEntity, float modifier, Matrix4f matrix4f, VertexConsumer vertexBuilder)
 	{
