@@ -19,13 +19,13 @@
   "environment": "*",
   "entrypoints": {
     "main": [
-      "com.telepathicgrunt.world_blender.WorldBlender"
+      "com.telepathicgrunt.worldblender.WorldBlender"
     ],
     "modmenu": [
-      "com.telepathicgrunt.world_blender.configs.ModMenuConfig"
+      "com.telepathicgrunt.worldblender.configs.ModMenuConfig"
     ],
     "client": [
-      "com.telepathicgrunt.world_blender.WorldBlenderClient"
+      "com.telepathicgrunt.worldblender.WorldBlenderClient"
     ]
   },
   "mixins": [
