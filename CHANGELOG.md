@@ -6,7 +6,10 @@ Welcome to the Github! If you are looking for the most recent stable version, th
 ------------------------------------------------
 #    | World Blender changelog |
 
-## (V.2.0.3 Changes) (1.16.5 Minecraft)
+## (V.2.1.0 Changes) (1.16.5 Minecraft)
+
+##### Major:
+- Switch from using AutoConfigU to Cloth Config only. Download Cloth Config from here: https://www.curseforge.com/minecraft/mc-mods/cloth-config
 
 ##### Blender:
 
