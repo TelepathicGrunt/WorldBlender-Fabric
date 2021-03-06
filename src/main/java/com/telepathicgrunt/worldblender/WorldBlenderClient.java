@@ -19,7 +19,7 @@ public class WorldBlenderClient implements ClientModInitializer {
 		SkyPropertiesAccessor.wb_getBY_IDENTIFIER().put(new Identifier(WorldBlender.MODID, "sky_property"), new WBSkyProperty());
 
 		BlockEntityRendererRegistry.INSTANCE.register(WBBlocks.WORLD_BLENDER_PORTAL_BE, WBPortalBlockEntityRenderer::new);
-		WorldRenderEvents.BEFORE_ENTITIES.register((worldRenderContext) -> WBPortalBlockEntityRenderer.drawBuffers());
+		WorldRenderEvents.END.register((worldRenderContext) -> WBPortalBlockEntityRenderer.drawBuffers());
 
 		// Set cooldown for portal after server says it was triggered
 		ClientSidePacketRegistry.INSTANCE.register(WBIdentifiers.PORTAL_COOLDOWN_PACKET_ID,

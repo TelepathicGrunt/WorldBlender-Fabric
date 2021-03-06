@@ -4,6 +4,7 @@
   "package": "com.telepathicgrunt.worldblender.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
+    "blocks.BlockAccessor",
     "dimensions.DimensionTypeAccessor",
     "dimensions.EnderDragonFightAccessor",
     "dimensions.EnderDragonFightMixin",

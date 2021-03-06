@@ -1,6 +1,8 @@
 package com.telepathicgrunt.worldblender.blocks;
 
 import com.telepathicgrunt.worldblender.WBIdentifiers;
+import com.telepathicgrunt.worldblender.mixin.blocks.BlockAccessor;
+import it.unimi.dsi.fastutil.objects.Object2ByteLinkedOpenHashMap;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.block.*;
@@ -18,6 +20,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.function.BooleanBiFunction;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
@@ -33,7 +36,15 @@ public class WBPortalBlock extends BlockWithEntity
 	
 	protected WBPortalBlock()
 	{
-		super(Block.Settings.of(Material.PORTAL, MaterialColor.BLACK).noCollision().luminance((blockState) -> 6).strength(-1.0F, 3600000.0F).dropsNothing());
+		super(Block.Settings.of(Material.PORTAL, MaterialColor.BLACK)
+				.noCollision()
+				.luminance((blockState) -> 6)
+				.strength(-1.0F, 3600000.0F)
+				.dropsNothing()
+				.allowsSpawning((state, world, pos, entityType) -> false)
+				.solidBlock((state, world, pos) -> false)
+				.suffocates((state, world, pos) -> false)
+		);
 	}
 
 
@@ -46,6 +57,12 @@ public class WBPortalBlock extends BlockWithEntity
 	@Override
 	public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
 		return COLLISION_BOX;
+	}
+
+	@Override
+	public ItemStack getPickStack(BlockView p_185473_1_, BlockPos p_185473_2_, BlockState p_185473_3_)
+	{
+		return ItemStack.EMPTY;
 	}
 
 	@SuppressWarnings("resource")
@@ -213,15 +230,4 @@ public class WBPortalBlock extends BlockWithEntity
 		world.addParticle(ParticleTypes.END_ROD, xPos, yPos, zPos, xVelocity, yVelocity, zVelocity);
 	}
 
-	@Override
-	public ItemStack getPickStack(BlockView p_185473_1_, BlockPos p_185473_2_, BlockState p_185473_3_)
-	{
-		return ItemStack.EMPTY;
-	}
-
-	@Override
-	public boolean canBucketPlace(BlockState p_225541_1_, Fluid p_225541_2_)
-	{
-		return false;
-	}
 }

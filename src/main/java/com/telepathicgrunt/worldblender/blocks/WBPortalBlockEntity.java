@@ -1,7 +1,9 @@
 package com.telepathicgrunt.worldblender.blocks;
 
 import com.telepathicgrunt.worldblender.WBIdentifiers;
+import com.telepathicgrunt.worldblender.mixin.blocks.BlockAccessor;
 import io.netty.buffer.Unpooled;
+import it.unimi.dsi.fastutil.objects.Object2ByteLinkedOpenHashMap;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
@@ -17,8 +19,12 @@ import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Tickable;
+import net.minecraft.util.function.BooleanBiFunction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.shape.VoxelShape;
+import net.minecraft.util.shape.VoxelShapes;
+import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 
 
@@ -155,6 +161,27 @@ public class WBPortalBlockEntity extends BlockEntity implements Tickable
 		this.removeable = data.getBoolean("Removeable");
 	}
 
+	/**
+	 * Retrieves packet to send to the client whenever this Tile Entity is resynced via World.notifyBlockUpdate. For modded
+	 * TE's, this packet comes back to you clientside
+	 */
+	@Override
+	public BlockEntityUpdateS2CPacket toUpdatePacket()
+	{
+		return new BlockEntityUpdateS2CPacket(this.pos, 0, this.toInitialChunkDataTag());
+	}
+
+	/**
+	 * Get an NBT compound to sync to the client with SPacketChunkData, used for initial loading of the chunk or when many
+	 * blocks change at once. This compound comes back to you clientside
+	 */
+	@Override
+	public CompoundTag toInitialChunkDataTag()
+	{
+		return this.toTag(new CompoundTag());
+	}
+
+
 	@Environment(EnvType.CLIENT)
 	public boolean shouldRenderFace(Direction direction)
 	{
@@ -175,27 +202,6 @@ public class WBPortalBlockEntity extends BlockEntity implements Tickable
 	}
 
 
-	/**
-	 * Retrieves packet to send to the client whenever this Tile Entity is resynced via World.notifyBlockUpdate. For modded
-	 * TE's, this packet comes back to you clientside
-	 */
-	@Override
-	public BlockEntityUpdateS2CPacket toUpdatePacket()
-	{
-		return new BlockEntityUpdateS2CPacket(this.pos, 0, this.toInitialChunkDataTag());
-	}
-	
-
-	/**
-	 * Get an NBT compound to sync to the client with SPacketChunkData, used for initial loading of the chunk or when many
-	 * blocks change at once. This compound comes back to you clientside
-	 */
-	@Override
-	public CompoundTag toInitialChunkDataTag()
-	{
-		return this.toTag(new CompoundTag());
-	}
-
 	@Environment(EnvType.CLIENT)
 	public void updateCullFaces() {
 		assert world != null;
@@ -203,9 +209,10 @@ public class WBPortalBlockEntity extends BlockEntity implements Tickable
 		int mask;
 		for (Direction dir : FACINGS) {
 			mask = 1 << dir.getId();
-			if (Block.shouldDrawSide(getCachedState(), world, getPos(), dir)) {
+			if (shouldDrawSideSpecialized(getCachedState(), world, getPos(), dir)) {
 				cachedCullFaces |= mask;
-			} else {
+			}
+			else {
 				cachedCullFaces &= ~mask;
 			}
 		}
@@ -235,6 +242,39 @@ public class WBPortalBlockEntity extends BlockEntity implements Tickable
 		BlockEntity be = world.getBlockEntity(pos);
 		if (be instanceof WBPortalBlockEntity) {
 			((WBPortalBlockEntity) be).updateCullFaces();
+		}
+	}
+
+	/**
+	 * Need out own implementation because the original method uses getOutlineShape to extrude and cause
+	 * our block's sides to be culled for snow and slabs. We need getOutlineShape so we can right click the block.
+	 */
+	@Environment(EnvType.CLIENT)
+	public static boolean shouldDrawSideSpecialized(BlockState state, BlockView world, BlockPos pos, Direction facing) {
+		BlockPos blockPos = pos.offset(facing);
+		BlockState blockState = world.getBlockState(blockPos);
+		// Do not draw side for our block if bordering our own block.
+		if (state.isSideInvisible(blockState, facing) || blockState.getBlock() == WBBlocks.WORLD_BLENDER_PORTAL) {
+			return false;
+		} else if (blockState.isOpaque()) {
+			Block.NeighborGroup neighborGroup = new Block.NeighborGroup(state, blockState, facing);
+			Object2ByteLinkedOpenHashMap<Block.NeighborGroup> object2ByteLinkedOpenHashMap = BlockAccessor.wb_getFACE_CULL_MAP().get();
+			byte b = object2ByteLinkedOpenHashMap.getAndMoveToFirst(neighborGroup);
+			if (b != 127) {
+				return b != 0;
+			} else {
+				VoxelShape voxelShape = VoxelShapes.fullCube(); // No extrusions for our block.
+				VoxelShape voxelShape2 = blockState.getCullingFace(world, blockPos, facing.getOpposite());
+				boolean bl = VoxelShapes.matchesAnywhere(voxelShape, voxelShape2, BooleanBiFunction.ONLY_FIRST);
+				if (object2ByteLinkedOpenHashMap.size() == 2048) {
+					object2ByteLinkedOpenHashMap.removeLastByte();
+				}
+
+				object2ByteLinkedOpenHashMap.putAndMoveToFirst(neighborGroup, (byte)(bl ? 1 : 0));
+				return bl;
+			}
+		} else {
+			return true;
 		}
 	}
 }
