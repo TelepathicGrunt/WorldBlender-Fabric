@@ -1,15 +1,12 @@
 package com.telepathicgrunt.worldblender.blocks;
 
 import com.telepathicgrunt.worldblender.WBIdentifiers;
-import com.telepathicgrunt.worldblender.mixin.blocks.BlockAccessor;
-import it.unimi.dsi.fastutil.objects.Object2ByteLinkedOpenHashMap;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.fluid.Fluid;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.particle.ParticleTypes;
@@ -20,7 +17,6 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.function.BooleanBiFunction;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
@@ -32,7 +28,7 @@ import java.util.Random;
 
 public class WBPortalBlock extends BlockWithEntity
 {
-	protected static final VoxelShape COLLISION_BOX = Block.createCuboidShape(2.0D, 2.0D, 2.0D, 14.0D, 14.0D, 14.0D);
+	protected static final VoxelShape COLLISION_BOX = Block.createCuboidShape(1.0D, 1.0D, 1.0D, 15.0D, 15.0D, 15.0D);
 	
 	protected WBPortalBlock()
 	{

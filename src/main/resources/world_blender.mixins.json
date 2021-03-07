@@ -5,6 +5,7 @@
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "blocks.BlockAccessor",
+    "blocks.BlockOverlayRendererMixin",
     "dimensions.DimensionTypeAccessor",
     "dimensions.EnderDragonFightAccessor",
     "dimensions.EnderDragonFightMixin",

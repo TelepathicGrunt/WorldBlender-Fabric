@@ -1,6 +1,5 @@
 package com.telepathicgrunt.worldblender.blocks;
 
-import com.google.common.collect.ImmutableList;
 import com.telepathicgrunt.worldblender.blocks.WBRenderTexturingState.WBPortalTexturingState;
 import com.telepathicgrunt.worldblender.mixin.blocks.RenderPhaseAccessor;
 import net.fabricmc.api.EnvType;
@@ -13,7 +12,6 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Matrix4f;
 
-import java.util.List;
 import java.util.Random;
 import java.util.stream.IntStream;
 
@@ -127,7 +125,7 @@ public class WBPortalBlockEntityRenderer extends BlockEntityRenderer<WBPortalBlo
 	
 	//////////////////////////////////RENDER STATE STUFF//////////////////////////////////////////
 
-	public static final Identifier MAIN_TEXTURE =     new Identifier("textures/misc/enchanted_item_glint.png");
+	public static final Identifier MAIN_TEXTURE = new Identifier("textures/misc/enchanted_item_glint.png");
 	public static final Identifier ADDITIVE_TEXTURE = new Identifier("textures/misc/forcefield.png");
 	private static final Random RANDOM = new Random(31100L);
 	private static final BufferBuilder[] BUFFER_BUILDERS = new BufferBuilder[9];
