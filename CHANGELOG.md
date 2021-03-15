@@ -13,6 +13,9 @@ Welcome to the Github! If you are looking for the most recent stable version, th
 
 - Added screen overlay when inside the portal block.
 
+##### Biomes:
+- Fixed lang file for biome names so they show up translated properly in minimaps.
+
 ##### Misc:
 - Fixed several mixins not being clientside when they should be.
 
