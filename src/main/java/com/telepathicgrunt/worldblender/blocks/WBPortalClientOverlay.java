@@ -1,7 +1,6 @@
 package com.telepathicgrunt.worldblender.blocks;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.telepathicgrunt.worldblender.WorldBlender;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.BufferRenderer;
@@ -14,7 +13,6 @@ import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Matrix4f;
 import net.minecraft.util.math.noise.OctaveSimplexNoiseSampler;
-import net.minecraft.world.World;
 import net.minecraft.world.gen.ChunkRandom;
 
 import java.util.stream.IntStream;

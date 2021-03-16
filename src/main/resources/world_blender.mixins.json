@@ -5,7 +5,6 @@
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "blocks.BlockAccessor",
-    "blocks.BlockOverlayRendererMixin",
     "dimensions.DimensionTypeAccessor",
     "dimensions.EnderDragonFightAccessor",
     "dimensions.EnderDragonFightMixin",
@@ -27,6 +26,7 @@
     "worldgen.WeightedBlockStateProviderMixin"
   ],
   "client": [
+    "blocks.BlockOverlayRendererMixin",
     "blocks.RenderPhaseAccessor",
     "dimensions.ClientWorldMixin",
     "dimensions.SkyPropertiesAccessor"
