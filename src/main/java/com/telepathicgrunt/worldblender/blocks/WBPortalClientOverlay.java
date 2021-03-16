@@ -60,7 +60,7 @@ public class WBPortalClientOverlay {
         float red = Math.min(((float) Math.abs(NOISE_SAMPLER.sample(timeOffset + inheritOffser, yaw, pitch, yPos)) * 4.95F) * brightnessAtEyes, 1F);
         float green = Math.min(((float) Math.abs(NOISE_SAMPLER.sample(yaw + inheritOffser, timeOffset, pitch + 10000F, yPos) * 3.95F)) * brightnessAtEyes, 1F);
         float blue = Math.min(((float) Math.abs(NOISE_SAMPLER.sample(pitch + 10540F + inheritOffser, yPos, yaw + 1012100F, timeOffset) * 4.0F)) * brightnessAtEyes, 1F);
-        float alpha = Math.min(Math.max(((float) NOISE_SAMPLER.sample(pitch + 6500F + inheritOffser, yPos, timeOffset + 3540F, yaw + 13540F) * 3.0F), 0.75F), 0.99F);
+        float alpha = Math.min(Math.max(((float) NOISE_SAMPLER.sample(pitch + 6500F + inheritOffser, yPos, timeOffset + 3540F, yaw + 13540F) * 3.0F), 0.7F), 0.85F);
         bufferbuilder.vertex(matrix4f, -1.0F, -1.0F, -0.5F).color(red, green, blue, alpha).texture(4.0F + yaw, 4.0F + pitch).next();
         bufferbuilder.vertex(matrix4f, 1.0F, -1.0F, -0.5F).color(red, green, blue, alpha).texture(0.0F + yaw, 4.0F + pitch).next();
         bufferbuilder.vertex(matrix4f, 1.0F, 1.0F, -0.5F).color(red, green, blue, alpha).texture(0.0F + yaw, 0.0F + pitch).next();
