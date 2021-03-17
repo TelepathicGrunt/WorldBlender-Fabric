@@ -31,7 +31,6 @@ public class ItemClearingFeature extends Feature<DefaultFeatureConfig>
 		}
 		itemClearingEntity.refreshPositionAndAngles((double)position.getX() + 0.5D, 255, (double)position.getZ() + 0.5D, 0.0F, 0.0F);
 		world.spawnEntity(itemClearingEntity);
-		world.setBlockState(position.up(107), Blocks.TWISTING_VINES.getDefaultState(), 3);
 		return true;
 	}
 }
