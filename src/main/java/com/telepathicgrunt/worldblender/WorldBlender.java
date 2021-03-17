@@ -4,6 +4,7 @@ import com.telepathicgrunt.worldblender.blocks.WBBlocks;
 import com.telepathicgrunt.worldblender.blocks.WBPortalSpawning;
 import com.telepathicgrunt.worldblender.configs.WBConfig;
 import com.telepathicgrunt.worldblender.dimension.WBBiomeProvider;
+import com.telepathicgrunt.worldblender.entities.WBEntities;
 import com.telepathicgrunt.worldblender.features.WBConfiguredFeatures;
 import com.telepathicgrunt.worldblender.features.WBFeatures;
 import com.telepathicgrunt.worldblender.surfacebuilder.WBSurfaceBuilders;
@@ -35,6 +36,7 @@ public class WorldBlender implements ModInitializer {
 		WBConfiguredFeatures.registerConfiguredFeatures();
 		WBSurfaceBuilders.registerSurfaceBuilders();
 		WBBiomeProvider.registerBiomeProvider();
+		WBEntities.registerEntities();
 
 		UseBlockCallback.EVENT.register(WBPortalSpawning::blockRightClick);
 	}

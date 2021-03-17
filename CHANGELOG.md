@@ -8,6 +8,9 @@ Welcome to the Github! If you are looking for the most recent stable version, th
 
 ## (V.2.1.2 Changes) (1.16.5 Minecraft)
 
+##### Dimension:
+- Will now do its best to remove blocks in invalid spots during worldgen and will try and remove all dropped items from newly made chunks from worldgen features breaking.
+
 ##### Block:
 - World Blender Portal block rendering is now optimized thanks to comp500! Special thanks to them!
 

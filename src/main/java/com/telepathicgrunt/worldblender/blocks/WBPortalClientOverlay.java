@@ -49,10 +49,10 @@ public class WBPortalClientOverlay {
         Matrix4f matrix4f = matrixStack.peek().getModel();
         bufferbuilder.begin(7, VertexFormats.POSITION_COLOR_TEXTURE);
         drawTexture(bufferbuilder, brightnessAtEyes, yPos, yaw, pitch, inheritOffser, matrix4f);
+        // RenderSystem.translatef(0.0F, (Util.getMeasuringTimeMs() % 1000000000000000000L / 100000.0F), 0.0F);
         bufferbuilder.end();
         BufferRenderer.draw(bufferbuilder);
         RenderSystem.disableBlend();
-        //RenderSystem.translatef(17.0F, (Util.getMeasuringTimeMs() % 1000000000000000000L / 100000.0F), 0.0F);
     }
 
     private static void drawTexture(BufferBuilder bufferbuilder, float brightnessAtEyes, float yPos, float yaw, float pitch, float inheritOffser, Matrix4f matrix4f) {

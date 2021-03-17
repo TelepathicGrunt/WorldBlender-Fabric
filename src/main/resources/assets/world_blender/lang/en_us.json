@@ -72,10 +72,8 @@
   "text.autoconfig.world_blender.option.WBBlendingConfig.allowVanillaSpawns": "Allow Vanilla Spawns",
   "text.autoconfig.world_blender.option.WBBlendingConfig.allowVanillaSurfaces.@PrefixText": "\n\nDecides if the dimension imports surfaces like desert's sand, giant tree taiga's podzol, etc.",
   "text.autoconfig.world_blender.option.WBBlendingConfig.allowVanillaSurfaces": "Allow Vanilla Surfaces",
-  "text.autoconfig.world_blender.option.WBBlendingConfig.disallowLaggyFeatures.@PrefixText": "\n\nWill make vanilla bamboo, lava, and fire features and will try to \n make modded bamboo, lava, and fire features not spawn at all\n in order to help reduce lag in the world due to bamboo\n breaking like crazy or fire spreading rapidly.\n \n If all else fail, do /gamerule doFireTick false to reduce fire lag.",
-  "text.autoconfig.world_blender.option.WBBlendingConfig.disallowLaggyFeatures": "Disallow Laggy Features",
+  "text.autoconfig.world_blender.option.WBBlendingConfig.disallowFireLavaBasaltFeatures.@PrefixText": "\n\nWill prevent importing vanilla lava/fire/basalt features and will attempt to make modded lava/fire features not spawn at all in order to help reduce lag in the world due to fire spreading rapidly. Also, basalt is ugly as it overwhelms the world. If all else fail, do /gamerule doFireTick false to reduce fire lag.",
+  "text.autoconfig.world_blender.option.WBBlendingConfig.disallowFireLavaBasaltFeatures": "Disallow Fire/Lava/Basalt Features",
   "text.autoconfig.world_blender.option.WBBlendingConfig.identifierDump.@PrefixText": "\n\nDumps all resource locations (IDs) for all mods into a new file\n at config/world_blender-identifier_dump.txt and can be found by\n looking in the config folder in Minecraft's folder. The file is made\n if you set this option to true and started a world.\n\n Use this option to look up the resource location or name of features, biomes, blocks, carvers, structures, or entities that you want to blacklist.",
-  "text.autoconfig.world_blender.option.WBBlendingConfig.identifierDump": "Identifier Dump",
-  "text.autoconfig.world_blender.option.WBBlendingConfig.cleanSlateWBBiomesAtStartup.@PrefixText": "\n\nUse this if another mod is adding stuff to World Blender's biomes\n and World Blender's blacklisting config is not working. This option\n will wipe clear WB's biomes so they have absolutely nothing in it\n and then it will import everyone else's stuff based on it's blacklist.",
-  "text.autoconfig.world_blender.option.WBBlendingConfig.cleanSlateWBBiomesAtStartup": "Clean Slate WB Biomes at Startup"
+  "text.autoconfig.world_blender.option.WBBlendingConfig.identifierDump": "Identifier Dump"
 }

@@ -227,22 +227,13 @@ public class WBBlendingConfigs implements ConfigData {
 
     @ConfigEntry.Gui.PrefixText
     @ConfigEntry.Gui.Tooltip(count = 0)
-    @Comment(value = " Will make vanilla bamboo, lava, and fire features and will try to \r\n"
-            +" make modded bamboo, lava, and fire features not spawn at all\r\n"
-            +" in order to help reduce lag in the world due to bamboo\r\n"
-            +" breaking like crazy or fire spreading rapidly.\r\n"
-            +" \r\n"
+    @Comment(value = "Will prevent importing vanilla lava/fire/basalt features and \r\n"
+            +" will attempt to make modded lava/fire features not spawn at all \r\n"
+            +" in order to help reduce lag in the world due to fire spreading rapidly. \r\n"
+            +" Also, basalt is ugly as it overwhelms the world. \r\n"
             +" If all else fail, do /gamerule doFireTick false to reduce fire lag.\r\n")
-    public boolean disallowLaggyFeatures = true;
+    public boolean disallowFireLavaBasaltFeatures = true;
 
-
-    @ConfigEntry.Gui.PrefixText
-    @ConfigEntry.Gui.Tooltip(count = 0)
-    @Comment(value = " Use this if another mod is adding stuff to World Blender's biomes \r\n" +
-            " and World Blender's blacklisting config is not working. This option \r\n" +
-            " will wipe clear WB's biomes so they have absolutely nothing in it \r\n" +
-            " and then it will import everyone else's stuff based on it's blacklist.\r\n")
-    public boolean cleanSlateWBBiomesAtStartup = true;
 
     @ConfigEntry.Gui.PrefixText
     @ConfigEntry.Gui.Tooltip(count = 0)

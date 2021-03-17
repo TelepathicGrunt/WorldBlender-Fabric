@@ -247,10 +247,10 @@ public class TheBlender {
 			});
 		}
 
-		if (!disallowLaggyFeatures() && featureGrouping.bambooFound) {
+		if (featureGrouping.bambooFound) {
 			// add 1 configured bamboo so it is dead last
 			blendedStageFeatures(GenerationStep.Feature.VEGETAL_DECORATION)
-				.add(() -> configuredFeatureRegistry.get(new Identifier("minecraft", "bamboo")));
+				.add(() -> configuredFeatureRegistry.get(new Identifier("minecraft", "bamboo_light")));
 		}
 		
 		
@@ -280,6 +280,15 @@ public class TheBlender {
 		if (!isModificationBlacklisted) {
 			blendedStageFeatures(GenerationStep.Feature.LOCAL_MODIFICATIONS)
 				.add(() -> WBConfiguredFeatures.ANTI_FLOATING_BLOCKS_AND_SEPARATE_LIQUIDS);
+		}
+
+		isModificationBlacklisted = ConfigBlacklisting.isIdentifierBlacklisted(
+			BlacklistType.FEATURE,
+			new Identifier(WorldBlender.MODID, "item_clearing")
+		);
+		if (!isModificationBlacklisted) {
+			blendedStageFeatures(GenerationStep.Feature.LOCAL_MODIFICATIONS)
+				.add(() -> WBConfiguredFeatures.ITEM_CLEARING);
 		}
 	}
 	
@@ -331,9 +340,11 @@ public class TheBlender {
 					stageFeatures.add(0, featureSupplier);
 					continue;
 				}
-				
-				// if we have no laggy feature config on, then the feature must not be fire, lava, bamboo, etc in order to be added
-				if (disallowLaggyFeatures() && featureGrouping.isLaggy(feature)) continue;
+
+				// if bamboo, dont import as we will import our own bamboo at a better stage.
+				// if we have no laggy feature config on, then the feature must not be fire, lava, basalt, etc in order to be added
+				if (featureGrouping.isBamboo(feature) || (disallowFireLavaBasaltFeatures() && featureGrouping.isFireLavaBasalt(feature)))
+					continue;
 				
 				stageFeatures.add(featureSupplier);
 			}
@@ -490,7 +501,7 @@ public class TheBlender {
 		return blacklist != null && ConfigBlacklisting.isIdentifierBlacklisted(blacklist, id);
 	}
 	
-	private static boolean disallowLaggyFeatures() {
-		return WorldBlender.WB_CONFIG.WBBlendingConfig.disallowLaggyFeatures;
+	private static boolean disallowFireLavaBasaltFeatures() {
+		return WorldBlender.WB_CONFIG.WBBlendingConfig.disallowFireLavaBasaltFeatures;
 	}
 }

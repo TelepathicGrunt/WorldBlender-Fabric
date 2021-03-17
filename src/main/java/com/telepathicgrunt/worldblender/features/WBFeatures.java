@@ -10,10 +10,12 @@ public class WBFeatures
 {
     public static Feature<DefaultFeatureConfig> WB_PORTAL_ALTAR = new WBPortalAltar();
     public static Feature<DefaultFeatureConfig> ANTI_FLOATING_BLOCKS_AND_SEPARATE_LIQUIDS = new AntiFloatingBlocksAndSeparateLiquids();
+    public static Feature<DefaultFeatureConfig> ITEM_CLEARING = new ItemClearingFeature();
 
     public static void registerFeatures()
     {
         Registry.register(Registry.FEATURE, new Identifier(WorldBlender.MODID, "portal_altar"), WB_PORTAL_ALTAR);
         Registry.register(Registry.FEATURE, new Identifier(WorldBlender.MODID, "anti_floating_blocks_and_separate_liquids"), ANTI_FLOATING_BLOCKS_AND_SEPARATE_LIQUIDS);
+        Registry.register(Registry.FEATURE, new Identifier(WorldBlender.MODID, "item_clearing"), ITEM_CLEARING);
     }
 }
