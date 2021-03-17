@@ -1,8 +1,8 @@
 package com.telepathicgrunt.worldblender.mixin.dimensions;
 
-import com.telepathicgrunt.worldblender.WBIdentifiers;
 import com.telepathicgrunt.worldblender.WorldBlender;
 import com.telepathicgrunt.worldblender.dimension.AltarManager;
+import com.telepathicgrunt.worldblender.dimension.WBBiomeProvider;
 import com.telepathicgrunt.worldblender.utils.ServerWorldAccess;
 import net.minecraft.entity.boss.dragon.EnderDragonFight;
 import net.minecraft.server.MinecraftServer;
@@ -42,15 +42,15 @@ public class ServerWorldMixin implements ServerWorldAccess {
 	@Inject(method = "<init>",
 			at = @At(value = "TAIL"))
 	private void setupWorld(MinecraftServer server, Executor workerExecutor, LevelStorage.Session session, ServerWorldProperties properties, RegistryKey<World> registryKey, DimensionType dimensionType, WorldGenerationProgressListener worldGenerationProgressListener, ChunkGenerator chunkGenerator, boolean bl, long seed, List<Spawner> list, boolean bl2, CallbackInfo ci) {
+		ServerWorld serverWorld = (ServerWorld)(Object)this;
+		if(serverWorld.getChunkManager().getChunkGenerator().getBiomeSource() instanceof WBBiomeProvider){
+			if(WorldBlender.WB_CONFIG.WBDimensionConfig.spawnEnderDragon) {
+				((DimensionTypeAccessor)dimensionType).wb_setEnderDragonFight(true);
+				enderDragonFight = new EnderDragonFight(serverWorld, server.getSaveProperties().getGeneratorOptions().getSeed(), server.getSaveProperties().getDragonFight());
+			}
 
-		if(registryKey.getValue().equals(WBIdentifiers.MOD_DIMENSION_ID) &&
-				WorldBlender.WB_CONFIG.WBDimensionConfig.spawnEnderDragon)
-		{
-			((DimensionTypeAccessor)dimensionType).wb_setEnderDragonFight(true);
-			enderDragonFight = new EnderDragonFight((ServerWorld)(Object)this, server.getSaveProperties().getGeneratorOptions().getSeed(), server.getSaveProperties().getDragonFight());
+			ALTAR = new AltarManager(serverWorld);
 		}
-
-		ALTAR = new AltarManager((ServerWorld)(Object)this);
 	}
 
 
@@ -60,7 +60,8 @@ public class ServerWorldMixin implements ServerWorldAccess {
 			at = @At(value = "HEAD")
 	)
 	private void tickAltar(CallbackInfo ci) {
-		if(((ServerWorld)(Object)this).getRegistryKey().getValue().equals(WBIdentifiers.MOD_DIMENSION_ID))
+		if(((ServerWorld)(Object)this).getChunkManager().getChunkGenerator().getBiomeSource() instanceof WBBiomeProvider) {
 			ALTAR.tick();
+		}
 	}
 }
