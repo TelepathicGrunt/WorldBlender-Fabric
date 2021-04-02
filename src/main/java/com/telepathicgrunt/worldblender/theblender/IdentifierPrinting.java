@@ -1,13 +1,17 @@
 package com.telepathicgrunt.worldblender.theblender;
 
 import com.telepathicgrunt.worldblender.WorldBlender;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.DynamicRegistryManager;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.world.World;
 
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Comparator;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -23,8 +27,9 @@ public class IdentifierPrinting
 	 */
 	public static void printAllIdentifiers(DynamicRegistryManager registryManager)
 	{
-		try(PrintStream printStream = new PrintStream("config/world_blender-identifier_dump.txt"))
-		{ 
+		Path filePath = Paths.get(FabricLoader.getInstance().getGameDir().toString(), "config", "world_blender-identifier_dump.txt");
+		try(PrintStream printStream = new PrintStream(filePath.toString()))
+		{
 			printOutSection(printStream, registryManager.get(Registry.BIOME_KEY), "BIOMES");
 
 			printStream.println();
@@ -41,11 +46,12 @@ public class IdentifierPrinting
 			
 			printStream.println();
 			printOutSection(printStream, Registry.BLOCK, "BLOCKS");
-			
+
+			WorldBlender.LOGGER.info("Created identifier file at {}", filePath);
 		}
 		catch (FileNotFoundException e)
 		{
-			WorldBlender.LOGGER.warn("FAILED TO CREATE AND WRITE TO config/world_blender-identifier_dump.txt. SEE LATEST.LOG AND SHOW IT TO WORLD BLENDER DEV.");
+			WorldBlender.LOGGER.warn("FAILED TO CREATE AND WRITE TO {}. SEE LATEST.LOG AND SHOW IT TO WORLD BLENDER DEV.", filePath);
 			e.printStackTrace();
 		} 
 	}

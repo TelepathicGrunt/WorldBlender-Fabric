@@ -244,5 +244,5 @@ public class WBBlendingConfigs implements ConfigData {
             +"\r\n"
             +" Use this option to look up the resource location or name of registered features,"
             +" biomes, blocks, carvers, structures, or entities that you want to blacklist.\r\n")
-    public boolean identifierDump = false;
+    public boolean identifierDump = true;
 }
