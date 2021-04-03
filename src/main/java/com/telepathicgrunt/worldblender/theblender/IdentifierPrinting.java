@@ -27,7 +27,7 @@ public class IdentifierPrinting
 	 */
 	public static void printAllIdentifiers(DynamicRegistryManager registryManager)
 	{
-		Path filePath = Paths.get(FabricLoader.getInstance().getGameDir().toString(), "config", "world_blender-identifier_dump.txt");
+		Path filePath = Paths.get(FabricLoader.getInstance().getConfigDir().toString(), "world_blender-identifier_dump.txt");
 		try(PrintStream printStream = new PrintStream(filePath.toString()))
 		{
 			printOutSection(printStream, registryManager.get(Registry.BIOME_KEY), "BIOMES");
