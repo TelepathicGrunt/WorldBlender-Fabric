@@ -7,9 +7,12 @@ import net.minecraft.block.pattern.BlockPattern;
 import net.minecraft.entity.boss.dragon.EnderDragonFight;
 import net.minecraft.server.world.ChunkHolder;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.Heightmap;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ChunkStatus;
 import net.minecraft.world.chunk.WorldChunk;
+import net.minecraft.world.gen.feature.EndPortalFeature;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -43,6 +46,7 @@ public class EnderDragonFightMixin {
 		}
 	}
 
+
 	/*
 	 * Skip doing the laggy chunk checks. We will do a different check for portal in findEndPortal
 	 */
@@ -59,6 +63,7 @@ public class EnderDragonFightMixin {
 
 
 	/*
+	 * Loads less chunks now instead of vanilla
 	 * Needed so that the portal check does not recognize a pattern in the
 	 * Bedrock floor of World Blender's dimension as if it is an End Podium.
 	 *
@@ -68,11 +73,13 @@ public class EnderDragonFightMixin {
 	 */
 	@Inject(
 			method = "findEndPortal()Lnet/minecraft/block/pattern/BlockPattern$Result;",
-			at = @At(value = "RETURN", target = "Lnet/minecraft/util/math/vector/Vector3i;getY()I"),
+			at = @At(value = "HEAD"),
 			cancellable = true
 	)
 	private void findEndPortal(CallbackInfoReturnable<BlockPattern.Result> cir) {
-		BlockPattern.Result result = EnderDragonFightModification.findEndPortal((EnderDragonFight)(Object)this, cir.getReturnValue());
-		if(cir.getReturnValue() != result) cir.setReturnValue(result);
+		if(world.getRegistryKey().equals(WBIdentifiers.WB_WORLD_KEY)){
+			BlockPattern.Result result = EnderDragonFightModification.findEndPortal((EnderDragonFight)(Object)this, cir.getReturnValue());
+			cir.setReturnValue(result);
+		}
 	}
 }
