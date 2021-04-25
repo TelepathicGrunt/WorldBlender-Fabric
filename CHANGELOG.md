@@ -6,6 +6,13 @@ Welcome to the Github! If you are looking for the most recent stable version, th
 ------------------------------------------------
 #    | World Blender changelog |
 
+
+## (V.2.1.4 Changes) (1.16.5 Minecraft)
+
+##### Dimension:
+- Found a way to turn off the lag when entering World Blender's dimension due to vanilla Enderdragon code loading a ton of chunks by default.
+
+
 ## (V.2.1.3 Changes) (1.16.5 Minecraft)
 
 ##### Configs:
