@@ -7,6 +7,8 @@ import it.unimi.dsi.fastutil.objects.Object2ByteLinkedOpenHashMap;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
+import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.server.PlayerStream;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -110,8 +112,8 @@ public class WBPortalBlockEntity extends BlockEntity implements Tickable {
         passedData.writeBlockPos(this.pos);
         passedData.writeFloat(this.getCoolDown());
 
-        PlayerStream.world(world).forEach(player ->
-                ServerSidePacketRegistry.INSTANCE.sendToPlayer(player, WBIdentifiers.PORTAL_COOLDOWN_PACKET_ID, passedData));
+        PlayerLookup.world((ServerWorld)world).forEach(player ->
+                ServerPlayNetworking.send(player, WBIdentifiers.PORTAL_COOLDOWN_PACKET_ID, passedData));
     }
 
     public boolean isRemoveable() {

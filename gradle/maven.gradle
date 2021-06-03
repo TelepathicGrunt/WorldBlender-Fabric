@@ -1,0 +1,57 @@
+apply plugin: 'maven-publish'
+
+task apiJar(type: Jar, dependsOn: classes) {
+    from(sourceSets.main.output)
+    include 'world_blender/**'
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifact(remapJar) {
+                builtBy remapJar
+            }
+            artifact(sourcesJar) {
+                builtBy remapSourcesJar
+            }
+
+            pom {
+                name = 'WorldBlender-Fabric'
+                description = 'A dimension with all the features, structures, surfaces, and natural spawns from vanilla and your mods shoved in!'
+                url = 'https://github.com/TelepathicGrunt/WorldBlender-Fabric'
+
+                scm {
+                    connection = 'git:https://github.com/TelepathicGrunt/WorldBlender-Fabric.git'
+                    developerConnection = 'git:https://github.com/TelepathicGrunt/WorldBlender-Fabric.git'
+                    url = 'https://github.com/TelepathicGrunt/WorldBlender-Fabric'
+                }
+
+                licenses {
+                    license {
+                        name = 'GNU Lesser General Public License v3.0'
+                        url = 'https://github.com/TelepathicGrunt/WorldBlender-Fabric/blob/master/LICENSE'
+                    }
+                }
+
+                developers {
+                    developer {
+                        id = 'telepathic_grunt'
+                        name = 'TelepathicGrunt'
+                        email = 'asarnesespam@gmail.com'
+                    }
+                }
+            }
+
+        }
+    }
+
+    repositories {
+        maven {
+            url = uri("https://nexus.resourcefulbees.com/repository/telepathicgrunt/")
+            credentials {
+                username "$System.env.MAVEN_USER"
+                password "$System.env.MAVEN_PASS"
+            }
+        }
+    }
+}
