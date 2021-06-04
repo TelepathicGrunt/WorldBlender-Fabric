@@ -135,7 +135,9 @@ public class WBPortalBlock extends BlockWithEntity
 				//no portal or chest was found around destination. just teleport to top land
 				if (!portalOrChestFound)
 				{
-					destPos = destinationWorld.getTopPosition(Heightmap.Type.WORLD_SURFACE, position);
+					BlockPos motionBlockPosition = destinationWorld.getTopPosition(Heightmap.Type.MOTION_BLOCKING, position);
+					BlockPos worldSurfacePosition = destinationWorld.getTopPosition(Heightmap.Type.WORLD_SURFACE, position);
+					destPos = motionBlockPosition.getY() > worldSurfacePosition.getY() ? motionBlockPosition : worldSurfacePosition;
 
 					//places a portal block in World Blender so player can escape if
 					//there is no portal block and then makes it be in cooldown

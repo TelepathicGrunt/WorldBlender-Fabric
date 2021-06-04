@@ -3,7 +3,6 @@ package com.telepathicgrunt.worldblender.features;
 import com.telepathicgrunt.worldblender.WorldBlender;
 import com.telepathicgrunt.worldblender.entities.ItemClearingEntity;
 import com.telepathicgrunt.worldblender.entities.WBEntities;
-import net.minecraft.block.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.StructureWorldAccess;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
