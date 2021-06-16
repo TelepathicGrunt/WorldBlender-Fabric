@@ -22,6 +22,7 @@ import net.minecraft.world.biome.source.BiomeSource;
 
 import java.util.List;
 import java.util.function.LongFunction;
+import java.util.stream.Collectors;
 
 
 public class WBBiomeProvider extends BiomeSource
@@ -50,7 +51,7 @@ public class WBBiomeProvider extends BiomeSource
 
 
 	public WBBiomeProvider(long seed, Registry<Biome> biomeRegistry, int biomeSize) {
-		super(BIOMES.stream().map((registryKey) -> () -> (Biome)biomeRegistry.get(registryKey)));
+		super(BIOMES.stream().map(biomeRegistry::get).collect(Collectors.toList()));
 
 		this.biomeRegistry = biomeRegistry;
 		this.biomeSize = biomeSize;
