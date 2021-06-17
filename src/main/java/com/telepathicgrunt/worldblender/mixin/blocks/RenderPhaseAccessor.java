@@ -7,18 +7,8 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 @Mixin(RenderPhase.class)
 public interface RenderPhaseAccessor {
 
-    @Accessor("TRANSLUCENT_TRANSPARENCY")
-    static RenderPhase.Transparency wb_getTRANSLUCENT_TRANSPARENCY() {
-        throw new UnsupportedOperationException();
-    }
-
-    @Accessor("ADDITIVE_TRANSPARENCY")
-    static RenderPhase.Transparency wb_getADDITIVE_TRANSPARENCY() {
-        throw new UnsupportedOperationException();
-    }
-
-    @Accessor("BLACK_FOG")
-    static RenderPhase.Fog wb_getBLACK_FOG() {
+    @Accessor("END_GATEWAY_SHADER")
+    static RenderPhase.Shader wb_getEND_GATEWAY_SHADER() {
         throw new UnsupportedOperationException();
     }
 }

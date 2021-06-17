@@ -8,7 +8,7 @@ import net.minecraft.block.FluidBlock;
 import net.minecraft.block.enums.RailShape;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.Packet;
 import net.minecraft.network.packet.s2c.play.EntitySpawnS2CPacket;
 import net.minecraft.server.world.ServerWorld;
@@ -46,12 +46,12 @@ public class ItemClearingEntity extends Entity {
    }
 
    @Override
-   public void writeCustomDataToTag(CompoundTag compound) {
+   public void writeCustomDataToTag(NbtCompound compound) {
       compound.putInt("ticksTillDetonation", this.ticksTillDetonation);
    }
 
    @Override
-   public void readCustomDataFromTag(CompoundTag compound) {
+   public void readCustomDataFromTag(NbtCompound compound) {
       this.ticksTillDetonation = compound.getInt("ticksTillDetonation");
       if(this.ticksTillDetonation == 0) this.ticksTillDetonation = tickCountdownStart;
    }

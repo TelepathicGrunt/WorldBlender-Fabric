@@ -10,7 +10,7 @@ import net.minecraft.util.Util;
 public class WBRenderTexturingState
 {
 
-	@Environment(EnvType.CLIENT)
+	
 	public static final class WBPortalTexturingState extends RenderPhase.Texturing
 	{
 		private final int iteration;

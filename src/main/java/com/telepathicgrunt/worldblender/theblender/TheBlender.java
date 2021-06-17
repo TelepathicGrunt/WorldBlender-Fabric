@@ -8,6 +8,7 @@ import com.telepathicgrunt.worldblender.features.WBConfiguredFeatures;
 import com.telepathicgrunt.worldblender.mixin.worldgen.*;
 import com.telepathicgrunt.worldblender.surfacebuilder.SurfaceBlender;
 import com.telepathicgrunt.worldblender.theblender.ConfigBlacklisting.BlacklistType;
+import net.fabricmc.fabric.impl.structure.FabricStructureImpl;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.EntityType;
@@ -22,6 +23,7 @@ import net.minecraft.world.biome.SpawnSettings;
 import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.world.gen.carver.ConfiguredCarver;
 import net.minecraft.world.gen.chunk.StructureConfig;
+import net.minecraft.world.gen.chunk.StructuresConfig;
 import net.minecraft.world.gen.feature.ConfiguredFeature;
 import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
 import net.minecraft.world.gen.feature.StructureFeature;
@@ -48,7 +50,7 @@ public class TheBlender {
 	 This way it is after Forge and Fabric's biome modification hooks and after any possible edge case mod not using them.
 	 */
 	public static void blendTheWorld(DynamicRegistryManager.Impl registryManager) {
-		Optional<MutableRegistry<Biome>> biomeRegistry = registryManager.getOptional(Registry.BIOME_KEY);
+		Optional<MutableRegistry<Biome>> biomeRegistry = registryManager.getOptionalMutable(Registry.BIOME_KEY);
 		if (!biomeRegistry.isPresent()) return;
 		Registry<Biome> biomes = biomeRegistry.get();
 		
@@ -97,9 +99,9 @@ public class TheBlender {
 		ConfigBlacklisting.setupBlackLists();
 		blendedSurface = new SurfaceBlender(); // this initializer depends on the blacklists being set up
 		
-		configuredFeatureRegistry = registryManager.get(Registry.CONFIGURED_FEATURE_WORLDGEN);
-		configuredStructureRegistry = registryManager.get(Registry.CONFIGURED_STRUCTURE_FEATURE_WORLDGEN);
-		configuredCarverRegistry = registryManager.get(Registry.CONFIGURED_CARVER_WORLDGEN);
+		configuredFeatureRegistry = registryManager.get(Registry.CONFIGURED_FEATURE_KEY);
+		configuredStructureRegistry = registryManager.get(Registry.CONFIGURED_STRUCTURE_FEATURE_KEY);
+		configuredCarverRegistry = registryManager.get(Registry.CONFIGURED_CARVER_KEY);
 		blockRegistry = Registry.BLOCK;
 		entityTypeRegistry = Registry.ENTITY_TYPE;
 	}
@@ -186,7 +188,7 @@ public class TheBlender {
 		
 		((SpawnSettingsAccessor) biome.getSpawnSettings()).wb_setSpawners(new HashMap<>(((SpawnSettingsAccessor) biome.getSpawnSettings()).wb_getSpawners()));
 		for (SpawnGroup spawnGroup : SpawnGroup.values()) {
-			((SpawnSettingsAccessor) biome.getSpawnSettings()).wb_getSpawners().put(spawnGroup, new ArrayList<>(biome.getSpawnSettings().getSpawnEntry(spawnGroup)));
+			((SpawnSettingsAccessor) biome.getSpawnSettings()).wb_getSpawners().put(spawnGroup, new ArrayList<>(biome.getSpawnSettings().getSpawnEntries(spawnGroup).getEntries()));
 		}
 		
 		((SpawnSettingsAccessor) biome.getSpawnSettings()).wb_setSpawnCosts(new HashMap<>(((SpawnSettingsAccessor) biome.getSpawnSettings()).wb_getSpawnCosts()));
@@ -413,7 +415,7 @@ public class TheBlender {
 		for (SpawnGroup spawnGroup : SpawnGroup.values()) {
 			Integer maxWeight = MAX_WEIGHT_PER_GROUP.getOrDefault(spawnGroup, Integer.MAX_VALUE);
 			List<SpawnSettings.SpawnEntry> blendedSpawns = ((BuilderAccessor)blendedSpawnInfo).wb_getSpawners().get(spawnGroup);
-			for (SpawnSettings.SpawnEntry spawnEntry : biomeSpawnInfo.getSpawnEntry(spawnGroup)) {
+			for (SpawnSettings.SpawnEntry spawnEntry : biomeSpawnInfo.getSpawnEntries(spawnGroup).getEntries()) {
 				if (checkedMobs.contains(spawnEntry)) continue;
 				checkedMobs.add(spawnEntry);
 				
@@ -455,7 +457,6 @@ public class TheBlender {
 		BlockState topMaterial = biomeSurface.getTopMaterial();
 		
 		// Also do null check as BYG actually managed to set the surfaceConfig's block to be null lol
-		//noinspection ConstantConditions
 		if (topMaterial == null) return;
 		
 		Identifier topBlockID = blockRegistry.getId(topMaterial.getBlock());
@@ -472,6 +473,10 @@ public class TheBlender {
 		ServerWorld WBServerWorld = worlds.get(WBIdentifiers.WB_WORLD_KEY);
 
 		if(WBServerWorld != null){
+			// Add the default spacings
+			tempMap.putAll(StructuresConfig.DEFAULT_STRUCTURES);
+			tempMap.putAll(FabricStructureImpl.STRUCTURE_TO_CONFIG_MAP);
+
 			for(Map.Entry<RegistryKey<World>, ServerWorld> serverWorldEntry : worlds.entrySet()){
 				// These maps may be immutable for some chunk generators. Our own won't be unless
 				// someone messes with it. I take no chances so defensive programming incoming!

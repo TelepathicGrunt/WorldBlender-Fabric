@@ -1,7 +1,7 @@
 package com.telepathicgrunt.worldblender.dimension;
 
 import com.telepathicgrunt.worldblender.WorldBlender;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.world.PersistentState;
 import net.minecraft.world.PersistentStateManager;
@@ -33,13 +33,13 @@ public class WBWorldSavedData extends PersistentState
 	
 
 	@Override
-	public void fromTag(CompoundTag data)
+	public void fromTag(NbtCompound data)
 	{
 		wbAltarMade = data.getBoolean("WBAltarMade");
 	}
 
 	@Override
-	public CompoundTag toTag(CompoundTag data)
+	public NbtCompound toTag(NbtCompound data)
 	{
 		data.putBoolean("WBAltarMade", wbAltarMade);
 		return data;

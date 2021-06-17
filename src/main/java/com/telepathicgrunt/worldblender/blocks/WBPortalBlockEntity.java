@@ -10,10 +10,11 @@ import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.entity.AbstractFurnaceBlockEntity;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -28,31 +29,22 @@ import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 
 
-public class WBPortalBlockEntity extends BlockEntity implements Tickable {
+public class WBPortalBlockEntity extends BlockEntity {
     private float teleportCooldown = 300;
     private boolean removeable = true;
 
-    // Culling optimization by Comp500
-    // https://github.com/comp500/PolyDungeons/blob/master/src/main/java/polydungeons/block/entity/DecorativeEndBlockEntity.java
-    private final Direction[] FACINGS = Direction.values();
-    private int cachedCullFaces = 0;
-    private boolean hasCachedFaces = false;
-
-
-    public WBPortalBlockEntity() {
-        super(WBBlocks.WORLD_BLENDER_PORTAL_BE);
+    public WBPortalBlockEntity(BlockPos pos, BlockState state) {
+        super(WBBlocks.WORLD_BLENDER_PORTAL_BE, pos, state);
     }
 
-
-    @Override
-    public void tick() {
-        boolean isCoolingDown = this.isCoolingDown();
+    public static void tick(World world, BlockPos pos, BlockState state, WBPortalBlockEntity blockEntity) {
+        boolean isCoolingDown = blockEntity.isCoolingDown();
         if (isCoolingDown) {
-            --this.teleportCooldown;
+            --blockEntity.teleportCooldown;
         }
 
-        if (isCoolingDown != this.isCoolingDown()) {
-            this.markDirty();
+        if (isCoolingDown != blockEntity.isCoolingDown()) {
+            blockEntity.markDirty();
         }
     }
 
@@ -66,18 +58,18 @@ public class WBPortalBlockEntity extends BlockEntity implements Tickable {
                     destPos.getX() + 0.5D,
                     destPos.getY() + 1D,
                     destPos.getZ() + 0.5D,
-                    entity.yaw,
-                    entity.pitch);
+                    entity.getYaw(),
+                    entity.getPitch());
         }
         else {
             Entity entity2 = entity.getType().create(destinationWorld);
             if (entity2 != null) {
                 entity2.copyFrom(entity);
-                entity2.refreshPositionAndAngles(destPos, entity.yaw, entity.pitch);
+                entity2.refreshPositionAndAngles(destPos, entity.getYaw(), entity.getPitch());
                 entity2.setVelocity(entity.getVelocity());
                 destinationWorld.onDimensionChanged(entity2);
             }
-            entity.remove();
+            entity.remove(Entity.RemovalReason.CHANGED_DIMENSION);
             assert this.world != null;
             this.world.getProfiler().pop();
             originalWorld.resetIdleTimeout();
@@ -124,8 +116,8 @@ public class WBPortalBlockEntity extends BlockEntity implements Tickable {
     }
 
     @Override
-    public CompoundTag toTag(CompoundTag data) {
-        super.toTag(data);
+    public NbtCompound writeNbt(NbtCompound data) {
+        super.writeNbt(data);
         data.putFloat("Cooldown", this.teleportCooldown);
         data.putBoolean("Removeable", this.removeable);
         return data;
@@ -133,8 +125,8 @@ public class WBPortalBlockEntity extends BlockEntity implements Tickable {
 
 
     @Override
-    public void fromTag(BlockState blockState, CompoundTag data) {
-        super.fromTag(blockState, data);
+    public void readNbt(NbtCompound data) {
+        super.readNbt(data);
         if (data.contains("Cooldown")) {
             this.teleportCooldown = data.getFloat("Cooldown");
         }
@@ -159,30 +151,30 @@ public class WBPortalBlockEntity extends BlockEntity implements Tickable {
      * blocks change at once. This compound comes back to you clientside
      */
     @Override
-    public CompoundTag toInitialChunkDataTag() {
-        return this.toTag(new CompoundTag());
+    public NbtCompound toInitialChunkDataTag() {
+        return this.writeNbt(new NbtCompound());
     }
 
 
-    @Environment(EnvType.CLIENT)
+    
     public boolean shouldRenderFace(Direction direction) {
         return shouldDrawSide(direction);
     }
 
     @Deprecated
-    @Environment(EnvType.CLIENT)
+    
     public boolean isSideInvisible(BlockState state, BlockState stateFrom, Direction direction) {
         return false;
     }
 
     @Override
-    @Environment(EnvType.CLIENT)
+    
     public double getSquaredRenderDistance() {
         return 65536.0D;
     }
 
 
-    @Environment(EnvType.CLIENT)
+    
     public void updateCullFaces() {
         assert world != null;
         hasCachedFaces = true;
@@ -198,7 +190,7 @@ public class WBPortalBlockEntity extends BlockEntity implements Tickable {
         }
     }
 
-    @Environment(EnvType.CLIENT)
+    
     public boolean shouldDrawSide(Direction direction) {
         // Cull faces that are not visible
         if (!hasCachedFaces) {
@@ -207,7 +199,7 @@ public class WBPortalBlockEntity extends BlockEntity implements Tickable {
         return (cachedCullFaces & (1 << direction.getId())) != 0;
     }
 
-    @Environment(EnvType.CLIENT)
+    
     public static void updateCullCache(BlockPos pos, World world) {
         updateCullCacheNeighbor(pos.up(), world);
         updateCullCacheNeighbor(pos.down(), world);
@@ -217,7 +209,7 @@ public class WBPortalBlockEntity extends BlockEntity implements Tickable {
         updateCullCacheNeighbor(pos.west(), world);
     }
 
-    @Environment(EnvType.CLIENT)
+    
     public static void updateCullCacheNeighbor(BlockPos pos, World world) {
         BlockEntity be = world.getBlockEntity(pos);
         if (be instanceof WBPortalBlockEntity) {
@@ -229,7 +221,7 @@ public class WBPortalBlockEntity extends BlockEntity implements Tickable {
      * Need out own implementation because the original method uses getOutlineShape to extrude and cause
      * our block's sides to be culled for snow and slabs. We need getOutlineShape so we can right click the block.
      */
-    @Environment(EnvType.CLIENT)
+    
     public static boolean shouldDrawSideSpecialized(BlockState state, BlockView world, BlockPos pos, Direction facing) {
         BlockPos blockPos = pos.offset(facing);
         BlockState blockState = world.getBlockState(blockPos);

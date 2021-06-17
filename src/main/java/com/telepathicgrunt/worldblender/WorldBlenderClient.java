@@ -23,10 +23,6 @@ public class WorldBlenderClient implements ClientModInitializer {
 		EntityRendererRegistry.INSTANCE.register(WBEntities.ITEM_CLEARING_ENTITY, (dispatcher, context) -> new ItemClearingEntityRendering(dispatcher));
 
 		BlockEntityRendererRegistry.INSTANCE.register(WBBlocks.WORLD_BLENDER_PORTAL_BE, WBPortalBlockEntityRenderer::new);
-		WorldRenderEvents.BEFORE_BLOCK_OUTLINE.register((worldRenderContext, hitResult) -> {
-			WBPortalBlockEntityRenderer.drawBuffers();
-			return true;
-		});
 
 		// Set cooldown for portal after server says it was triggered
 		ClientPlayNetworking.registerGlobalReceiver(WBIdentifiers.PORTAL_COOLDOWN_PACKET_ID,

@@ -190,7 +190,7 @@ public class WBPortalBlock extends BlockWithEntity
 	 * Shows particles around this block
 	 */
 	@Override
-	@Environment(EnvType.CLIENT)
+	
 	public void randomDisplayTick(BlockState blockState, World world, BlockPos position, Random random)
 	{
 		BlockEntity tileentity = world.getBlockEntity(position);
@@ -204,7 +204,7 @@ public class WBPortalBlock extends BlockWithEntity
 		}
 	}
 
-	@Environment(EnvType.CLIENT)
+	
 	public void createLotsOfParticles(BlockState blockState, World world, BlockPos position, Random random)
 	{
 		BlockEntity tileentity = world.getBlockEntity(position);

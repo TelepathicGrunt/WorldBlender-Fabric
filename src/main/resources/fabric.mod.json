@@ -32,6 +32,8 @@
     "world_blender.mixins.json"
   ],
 
+  "accessWidener" : "world_blender.accesswidener",
+
   "depends": {
     "fabricloader": ">=0.10.6",
     "fabric": ">=0.25.0",
