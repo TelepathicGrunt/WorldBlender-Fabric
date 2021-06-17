@@ -1,12 +1,13 @@
 package com.telepathicgrunt.worldblender.blocks;
 
 import com.telepathicgrunt.worldblender.WBIdentifiers;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.entity.BlockEntityTicker;
+import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.fluid.Fluid;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.particle.ParticleTypes;
@@ -22,6 +23,7 @@ import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Random;
 
@@ -32,7 +34,7 @@ public class WBPortalBlock extends BlockWithEntity
 	
 	protected WBPortalBlock()
 	{
-		super(Block.Settings.of(Material.PORTAL, MaterialColor.BLACK)
+		super(Block.Settings.of(Material.PORTAL, MapColor.BLACK)
 				.noCollision()
 				.luminance((blockState) -> 6)
 				.strength(-1.0F, 3600000.0F)
@@ -43,11 +45,21 @@ public class WBPortalBlock extends BlockWithEntity
 		);
 	}
 
+	@Nullable
+	@Override
+	public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
+		return new WBPortalBlockEntity(pos, state);
+	}
+
+	@Nullable
+	@Override
+	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(World world, BlockState state, BlockEntityType<T> type) {
+		return checkType(type, WBBlocks.WORLD_BLENDER_PORTAL_BE, WBPortalBlockEntity::tick);
+	}
 
 	@Override
-	public BlockEntity createBlockEntity(BlockView blockReader)
-	{
-		return new WBPortalBlockEntity();
+	public boolean canBucketPlace(BlockState state, Fluid fluid) {
+		return false;
 	}
 
 	@Override
@@ -190,7 +202,6 @@ public class WBPortalBlock extends BlockWithEntity
 	 * Shows particles around this block
 	 */
 	@Override
-	
 	public void randomDisplayTick(BlockState blockState, World world, BlockPos position, Random random)
 	{
 		BlockEntity tileentity = world.getBlockEntity(position);

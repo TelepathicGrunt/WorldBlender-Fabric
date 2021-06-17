@@ -15,12 +15,9 @@ import net.minecraft.util.BlockRotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.Heightmap;
-import net.minecraft.world.StructureWorldAccess;
-import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.feature.DefaultFeatureConfig;
 import net.minecraft.world.gen.feature.Feature;
-
-import java.util.Random;
+import net.minecraft.world.gen.feature.util.FeatureContext;
 
 
 public class WBPortalAltar extends Feature<DefaultFeatureConfig>
@@ -38,18 +35,18 @@ public class WBPortalAltar extends Feature<DefaultFeatureConfig>
 	
 
 	@Override
-	public boolean generate(StructureWorldAccess world, ChunkGenerator chunkgenerator, Random rand, BlockPos position, DefaultFeatureConfig config)
+	public boolean generate(FeatureContext<DefaultFeatureConfig> context)
 	{
 		//only world origin chunk allows generation
-		if (world.toServerWorld().getRegistryKey() != WBIdentifiers.WB_WORLD_KEY ||
-				position.getX() >> 4 != 0 ||
-				position.getZ() >> 4 != 0)
+		if (context.getWorld().toServerWorld().getRegistryKey() != WBIdentifiers.WB_WORLD_KEY ||
+				context.getOrigin().getX() >> 4 != 0 ||
+				context.getOrigin().getZ() >> 4 != 0)
 		{
 			return false;
 		}
 
 		if (ALTAR_TEMPLATE == null) {
-			ALTAR_TEMPLATE = world.toServerWorld().getServer().getStructureManager().getStructure(WBIdentifiers.ALTAR_ID);
+			ALTAR_TEMPLATE = context.getWorld().toServerWorld().getServer().getStructureManager().getStructureOrBlank(WBIdentifiers.ALTAR_ID);
 
 			if (ALTAR_TEMPLATE == null) {
 				WorldBlender.LOGGER.warn("world blender portal altar NTB does not exist!");
@@ -57,23 +54,23 @@ public class WBPortalAltar extends Feature<DefaultFeatureConfig>
 			}
 		}
 		
-		BlockPos.Mutable finalPosition = new BlockPos.Mutable().set(world.getTopPosition(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, position));
+		BlockPos.Mutable finalPosition = new BlockPos.Mutable().set(context.getWorld().getTopPosition(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, context.getOrigin()));
 		
 		//go past trees to world surface
-		BlockState blockState = world.getBlockState(finalPosition);
+		BlockState blockState = context.getWorld().getBlockState(finalPosition);
 		while(finalPosition.getY() > 12 && (!blockState.isOpaque() || blockState.getMaterial() == Material.WOOD)) {
 			finalPosition.move(Direction.DOWN);
-			blockState = world.getBlockState(finalPosition);
+			blockState = context.getWorld().getBlockState(finalPosition);
 		}
 
 		finalPosition.move(Direction.UP);
-		world.setBlockState(finalPosition.down(), Blocks.AIR.getDefaultState(), 3);
-		ALTAR_TEMPLATE.placeAndNotifyListeners(world, finalPosition.add(-5, -2, -5), placementSettings, rand);
+		context.getWorld().setBlockState(finalPosition.down(), Blocks.AIR.getDefaultState(), 3);
+		ALTAR_TEMPLATE.place(context.getWorld(), finalPosition.add(-5, -2, -5), finalPosition.add(-5, -2, -5), placementSettings, context.getRandom(), 3);
 		finalPosition.move(Direction.DOWN);
-		world.setBlockState(finalPosition, WBBlocks.WORLD_BLENDER_PORTAL.getDefaultState(), 3); //extra check to make sure portal is placed
+		context.getWorld().setBlockState(finalPosition, WBBlocks.WORLD_BLENDER_PORTAL.getDefaultState(), 3); //extra check to make sure portal is placed
 
 		//make portal block unremoveable in altar
-		BlockEntity blockEntity = world.getBlockEntity(finalPosition);
+		BlockEntity blockEntity = context.getWorld().getBlockEntity(finalPosition);
 		if(blockEntity instanceof WBPortalBlockEntity)
 			((WBPortalBlockEntity)blockEntity).makeNotRemoveable();
 		

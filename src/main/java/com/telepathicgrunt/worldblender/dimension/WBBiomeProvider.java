@@ -10,13 +10,17 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.SharedConstants;
 import net.minecraft.util.Util;
+import net.minecraft.util.dynamic.RegistryLookupCodec;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
-import net.minecraft.util.registry.RegistryLookupCodec;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BuiltinBiomes;
 import net.minecraft.world.biome.layer.ScaleLayer;
-import net.minecraft.world.biome.layer.util.*;
+import net.minecraft.world.biome.layer.util.CachingLayerContext;
+import net.minecraft.world.biome.layer.util.CachingLayerSampler;
+import net.minecraft.world.biome.layer.util.LayerFactory;
+import net.minecraft.world.biome.layer.util.LayerSampleContext;
+import net.minecraft.world.biome.layer.util.LayerSampler;
 import net.minecraft.world.biome.source.BiomeLayerSampler;
 import net.minecraft.world.biome.source.BiomeSource;
 
@@ -76,7 +80,7 @@ public class WBBiomeProvider extends BiomeSource
 				layerFactory = ScaleLayer.NORMAL.create(contextFactory.apply(2001L + currentExtraZoom), layerFactory);
 			}
 			else{
-				layerFactory = ScaleLayer.FUZZY.create(contextFactory.apply(2000L + (currentExtraZoom * 31)), layerFactory);
+				layerFactory = ScaleLayer.FUZZY.create(contextFactory.apply(2000L + (currentExtraZoom * 31L)), layerFactory);
 			}
 		}
 		return layerFactory;

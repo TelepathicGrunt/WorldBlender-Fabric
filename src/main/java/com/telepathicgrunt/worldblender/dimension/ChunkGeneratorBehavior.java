@@ -64,10 +64,12 @@ public class ChunkGeneratorBehavior {
                             chunkGenerator,
                             ((ChunkGeneratorAccessor)chunkGenerator).getPopulationSource(),
                             structureManager,
-                            worldSeed, chunkPos,
+                            worldSeed,
+                            chunkPos,
                             biome,
                             ref,
-                            structureConfig);
+                            structureConfig,
+                            chunk);
 
                 structureAccessor.setStructureStart(ChunkSectionPos.from(chunk.getPos(), 0), configuredStructureFeature.feature, structureStart2, chunk);
             }

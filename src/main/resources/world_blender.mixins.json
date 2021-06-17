@@ -4,6 +4,7 @@
   "package": "com.telepathicgrunt.worldblender.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
+    "blocks.MultiPhaseInvoker",
     "blocks.AbstractRailBlockInvoker",
     "blocks.BlockAccessor",
     "dimensions.DimensionTypeAccessor",
@@ -29,7 +30,6 @@
   "client": [
     "blocks.BlockOverlayRendererMixin",
     "blocks.RenderPhaseAccessor",
-    "dimensions.ClientWorldMixin",
     "dimensions.SkyPropertiesAccessor"
   ],
   "injectors": {

@@ -27,6 +27,10 @@ repositories {
 	maven { url "https://maven.shedaniel.me/" }
 }
 
+minecraft {
+	accessWidener = file("src/main/resources/world_blender.accesswidener")
+}
+
 dependencies {
 	//to change the versions see the gradle.properties file
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"

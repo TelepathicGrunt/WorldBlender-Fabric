@@ -1,22 +1,16 @@
 package com.telepathicgrunt.worldblender.blocks;
 
-import com.telepathicgrunt.worldblender.blocks.WBRenderTexturingState.WBPortalTexturingState;
+import com.telepathicgrunt.worldblender.mixin.blocks.MultiPhaseInvoker;
 import com.telepathicgrunt.worldblender.mixin.blocks.RenderPhaseAccessor;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.render.*;
-import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
-import net.minecraft.client.render.block.entity.EndPortalBlockEntityRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Matrix4f;
 
 import java.util.Random;
-import java.util.stream.IntStream;
-
 
 
 public class WBPortalBlockEntityRenderer implements BlockEntityRenderer<WBPortalBlockEntity>
@@ -27,7 +21,7 @@ public class WBPortalBlockEntityRenderer implements BlockEntityRenderer<WBPortal
 	private static final Random RANDOM = new Random(31100L);
 	public static final Identifier MAIN_TEXTURE = new Identifier("textures/misc/enchanted_item_glint.png");
 	public static final Identifier ADDITIVE_TEXTURE = new Identifier("textures/misc/forcefield.png");
-	RenderLayer.MultiPhase WORLD_BLENDER_PORTAL = new RenderLayer.MultiPhase("world_blender_portal", VertexFormats.POSITION, VertexFormat.DrawMode.QUADS, 256, false, false, RenderLayer.MultiPhaseParameters.builder().shader(RenderPhaseAccessor.wb_getEND_GATEWAY_SHADER()).texture(RenderPhase.Textures.create().add(MAIN_TEXTURE, false, false).add(ADDITIVE_TEXTURE, false, false).build()).build(false));
+	RenderLayer.MultiPhase WORLD_BLENDER_PORTAL = MultiPhaseInvoker.worldblender_createMultiPhase("world_blender_portal", VertexFormats.POSITION, VertexFormat.DrawMode.QUADS, 256, false, false, RenderLayer.MultiPhaseParameters.builder().shader(RenderPhaseAccessor.wb_getEND_GATEWAY_SHADER()).texture(RenderPhase.Textures.create().add(MAIN_TEXTURE, false, false).add(ADDITIVE_TEXTURE, false, false).build()).build(false));
 
 	public void render(WBPortalBlockEntity endPortalBlockEntity, float f, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i, int j) {
 		RANDOM.setSeed(31100L);

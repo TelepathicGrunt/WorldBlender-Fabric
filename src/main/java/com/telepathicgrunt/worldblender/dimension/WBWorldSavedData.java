@@ -14,9 +14,14 @@ public class WBWorldSavedData extends PersistentState
 	private static final WBWorldSavedData CLIENT_DUMMY = new WBWorldSavedData();
 	private boolean wbAltarMade;
 
+	public WBWorldSavedData(boolean altarMade)
+	{
+		wbAltarMade = altarMade;
+	}
+
 	public WBWorldSavedData()
 	{
-		super(ALTAR_DATA);
+		wbAltarMade = false;
 	}
 
 	public static WBWorldSavedData get(World world)
@@ -27,19 +32,15 @@ public class WBWorldSavedData extends PersistentState
 		}
 
 		PersistentStateManager storage = ((ServerWorld)world).getPersistentStateManager();
-		return storage.getOrCreate(WBWorldSavedData::new, ALTAR_DATA);
+		return storage.getOrCreate(WBWorldSavedData::fromNbt, WBWorldSavedData::new, ALTAR_DATA);
 	}
-	
-	
 
-	@Override
-	public void fromTag(NbtCompound data)
-	{
-		wbAltarMade = data.getBoolean("WBAltarMade");
+	public static WBWorldSavedData fromNbt(NbtCompound data) {
+		return new WBWorldSavedData(data.getBoolean("WBAltarMade"));
 	}
 
 	@Override
-	public NbtCompound toTag(NbtCompound data)
+	public NbtCompound writeNbt(NbtCompound data)
 	{
 		data.putBoolean("WBAltarMade", wbAltarMade);
 		return data;

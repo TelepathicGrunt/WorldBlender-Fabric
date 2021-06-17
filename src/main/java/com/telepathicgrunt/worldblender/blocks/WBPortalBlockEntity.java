@@ -4,13 +4,10 @@ import com.telepathicgrunt.worldblender.WBIdentifiers;
 import com.telepathicgrunt.worldblender.mixin.blocks.BlockAccessor;
 import io.netty.buffer.Unpooled;
 import it.unimi.dsi.fastutil.objects.Object2ByteLinkedOpenHashMap;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.AbstractFurnaceBlockEntity;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -19,7 +16,6 @@ import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.Tickable;
 import net.minecraft.util.function.BooleanBiFunction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -143,7 +139,7 @@ public class WBPortalBlockEntity extends BlockEntity {
      */
     @Override
     public BlockEntityUpdateS2CPacket toUpdatePacket() {
-        return new BlockEntityUpdateS2CPacket(this.pos, 0, this.toInitialChunkDataTag());
+        return new BlockEntityUpdateS2CPacket(this.pos, 0, this.toInitialChunkDataNbt());
     }
 
     /**
@@ -151,70 +147,25 @@ public class WBPortalBlockEntity extends BlockEntity {
      * blocks change at once. This compound comes back to you clientside
      */
     @Override
-    public NbtCompound toInitialChunkDataTag() {
+    public NbtCompound toInitialChunkDataNbt() {
         return this.writeNbt(new NbtCompound());
     }
 
-
-    
-    public boolean shouldRenderFace(Direction direction) {
-        return shouldDrawSide(direction);
-    }
-
-    @Deprecated
-    
-    public boolean isSideInvisible(BlockState state, BlockState stateFrom, Direction direction) {
-        return false;
-    }
-
-    @Override
-    
-    public double getSquaredRenderDistance() {
-        return 65536.0D;
-    }
-
-
-    
-    public void updateCullFaces() {
-        assert world != null;
-        hasCachedFaces = true;
-        int mask;
-        for (Direction dir : FACINGS) {
-            mask = 1 << dir.getId();
-            if (shouldDrawSideSpecialized(getCachedState(), world, getPos(), dir)) {
-                cachedCullFaces |= mask;
-            }
-            else {
-                cachedCullFaces &= ~mask;
-            }
-        }
-    }
-
-    
     public boolean shouldDrawSide(Direction direction) {
-        // Cull faces that are not visible
-        if (!hasCachedFaces) {
-            updateCullFaces();
-        }
-        return (cachedCullFaces & (1 << direction.getId())) != 0;
+        return Block.shouldDrawSide(this.getCachedState(), this.world, this.getPos(), direction, this.getPos().offset(direction));
     }
 
-    
-    public static void updateCullCache(BlockPos pos, World world) {
-        updateCullCacheNeighbor(pos.up(), world);
-        updateCullCacheNeighbor(pos.down(), world);
-        updateCullCacheNeighbor(pos.north(), world);
-        updateCullCacheNeighbor(pos.east(), world);
-        updateCullCacheNeighbor(pos.south(), world);
-        updateCullCacheNeighbor(pos.west(), world);
-    }
+    public int getDrawnSidesCount() {
+        int sideCount = 0;
+        Direction[] var2 = Direction.values();
+        int var3 = var2.length;
 
-    
-    public static void updateCullCacheNeighbor(BlockPos pos, World world) {
-        BlockEntity be = world.getBlockEntity(pos);
-        if (be instanceof WBPortalBlockEntity) {
-            ((WBPortalBlockEntity) be).updateCullFaces();
+        for(int var4 = 0; var4 < var3; ++var4) {
+            Direction direction = var2[var4];
+            sideCount += this.shouldDrawSide(direction) ? 1 : 0;
         }
+
+        return sideCount;
     }
 
     /**

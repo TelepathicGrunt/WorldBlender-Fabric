@@ -3,13 +3,9 @@ package com.telepathicgrunt.worldblender.features;
 import com.telepathicgrunt.worldblender.WorldBlender;
 import com.telepathicgrunt.worldblender.entities.ItemClearingEntity;
 import com.telepathicgrunt.worldblender.entities.WBEntities;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.StructureWorldAccess;
-import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.feature.DefaultFeatureConfig;
 import net.minecraft.world.gen.feature.Feature;
-
-import java.util.Random;
+import net.minecraft.world.gen.feature.util.FeatureContext;
 
 
 public class ItemClearingFeature extends Feature<DefaultFeatureConfig>
@@ -21,15 +17,15 @@ public class ItemClearingFeature extends Feature<DefaultFeatureConfig>
 	}
 
 	@Override
-	public boolean generate(StructureWorldAccess world, ChunkGenerator chunkGenerator, Random random, BlockPos position, DefaultFeatureConfig config)
+	public boolean generate(FeatureContext<DefaultFeatureConfig> context)
 	{
-		ItemClearingEntity itemClearingEntity = WBEntities.ITEM_CLEARING_ENTITY.create(world.toServerWorld());
+		ItemClearingEntity itemClearingEntity = WBEntities.ITEM_CLEARING_ENTITY.create(context.getWorld().toServerWorld());
 		if(itemClearingEntity == null){
-			WorldBlender.LOGGER.warn("Error with spawning clearing item entity at: ({}, {}, {})", position.getX(), position.getY(), position.getZ());
+			WorldBlender.LOGGER.warn("Error with spawning clearing item entity at: ({}, {}, {})", context.getOrigin().getX(), context.getOrigin().getY(), context.getOrigin().getZ());
 			return false;
 		}
-		itemClearingEntity.refreshPositionAndAngles((double)position.getX() + 0.5D, 255, (double)position.getZ() + 0.5D, 0.0F, 0.0F);
-		world.spawnEntity(itemClearingEntity);
+		itemClearingEntity.refreshPositionAndAngles((double)context.getOrigin().getX() + 0.5D, 255, (double)context.getOrigin().getZ() + 0.5D, 0.0F, 0.0F);
+		context.getWorld().spawnEntity(itemClearingEntity);
 		return true;
 	}
 }

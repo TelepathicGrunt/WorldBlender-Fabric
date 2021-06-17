@@ -9,6 +9,7 @@ import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ChunkStatus;
 import net.minecraft.world.chunk.WorldChunk;
 import net.minecraft.world.gen.feature.FeatureConfig;
+import net.minecraft.world.gen.feature.util.FeatureContext;
 
 
 public class AltarManager
@@ -34,7 +35,7 @@ public class AltarManager
 			boolean flag = this.isWorldOriginTicking();
 			if(flag)
 			{
-				WBFeatures.WB_PORTAL_ALTAR.generate(this.world, this.world.getChunkManager().getChunkGenerator(), this.world.random, new BlockPos(0, 255, 0), FeatureConfig.DEFAULT);
+				WBFeatures.WB_PORTAL_ALTAR.generate(new FeatureContext(this.world, this.world.getChunkManager().getChunkGenerator(), this.world.random, new BlockPos(0, 255, 0), FeatureConfig.DEFAULT));
 				this.altarMade = true;
 				this.saveWBAltarData(this.world);
 			}

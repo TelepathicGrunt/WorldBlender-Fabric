@@ -1,10 +1,11 @@
 package com.telepathicgrunt.worldblender.blocks;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.BufferRenderer;
+import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.Tessellator;
+import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerEntity;
@@ -25,16 +26,18 @@ public class WBPortalClientOverlay {
     public static boolean portalOverlay(PlayerEntity player, BlockPos pos, MatrixStack matrixStack) {
 
         if (player.world.getBlockState(new BlockPos(player.getCameraPosVec(1))).getBlock() == WBBlocks.WORLD_BLENDER_PORTAL) {
-            MinecraftClient minecraftIn = MinecraftClient.getInstance();
             float brightnessAtEyes = player.getBrightnessAtEyes();
-            float yaw = Math.abs(player.yaw) / 360;
-            float pitch = Math.abs(player.pitch) / 360;
+            float yaw = Math.abs(player.getYaw()) / 360;
+            float pitch = Math.abs(player.getPitch()) / 360;
             float yPos = (float) player.getPos().y / 5F;
 
-            minecraftIn.getTextureManager().bindTexture(TEXTURE_FORCE_FIELD);
+            RenderSystem.setShader(GameRenderer::getPositionTexShader);
+            RenderSystem.enableTexture();
+            RenderSystem.setShaderTexture(0, TEXTURE_FORCE_FIELD);
             beginDrawingOverlay(matrixStack, brightnessAtEyes, yPos, yaw, pitch, 9945924F);
 
-            minecraftIn.getTextureManager().bindTexture(TEXTURE_GLINT);
+            RenderSystem.enableTexture();
+            RenderSystem.setShaderTexture(0, TEXTURE_GLINT);
             beginDrawingOverlay(matrixStack, brightnessAtEyes, yPos, yaw, pitch, 23565F);
             return true;
         }
@@ -42,17 +45,19 @@ public class WBPortalClientOverlay {
         return false;
     }
 
-    private static void beginDrawingOverlay(MatrixStack matrixStack, float brightnessAtEyes, float yPos, float yaw, float pitch, float inheritOffser) {
+    private static void beginDrawingOverlay(MatrixStack matrixStack, float brightnessAtEyes, float yPos, float yaw, float pitch, float inheritOffset) {
         BufferBuilder bufferbuilder = Tessellator.getInstance().getBuffer();
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         Matrix4f matrix4f = matrixStack.peek().getModel();
-        bufferbuilder.begin(7, VertexFormats.POSITION_COLOR_TEXTURE);
-        drawTexture(bufferbuilder, brightnessAtEyes, yPos, yaw, pitch, inheritOffser, matrix4f);
-        // RenderSystem.translatef(0.0F, (Util.getMeasuringTimeMs() % 1000000000000000000L / 100000.0F), 0.0F);
+        RenderSystem.setShaderColor(brightnessAtEyes, brightnessAtEyes, brightnessAtEyes, 1);
+        bufferbuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR_TEXTURE);
+        drawTexture(bufferbuilder, brightnessAtEyes, yPos, yaw, pitch, inheritOffset, matrix4f);
+        matrix4f.multiplyByTranslation(0.0F, (Util.getMeasuringTimeMs() % 1000000000000000000L / 100000.0F), 0.0F);
         bufferbuilder.end();
         BufferRenderer.draw(bufferbuilder);
         RenderSystem.disableBlend();
+
     }
 
     private static void drawTexture(BufferBuilder bufferbuilder, float brightnessAtEyes, float yPos, float yaw, float pitch, float inheritOffser, Matrix4f matrix4f) {

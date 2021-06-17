@@ -1,19 +1,26 @@
 package com.telepathicgrunt.worldblender.features;
 
 import com.telepathicgrunt.worldblender.WorldBlender;
-import net.minecraft.block.*;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.block.FallingBlock;
+import net.minecraft.block.MapColor;
+import net.minecraft.block.Material;
 import net.minecraft.tag.FluidTags;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.ServerWorldAccess;
-import net.minecraft.world.StructureWorldAccess;
 import net.minecraft.world.chunk.Chunk;
-import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.feature.DefaultFeatureConfig;
 import net.minecraft.world.gen.feature.Feature;
+import net.minecraft.world.gen.feature.util.FeatureContext;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 
 public class AntiFloatingBlocksAndSeparateLiquids extends Feature<DefaultFeatureConfig> {
@@ -22,61 +29,72 @@ public class AntiFloatingBlocksAndSeparateLiquids extends Feature<DefaultFeature
         super(DefaultFeatureConfig.CODEC);
     }
 
-    private static final Map<MaterialColor, Block> COLOR_MAP;
+    private static final Map<MapColor, Block> COLOR_MAP;
 
     static {
         COLOR_MAP = new HashMap<>();
-        COLOR_MAP.put(MaterialColor.CLEAR, Blocks.TERRACOTTA);
-        COLOR_MAP.put(MaterialColor.ORANGE, Blocks.ORANGE_TERRACOTTA);
-        COLOR_MAP.put(MaterialColor.BLACK, Blocks.BLACK_TERRACOTTA);
-        COLOR_MAP.put(MaterialColor.BLUE, Blocks.BLUE_TERRACOTTA);
-        COLOR_MAP.put(MaterialColor.BROWN, Blocks.BROWN_TERRACOTTA);
-        COLOR_MAP.put(MaterialColor.CLAY, Blocks.CYAN_TERRACOTTA);
-        COLOR_MAP.put(MaterialColor.CYAN, Blocks.CYAN_TERRACOTTA);
-        COLOR_MAP.put(MaterialColor.DIAMOND, Blocks.LIGHT_BLUE_TERRACOTTA);
-        COLOR_MAP.put(MaterialColor.DIRT, Blocks.BROWN_TERRACOTTA);
-        COLOR_MAP.put(MaterialColor.EMERALD, Blocks.GREEN_TERRACOTTA);
-        COLOR_MAP.put(MaterialColor.FOLIAGE, Blocks.GREEN_TERRACOTTA);
-        COLOR_MAP.put(MaterialColor.GOLD, Blocks.YELLOW_TERRACOTTA);
-        COLOR_MAP.put(MaterialColor.GRASS, Blocks.GREEN_TERRACOTTA);
-        COLOR_MAP.put(MaterialColor.GRAY, Blocks.GRAY_TERRACOTTA);
-        COLOR_MAP.put(MaterialColor.GREEN, Blocks.GREEN_TERRACOTTA);
-        COLOR_MAP.put(MaterialColor.ICE, Blocks.LIGHT_BLUE_TERRACOTTA);
-        COLOR_MAP.put(MaterialColor.IRON, Blocks.WHITE_TERRACOTTA);
-        COLOR_MAP.put(MaterialColor.LAPIS, Blocks.BLUE_TERRACOTTA);
-        COLOR_MAP.put(MaterialColor.LIGHT_BLUE, Blocks.LIGHT_BLUE_TERRACOTTA);
-        COLOR_MAP.put(MaterialColor.LIGHT_GRAY, Blocks.LIGHT_GRAY_TERRACOTTA);
-        COLOR_MAP.put(MaterialColor.LIME, Blocks.LIME_TERRACOTTA);
-        COLOR_MAP.put(MaterialColor.MAGENTA, Blocks.MAGENTA_TERRACOTTA);
-        COLOR_MAP.put(MaterialColor.NETHER, Blocks.RED_TERRACOTTA);
-        COLOR_MAP.put(MaterialColor.SPRUCE, Blocks.BLACK_TERRACOTTA);
-        COLOR_MAP.put(MaterialColor.PINK, Blocks.PINK_TERRACOTTA);
-        COLOR_MAP.put(MaterialColor.PURPLE, Blocks.PURPLE_TERRACOTTA);
-        COLOR_MAP.put(MaterialColor.QUARTZ, Blocks.WHITE_TERRACOTTA);
-        COLOR_MAP.put(MaterialColor.RED, Blocks.RED_TERRACOTTA);
-        COLOR_MAP.put(MaterialColor.SAND, Blocks.WHITE_TERRACOTTA);
-        COLOR_MAP.put(MaterialColor.WHITE, Blocks.WHITE_TERRACOTTA);
-        COLOR_MAP.put(MaterialColor.STONE, Blocks.CYAN_TERRACOTTA);
-        COLOR_MAP.put(MaterialColor.LAVA, Blocks.RED_TERRACOTTA);
-        COLOR_MAP.put(MaterialColor.WATER, Blocks.LIGHT_BLUE_TERRACOTTA);
-        COLOR_MAP.put(MaterialColor.WOOD, Blocks.TERRACOTTA);
-        COLOR_MAP.put(MaterialColor.WEB, Blocks.WHITE_TERRACOTTA);
-        COLOR_MAP.put(MaterialColor.YELLOW, Blocks.YELLOW_TERRACOTTA);
-        COLOR_MAP.put(MaterialColor.ORANGE_TERRACOTTA, Blocks.ORANGE_TERRACOTTA);
-        COLOR_MAP.put(MaterialColor.BLACK_TERRACOTTA, Blocks.BLACK_TERRACOTTA);
-        COLOR_MAP.put(MaterialColor.BLUE_TERRACOTTA, Blocks.BLUE_TERRACOTTA);
-        COLOR_MAP.put(MaterialColor.BROWN_TERRACOTTA, Blocks.BROWN_TERRACOTTA);
-        COLOR_MAP.put(MaterialColor.CYAN_TERRACOTTA, Blocks.CYAN_TERRACOTTA);
-        COLOR_MAP.put(MaterialColor.LIGHT_BLUE_TERRACOTTA, Blocks.LIGHT_BLUE_TERRACOTTA);
-        COLOR_MAP.put(MaterialColor.GREEN_TERRACOTTA, Blocks.GREEN_TERRACOTTA);
-        COLOR_MAP.put(MaterialColor.GRAY_TERRACOTTA, Blocks.GRAY_TERRACOTTA);
-        COLOR_MAP.put(MaterialColor.LIGHT_GRAY_TERRACOTTA, Blocks.LIGHT_GRAY_TERRACOTTA);
-        COLOR_MAP.put(MaterialColor.LIME_TERRACOTTA, Blocks.LIME_TERRACOTTA);
-        COLOR_MAP.put(MaterialColor.MAGENTA_TERRACOTTA, Blocks.MAGENTA_TERRACOTTA);
-        COLOR_MAP.put(MaterialColor.RED_TERRACOTTA, Blocks.RED_TERRACOTTA);
-        COLOR_MAP.put(MaterialColor.YELLOW_TERRACOTTA, Blocks.YELLOW_TERRACOTTA);
-        COLOR_MAP.put(MaterialColor.PINK_TERRACOTTA, Blocks.PINK_TERRACOTTA);
-        COLOR_MAP.put(MaterialColor.PURPLE_TERRACOTTA, Blocks.PURPLE_TERRACOTTA);
+        COLOR_MAP.put(MapColor.CLEAR, Blocks.TERRACOTTA);
+        COLOR_MAP.put(MapColor.PALE_GREEN, Blocks.LIME_TERRACOTTA);
+        COLOR_MAP.put(MapColor.PALE_YELLOW, Blocks.YELLOW_TERRACOTTA);
+        COLOR_MAP.put(MapColor.WHITE_GRAY, Blocks.WHITE_TERRACOTTA);
+        COLOR_MAP.put(MapColor.BRIGHT_RED, Blocks.RED_TERRACOTTA);
+        COLOR_MAP.put(MapColor.PALE_PURPLE, Blocks.MAGENTA_TERRACOTTA);
+        COLOR_MAP.put(MapColor.IRON_GRAY, Blocks.WHITE_TERRACOTTA);
+        COLOR_MAP.put(MapColor.DARK_GREEN, Blocks.GREEN_TERRACOTTA);
+        COLOR_MAP.put(MapColor.WHITE, Blocks.WHITE_TERRACOTTA);
+        COLOR_MAP.put(MapColor.LIGHT_BLUE_GRAY, Blocks.LIGHT_BLUE_TERRACOTTA);
+        COLOR_MAP.put(MapColor.DIRT_BROWN, Blocks.BROWN_TERRACOTTA);
+        COLOR_MAP.put(MapColor.STONE_GRAY, Blocks.CYAN_TERRACOTTA);
+        COLOR_MAP.put(MapColor.WATER_BLUE, Blocks.LIGHT_BLUE_TERRACOTTA);
+        COLOR_MAP.put(MapColor.OAK_TAN, Blocks.TERRACOTTA);
+        COLOR_MAP.put(MapColor.OFF_WHITE, Blocks.WHITE_TERRACOTTA);
+        COLOR_MAP.put(MapColor.ORANGE, Blocks.ORANGE_TERRACOTTA);
+        COLOR_MAP.put(MapColor.MAGENTA, Blocks.MAGENTA_TERRACOTTA);
+        COLOR_MAP.put(MapColor.LIGHT_BLUE, Blocks.LIGHT_BLUE_TERRACOTTA);
+        COLOR_MAP.put(MapColor.YELLOW, Blocks.YELLOW_TERRACOTTA);
+        COLOR_MAP.put(MapColor.LIME, Blocks.LIME_TERRACOTTA);
+        COLOR_MAP.put(MapColor.PINK, Blocks.PINK_TERRACOTTA);
+        COLOR_MAP.put(MapColor.GRAY, Blocks.GRAY_TERRACOTTA);
+        COLOR_MAP.put(MapColor.LIGHT_GRAY, Blocks.LIGHT_GRAY_TERRACOTTA);
+        COLOR_MAP.put(MapColor.CYAN, Blocks.CYAN_TERRACOTTA);
+        COLOR_MAP.put(MapColor.PURPLE, Blocks.PURPLE_TERRACOTTA);
+        COLOR_MAP.put(MapColor.BLUE, Blocks.BLUE_TERRACOTTA);
+        COLOR_MAP.put(MapColor.BROWN, Blocks.BROWN_TERRACOTTA);
+        COLOR_MAP.put(MapColor.GREEN, Blocks.GREEN_TERRACOTTA);
+        COLOR_MAP.put(MapColor.RED, Blocks.RED_TERRACOTTA);
+        COLOR_MAP.put(MapColor.BLACK, Blocks.BLACK_TERRACOTTA);
+        COLOR_MAP.put(MapColor.GOLD, Blocks.YELLOW_TERRACOTTA);
+        COLOR_MAP.put(MapColor.DIAMOND_BLUE, Blocks.LIGHT_BLUE_TERRACOTTA);
+        COLOR_MAP.put(MapColor.LAPIS_BLUE, Blocks.BLUE_TERRACOTTA);
+        COLOR_MAP.put(MapColor.EMERALD_GREEN, Blocks.GREEN_TERRACOTTA);
+        COLOR_MAP.put(MapColor.SPRUCE_BROWN, Blocks.TERRACOTTA);
+        COLOR_MAP.put(MapColor.DULL_RED, Blocks.RED_TERRACOTTA);
+        COLOR_MAP.put(MapColor.DULL_PINK, Blocks.PINK_TERRACOTTA);
+        COLOR_MAP.put(MapColor.DARK_RED, Blocks.RED_TERRACOTTA);
+        COLOR_MAP.put(MapColor.DARK_CRIMSON, Blocks.RED_TERRACOTTA);
+        COLOR_MAP.put(MapColor.TEAL, Blocks.WHITE_TERRACOTTA);
+        COLOR_MAP.put(MapColor.DARK_AQUA, Blocks.BLUE_TERRACOTTA);
+        COLOR_MAP.put(MapColor.DARK_DULL_PINK, Blocks.PINK_TERRACOTTA);
+        COLOR_MAP.put(MapColor.BRIGHT_TEAL, Blocks.WHITE_TERRACOTTA);
+        COLOR_MAP.put(MapColor.DEEPSLATE_GRAY, Blocks.CYAN_TERRACOTTA);
+        COLOR_MAP.put(MapColor.RAW_IRON_PINK, Blocks.WHITE_TERRACOTTA);
+        COLOR_MAP.put(MapColor.LICHEN_GREEN, Blocks.GREEN_TERRACOTTA);
+        COLOR_MAP.put(MapColor.TERRACOTTA_WHITE, Blocks.WHITE_TERRACOTTA);
+        COLOR_MAP.put(MapColor.TERRACOTTA_ORANGE, Blocks.ORANGE_TERRACOTTA);
+        COLOR_MAP.put(MapColor.TERRACOTTA_BLACK, Blocks.BLACK_TERRACOTTA);
+        COLOR_MAP.put(MapColor.TERRACOTTA_BLUE, Blocks.BLUE_TERRACOTTA);
+        COLOR_MAP.put(MapColor.TERRACOTTA_BROWN, Blocks.BROWN_TERRACOTTA);
+        COLOR_MAP.put(MapColor.TERRACOTTA_CYAN, Blocks.CYAN_TERRACOTTA);
+        COLOR_MAP.put(MapColor.TERRACOTTA_LIGHT_BLUE, Blocks.LIGHT_BLUE_TERRACOTTA);
+        COLOR_MAP.put(MapColor.TERRACOTTA_GREEN, Blocks.GREEN_TERRACOTTA);
+        COLOR_MAP.put(MapColor.TERRACOTTA_GRAY, Blocks.GRAY_TERRACOTTA);
+        COLOR_MAP.put(MapColor.TERRACOTTA_LIGHT_GRAY, Blocks.LIGHT_GRAY_TERRACOTTA);
+        COLOR_MAP.put(MapColor.TERRACOTTA_LIME, Blocks.LIME_TERRACOTTA);
+        COLOR_MAP.put(MapColor.TERRACOTTA_MAGENTA, Blocks.MAGENTA_TERRACOTTA);
+        COLOR_MAP.put(MapColor.TERRACOTTA_RED, Blocks.RED_TERRACOTTA);
+        COLOR_MAP.put(MapColor.TERRACOTTA_YELLOW, Blocks.YELLOW_TERRACOTTA);
+        COLOR_MAP.put(MapColor.TERRACOTTA_PINK, Blocks.PINK_TERRACOTTA);
+        COLOR_MAP.put(MapColor.TERRACOTTA_PURPLE, Blocks.PURPLE_TERRACOTTA);
     }
 
     private static final Set<Material> REPLACEABLE_MATERIALS;
@@ -91,7 +109,7 @@ public class AntiFloatingBlocksAndSeparateLiquids extends Feature<DefaultFeature
     }
 
     @Override
-    public boolean generate(StructureWorldAccess world, ChunkGenerator chunkgenerator, Random rand, BlockPos position, DefaultFeatureConfig config) {
+    public boolean generate(FeatureContext<DefaultFeatureConfig> context){
         //this feature is completely turned off.
         if (!WorldBlender.WB_CONFIG.WBDimensionConfig.preventFallingBlocks &&
 			!WorldBlender.WB_CONFIG.WBDimensionConfig.containFloatingLiquids &&
@@ -105,19 +123,19 @@ public class AntiFloatingBlocksAndSeparateLiquids extends Feature<DefaultFeature
 		BlockState neighboringBlockstate;
         BlockState lastBlockstate = Blocks.STONE.getDefaultState();
 		boolean setblock;
-		int xChunkOrigin = ((position.getX() >> 4) << 4);
-		int zChunkOrigin = ((position.getZ() >> 4) << 4);
-		Chunk cachedChunk = world.getChunk(xChunkOrigin >> 4, zChunkOrigin >> 4);
+		int xChunkOrigin = ((context.getOrigin().getX() >> 4) << 4);
+		int zChunkOrigin = ((context.getOrigin().getZ() >> 4) << 4);
+		Chunk cachedChunk = context.getWorld().getChunk(xChunkOrigin >> 4, zChunkOrigin >> 4);
 
         for (int x = 0; x < 16; x++) {
             for (int z = 0; z < 16; z++) {
 				setblock = false;
-                mutable.set(position.getX() + x, 0, position.getZ() + z);
-                mutable.move(Direction.UP, Math.max(world.getTopY(Heightmap.Type.WORLD_SURFACE, mutable.getX(), mutable.getZ()), chunkgenerator.getSeaLevel()));
+                mutable.set(context.getOrigin().getX() + x, 0, context.getOrigin().getZ() + z);
+                mutable.move(Direction.UP, Math.max(context.getWorld().getTopY(Heightmap.Type.WORLD_SURFACE, mutable.getX(), mutable.getZ()), context.getGenerator().getSeaLevel()));
 
                 //checks the column downward
                 for (; mutable.getY() >= 0; mutable.move(Direction.DOWN)) {
-                    currentBlockstate = world.getBlockState(mutable);
+                    currentBlockstate = context.getWorld().getBlockState(mutable);
 
 					// current block is a lava-tagged fluid
 					if (WorldBlender.WB_CONFIG.WBDimensionConfig.preventLavaTouchingWater &&
@@ -126,7 +144,7 @@ public class AntiFloatingBlocksAndSeparateLiquids extends Feature<DefaultFeature
 						for (Direction face : Direction.values()) {
 							mutable.move(face);
 							if(cachedChunk.getPos().x != mutable.getX() >> 4 || cachedChunk.getPos().z != mutable.getZ() >> 4){
-								neighboringBlockstate = world.getBlockState(mutable);
+								neighboringBlockstate = context.getWorld().getBlockState(mutable);
 							}
 							else{
 								neighboringBlockstate = cachedChunk.getBlockState(mutable);
@@ -134,7 +152,7 @@ public class AntiFloatingBlocksAndSeparateLiquids extends Feature<DefaultFeature
 							mutable.move(face.getOpposite());
 
 							if (neighboringBlockstate.getFluidState().isIn(FluidTags.WATER)) {
-								world.setBlockState(mutable, Blocks.OBSIDIAN.getDefaultState(), 2);
+                                context.getWorld().setBlockState(mutable, Blocks.OBSIDIAN.getDefaultState(), 2);
 								setblock = true;
 								break;
 							}
@@ -145,15 +163,15 @@ public class AntiFloatingBlocksAndSeparateLiquids extends Feature<DefaultFeature
 						//current block is a block that liquids can break. time to check if we need to replace this block
 						if (REPLACEABLE_MATERIALS.contains(currentBlockstate.getMaterial())) {
 							//if above block was a fallible block, place a solid block below
-							setblock = preventfalling(world, cachedChunk, mutable, lastBlockstate, currentBlockstate);
+							setblock = preventfalling(context.getWorld(), cachedChunk, mutable, lastBlockstate, currentBlockstate);
 							if(!setblock){
 								//if neighboring block is a liquid block, place a solid block next to it
-								liquidContaining(world, cachedChunk, mutable, lastBlockstate, currentBlockstate);
+								liquidContaining(context.getWorld(), cachedChunk, mutable, lastBlockstate, currentBlockstate);
 							}
 						}
 						else if(!currentBlockstate.isOpaque() && !currentBlockstate.getFluidState().isEmpty()) {
 							//if above block was a fallible block, place a solid block below
-							preventfalling(world, cachedChunk, mutable, lastBlockstate, currentBlockstate);
+							preventfalling(context.getWorld(), cachedChunk, mutable, lastBlockstate, currentBlockstate);
 						}
 					}
 
@@ -234,9 +252,9 @@ public class AntiFloatingBlocksAndSeparateLiquids extends Feature<DefaultFeature
     }
 
 	private static void setReplacementBlock(ServerWorldAccess world, Chunk cachedChunk, BlockPos.Mutable mutable, BlockState lastBlockstate, BlockState neighboringBlockstate, BlockState currentBlockstate) {
-		MaterialColor targetMaterial = neighboringBlockstate.getTopMaterialColor(world, mutable);
+		MapColor targetMaterial = neighboringBlockstate.getMapColor(world, mutable);
 		if(!COLOR_MAP.containsKey(targetMaterial)) {
-			if(currentBlockstate.getBlock().hasBlockEntity()){
+			if(currentBlockstate.hasBlockEntity()){
 				world.setBlockState(mutable, Blocks.CYAN_TERRACOTTA.getDefaultState(), 2);
 			}
 			else{
@@ -244,7 +262,7 @@ public class AntiFloatingBlocksAndSeparateLiquids extends Feature<DefaultFeature
 			}
 		}
 		else {
-			if(currentBlockstate.getBlock().hasBlockEntity()) {
+			if(currentBlockstate.hasBlockEntity()) {
 				world.setBlockState(mutable, COLOR_MAP.get(targetMaterial).getDefaultState(), 2);
 			}
 			else{

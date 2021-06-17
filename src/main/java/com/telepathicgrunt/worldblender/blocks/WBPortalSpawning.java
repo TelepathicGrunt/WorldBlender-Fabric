@@ -66,7 +66,7 @@ public class WBPortalSpawning
 				Identifier blockId = Registry.BLOCK.getId(block);
 
 				try{
-					BlockEntity blockEntity = ((BlockEntityProvider) block).createBlockEntity(serverWorld);
+					BlockEntity blockEntity = ((BlockEntityProvider) block).createBlockEntity(BlockPos.ORIGIN, block.getDefaultState());
 
 					if(blockEntity != null) {
 						Identifier blockEntityId = Registry.BLOCK_ENTITY_TYPE.getId(blockEntity.getType());
