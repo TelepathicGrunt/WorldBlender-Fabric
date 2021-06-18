@@ -145,7 +145,8 @@ public class BlendedSurfaceBuilder extends SurfaceBuilder<TernarySurfaceConfig> 
 		int depth = -1;
 		// reused to avoid allocations
 		BlockPos.Mutable pos = new BlockPos.Mutable();
-		for (int y = startHeight; y >= minY; --y) {
+		int cutoffPoint = replaceEntireColumn ? chunk.getBottomY() : minY;
+		for (int y = startHeight; y >= cutoffPoint; --y) {
 			pos.set(xInChunk, y, zInChunk);
 			BlockState currentBlock = chunk.getBlockState(pos);
 			if (currentBlock.getMaterial() == Material.AIR) {

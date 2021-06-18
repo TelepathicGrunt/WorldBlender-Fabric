@@ -24,7 +24,7 @@ public class ItemClearingFeature extends Feature<DefaultFeatureConfig>
 			WorldBlender.LOGGER.warn("Error with spawning clearing item entity at: ({}, {}, {})", context.getOrigin().getX(), context.getOrigin().getY(), context.getOrigin().getZ());
 			return false;
 		}
-		itemClearingEntity.refreshPositionAndAngles((double)context.getOrigin().getX() + 0.5D, 255, (double)context.getOrigin().getZ() + 0.5D, 0.0F, 0.0F);
+		itemClearingEntity.refreshPositionAndAngles((double)context.getOrigin().getX() + 0.5D, context.getGenerator().getWorldHeight(), (double)context.getOrigin().getZ() + 0.5D, 0.0F, 0.0F);
 		context.getWorld().spawnEntity(itemClearingEntity);
 		return true;
 	}

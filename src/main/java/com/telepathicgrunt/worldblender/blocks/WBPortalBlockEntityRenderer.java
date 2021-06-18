@@ -65,7 +65,7 @@ public class WBPortalBlockEntityRenderer implements BlockEntityRenderer<WBPortal
 	private void renderSides(WBPortalBlockEntity entity, Matrix4f matrix4f, VertexConsumer vertexConsumer) {
 
 		// turns dark red when cooling down but lightens over time. And when finished cooling down, it pops to full brightness
-		float coolDownEffect = entity.isCoolingDown() ? 0.7f - entity.getCoolDown()/1200F : 0.85f;
+		float coolDownEffect = entity.isCoolingDown() ? 0.6f - entity.getCoolDown()/1200F : 0.85f;
 		float coolDownDiff = entity.getCoolDown()/280F;
 
 		float red = Floats.constrainToRange(coolDownEffect + coolDownDiff, 0.3f, 0.7f);

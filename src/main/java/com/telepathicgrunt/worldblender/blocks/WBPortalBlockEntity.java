@@ -33,6 +33,7 @@ public class WBPortalBlockEntity extends BlockEntity {
         super(WBBlocks.WORLD_BLENDER_PORTAL_BE, pos, state);
     }
 
+
     public static void tick(World world, BlockPos pos, BlockState state, WBPortalBlockEntity blockEntity) {
         boolean isCoolingDown = blockEntity.isCoolingDown();
         if (isCoolingDown) {

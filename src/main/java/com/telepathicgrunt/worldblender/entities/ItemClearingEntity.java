@@ -5,17 +5,20 @@ import net.minecraft.block.AbstractRailBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.FluidBlock;
+import net.minecraft.block.PointedDripstoneBlock;
 import net.minecraft.block.enums.RailShape;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.Packet;
 import net.minecraft.network.packet.s2c.play.EntitySpawnS2CPacket;
+import net.minecraft.server.world.ServerChunkManager;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.gen.chunk.ChunkGenerator;
 
 import java.util.List;
 
@@ -59,21 +62,21 @@ public class ItemClearingEntity extends Entity {
 
    @Override
    public void tick() {
-      if(ticksTillDetonation > 0){
+      if(ticksTillDetonation > 0 && this.world instanceof ServerWorld serverWorld){
          // Force blocks to update themselves and tick so they break
          if(ticksTillDetonation == tickCountdownStart - 2){
+            ChunkGenerator chunkGenerator = serverWorld.getChunkManager().getChunkGenerator();
             BlockPos.Mutable mutable = new BlockPos.Mutable();
             Chunk chunk = this.world.getChunk(this.getChunkPos().getStartPos());
             BlockPos chunkBlockPos = chunk.getPos().getStartPos();
 
             for(int x = 0; x < 16; x++){
                for(int z = 0; z < 16; z++){
-                  for(int y = 0; y < this.world.getHeight(); y++){
+                  for(int y = chunkGenerator.getMinimumY(); y < chunkGenerator.getWorldHeight(); y++){
                      BlockState currentState = chunk.getBlockState(mutable.set(chunkBlockPos, x, y, z));
 
                      // Special case as rails return themselves from getValidBlockForPosition when they shouldn't. Rails bad
-                     if(currentState.getBlock() instanceof AbstractRailBlock){
-                        AbstractRailBlock railBlock = ((AbstractRailBlock)currentState.getBlock());
+                     if(currentState.getBlock() instanceof AbstractRailBlock railBlock){
                         RailShape railShape = currentState.get(railBlock.getShapeProperty());
                         boolean invalidSpot = AbstractRailBlockInvoker.worldblender_callShouldDropRail(mutable, this.world, railShape);
                         if(invalidSpot){
@@ -92,7 +95,8 @@ public class ItemClearingEntity extends Entity {
                            // removes all invalid placed blocks like floating grass or rails
                            this.world.setBlockState(mutable, newState, 3);
                         }
-                        else{
+                        // Skip dripstone as it will fall if we tick it which is bad.
+                        else if(!(currentState.getBlock() instanceof PointedDripstoneBlock)){
                            // forces blocks like leaves or twisting vine to self-destruct
                            currentState.scheduledTick((ServerWorld) this.world, mutable, this.random);
                            currentState.randomTick((ServerWorld) this.world, mutable, this.random);

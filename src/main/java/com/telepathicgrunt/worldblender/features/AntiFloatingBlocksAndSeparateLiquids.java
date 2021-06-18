@@ -134,7 +134,7 @@ public class AntiFloatingBlocksAndSeparateLiquids extends Feature<DefaultFeature
                 mutable.move(Direction.UP, Math.max(context.getWorld().getTopY(Heightmap.Type.WORLD_SURFACE, mutable.getX(), mutable.getZ()), context.getGenerator().getSeaLevel()));
 
                 //checks the column downward
-                for (; mutable.getY() >= 0; mutable.move(Direction.DOWN)) {
+                for (; mutable.getY() >= context.getGenerator().getMinimumY(); mutable.move(Direction.DOWN)) {
                     currentBlockstate = context.getWorld().getBlockState(mutable);
 
 					// current block is a lava-tagged fluid
