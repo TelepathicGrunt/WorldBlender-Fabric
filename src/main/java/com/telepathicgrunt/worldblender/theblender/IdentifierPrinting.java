@@ -32,13 +32,13 @@ public class IdentifierPrinting
 			printOutSection(printStream, registryManager.get(Registry.BIOME_KEY), "BIOMES");
 
 			printStream.println();
-			printOutSection(printStream, registryManager.get(Registry.CONFIGURED_FEATURE_WORLDGEN), "CONFIGURED FEATURES");
+			printOutSection(printStream, registryManager.get(Registry.CONFIGURED_FEATURE_KEY), "CONFIGURED FEATURES");
 			
 			printStream.println();
-			printOutSection(printStream, registryManager.get(Registry.CONFIGURED_STRUCTURE_FEATURE_WORLDGEN), "CONFIGURED STRUCTURES");
+			printOutSection(printStream, registryManager.get(Registry.CONFIGURED_STRUCTURE_FEATURE_KEY), "CONFIGURED STRUCTURES");
 
 			printStream.println();
-			printOutSection(printStream, registryManager.get(Registry.CONFIGURED_CARVER_WORLDGEN), "CARVERS");
+			printOutSection(printStream, registryManager.get(Registry.CONFIGURED_CARVER_KEY), "CARVERS");
 			
 			printStream.println();
 			printOutSection(printStream, Registry.ENTITY_TYPE, "ENTITIES");
@@ -86,7 +86,7 @@ public class IdentifierPrinting
 		previous_namespace.set(printSpacingBetweenMods(printStream, previous_namespace.get(), entryID.getNamespace()));
 
 		//prints the actual entry's resource location
-		printStream.println(entryID.toString());
+		printStream.println(entryID);
 
 	}
 	

@@ -11,5 +11,5 @@ public interface ConfiguredCarverAccessor{
 
     @Accessor("carver")
     <WC extends CarverConfig>
-    Carver<WC> wb_getcarver();
+    Carver<WC> worldblender_getcarver();
 }

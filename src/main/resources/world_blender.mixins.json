@@ -20,7 +20,6 @@
     "worldgen.ChunkGeneratorAccessor",
     "worldgen.ChunkGeneratorMixin",
     "worldgen.ConfiguredCarverAccessor",
-    "worldgen.EntryAccessor",
     "worldgen.GenerationSettingsAccessor",
     "worldgen.OceanMonumentStructureMixin",
     "worldgen.SpawnSettingsAccessor",

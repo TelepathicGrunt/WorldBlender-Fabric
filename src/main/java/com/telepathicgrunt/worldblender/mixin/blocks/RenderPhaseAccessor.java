@@ -8,7 +8,7 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 public interface RenderPhaseAccessor {
 
     @Accessor("END_GATEWAY_SHADER")
-    static RenderPhase.Shader wb_getEND_GATEWAY_SHADER() {
+    static RenderPhase.Shader worldblender_getEND_GATEWAY_SHADER() {
         throw new UnsupportedOperationException();
     }
 }

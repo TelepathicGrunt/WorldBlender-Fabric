@@ -11,7 +11,6 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityRendererRegistry;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
@@ -19,8 +18,8 @@ import net.minecraft.util.math.BlockPos;
 public class WorldBlenderClient implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
-		SkyPropertiesAccessor.wb_getBY_IDENTIFIER().put(new Identifier(WorldBlender.MODID, "sky_property"), new WBSkyProperty());
-		EntityRendererRegistry.INSTANCE.register(WBEntities.ITEM_CLEARING_ENTITY, (dispatcher, context) -> new ItemClearingEntityRendering(dispatcher));
+		SkyPropertiesAccessor.worldblender_getBY_IDENTIFIER().put(new Identifier(WorldBlender.MODID, "sky_property"), new WBSkyProperty());
+		EntityRendererRegistry.INSTANCE.register(WBEntities.ITEM_CLEARING_ENTITY, ItemClearingEntityRendering::new);
 
 		BlockEntityRendererRegistry.INSTANCE.register(WBBlocks.WORLD_BLENDER_PORTAL_BE, WBPortalBlockEntityRenderer::new);
 

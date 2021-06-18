@@ -7,7 +7,7 @@ import org.spongepowered.asm.mixin.gen.Invoker;
 
 @Mixin(RenderLayer.MultiPhase.class)
 public interface MultiPhaseInvoker {
-    @Invoker
+    @Invoker("<init>")
     static RenderLayer.MultiPhase worldblender_createMultiPhase(String name, VertexFormat vertexFormat, VertexFormat.DrawMode drawMode, int expectedBufferSize, boolean hasCrumbling, boolean translucent, RenderLayer.MultiPhaseParameters phases) {
         throw new UnsupportedOperationException();
     }

@@ -11,5 +11,5 @@ import java.util.Map;
 @Mixin(SpawnSettings.Builder.class)
 public interface BuilderAccessor {
     @Accessor("spawners")
-    Map<SpawnGroup, List<SpawnSettings.SpawnEntry>> wb_getSpawners();
+    Map<SpawnGroup, List<SpawnSettings.SpawnEntry>> worldblender_getSpawners();
 }

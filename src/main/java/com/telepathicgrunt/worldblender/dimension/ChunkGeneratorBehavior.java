@@ -62,7 +62,7 @@ public class ChunkGeneratorBehavior {
                         .tryPlaceStart(
                             dynamicRegistryManager,
                             chunkGenerator,
-                            ((ChunkGeneratorAccessor)chunkGenerator).getPopulationSource(),
+                            ((ChunkGeneratorAccessor)chunkGenerator).worldblender_getPopulationSource(),
                             structureManager,
                             worldSeed,
                             chunkPos,

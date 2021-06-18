@@ -13,16 +13,16 @@ import java.util.Map;
 public interface SpawnSettingsAccessor {
 
     @Accessor("spawners")
-    Map<SpawnGroup, List<SpawnSettings.SpawnEntry>> wb_getSpawners();
+    Map<SpawnGroup, List<SpawnSettings.SpawnEntry>> worldblender_getSpawners();
 
     @Accessor("spawners")
-    void wb_setSpawners(Map<SpawnGroup, List<SpawnSettings.SpawnEntry>> features);
+    void worldblender_setSpawners(Map<SpawnGroup, List<SpawnSettings.SpawnEntry>> features);
 
 
     @Accessor("spawnCosts")
-    Map<EntityType<?>, SpawnSettings.SpawnDensity> wb_getSpawnCosts();
+    Map<EntityType<?>, SpawnSettings.SpawnDensity> worldblender_getSpawnCosts();
 
     @Accessor("spawnCosts")
-    void wb_setSpawnCosts(Map<EntityType<?>, SpawnSettings.SpawnDensity> structureFeatures);
+    void worldblender_setSpawnCosts(Map<EntityType<?>, SpawnSettings.SpawnDensity> structureFeatures);
 
 }

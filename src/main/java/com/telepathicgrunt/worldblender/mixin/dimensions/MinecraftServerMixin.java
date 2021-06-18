@@ -42,12 +42,12 @@ public class MinecraftServerMixin {
             method = "<init>",
             at = @At(value = "TAIL")
     )
-    private void modifyBiomeRegistry(Thread thread, DynamicRegistryManager.Impl impl, LevelStorage.Session session,
-                                     SaveProperties saveProperties, ResourcePackManager resourcePackManager, Proxy proxy,
-                                     DataFixer dataFixer, ServerResourceManager serverResourceManager,
-                                     MinecraftSessionService minecraftSessionService, GameProfileRepository gameProfileRepository,
-                                     UserCache userCache, WorldGenerationProgressListenerFactory worldGenerationProgressListenerFactory,
-                                     CallbackInfo ci)
+    private void worldblender_modifyDimensionAndBiomes1(Thread thread, DynamicRegistryManager.Impl impl, LevelStorage.Session session,
+                                                        SaveProperties saveProperties, ResourcePackManager resourcePackManager, Proxy proxy,
+                                                        DataFixer dataFixer, ServerResourceManager serverResourceManager,
+                                                        MinecraftSessionService minecraftSessionService, GameProfileRepository gameProfileRepository,
+                                                        UserCache userCache, WorldGenerationProgressListenerFactory worldGenerationProgressListenerFactory,
+                                                        CallbackInfo ci)
     {
         if(WorldBlender.WB_CONFIG.WBBlendingConfig.identifierDump){
             IdentifierPrinting.printAllIdentifiers(impl);
@@ -62,7 +62,7 @@ public class MinecraftServerMixin {
             method = "createWorlds(Lnet/minecraft/server/WorldGenerationProgressListener;)V",
             at = @At(value = "TAIL")
     )
-    private void modifyBiomeRegistry(WorldGenerationProgressListener worldGenerationProgressListener, CallbackInfo ci) {
+    private void worldblender_modifyDimensionAndBiomes2(WorldGenerationProgressListener worldGenerationProgressListener, CallbackInfo ci) {
         TheBlender.addDimensionalSpacing(worlds);
         WBPortalSpawning.generateRequiredBlockList(worlds.get(World.OVERWORLD), WorldBlender.WB_CONFIG.WBPortalConfig.requiredBlocksInChests);
     }

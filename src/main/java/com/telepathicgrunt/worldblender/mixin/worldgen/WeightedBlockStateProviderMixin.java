@@ -15,13 +15,13 @@ public class WeightedBlockStateProviderMixin {
 
 	@Inject(method = "getBlockState",
 			at = @At(value = "HEAD"))
-	public void lockGetBlockState(CallbackInfoReturnable<BlockState> cir) {
+	public void worldblender_lockGetBlockState(CallbackInfoReturnable<BlockState> cir) {
 		lock.lock();
 	}
 
 	@Inject(method = "getBlockState",
 			at = @At(value = "RETURN"))
-	public void unlockGetBlockState(CallbackInfoReturnable<BlockState> cir) {
+	public void worldblender_unlockGetBlockState(CallbackInfoReturnable<BlockState> cir) {
 		lock.unlock();
 	}
 }

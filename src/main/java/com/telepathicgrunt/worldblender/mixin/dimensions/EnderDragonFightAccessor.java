@@ -11,14 +11,14 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 public interface EnderDragonFightAccessor {
 
     @Accessor("world")
-    ServerWorld wb_getworld();
+    ServerWorld worldblender_getWorld();
 
     @Accessor("endPortalPattern")
-    BlockPattern wb_getendPortalPattern();
+    BlockPattern worldblender_getEndPortalPattern();
 
     @Accessor("exitPortalLocation")
-    BlockPos wb_getexitPortalLocation();
+    BlockPos worldblender_getExitPortalLocation();
 
     @Accessor("exitPortalLocation")
-    void wb_setexitPortalLocation(BlockPos pos);
+    void worldblender_setExitPortalLocation(BlockPos pos);
 }

@@ -4,5 +4,5 @@ import com.telepathicgrunt.worldblender.dimension.AltarManager;
 
 public interface ServerWorldAccess
 {
-	AltarManager getAltar();
+	AltarManager worldblender_getAltar();
 }

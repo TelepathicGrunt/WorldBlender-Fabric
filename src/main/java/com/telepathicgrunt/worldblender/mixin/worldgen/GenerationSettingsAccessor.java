@@ -16,22 +16,22 @@ import java.util.function.Supplier;
 public interface GenerationSettingsAccessor {
 
     @Accessor("features")
-    List<List<Supplier<ConfiguredFeature<?, ?>>>> wb_getGSFeatures();
+    List<List<Supplier<ConfiguredFeature<?, ?>>>> worldblender_getGSFeatures();
 
     @Accessor("features")
-    void wb_setGSFeatures(List<List<Supplier<ConfiguredFeature<?, ?>>>> features);
+    void worldblender_setGSFeatures(List<List<Supplier<ConfiguredFeature<?, ?>>>> features);
 
 
     @Accessor("structureFeatures")
-    List<Supplier<ConfiguredStructureFeature<?, ?>>> wb_getGSStructureFeatures();
+    List<Supplier<ConfiguredStructureFeature<?, ?>>> worldblender_getGSStructureFeatures();
 
     @Accessor("structureFeatures")
-    void wb_setGSStructureFeatures(List<Supplier<ConfiguredStructureFeature<?, ?>>> structureFeatures);
+    void worldblender_setGSStructureFeatures(List<Supplier<ConfiguredStructureFeature<?, ?>>> structureFeatures);
 
 
     @Accessor("carvers")
-    Map<GenerationStep.Carver, List<Supplier<ConfiguredCarver<?>>>> wb_getCarvers();
+    Map<GenerationStep.Carver, List<Supplier<ConfiguredCarver<?>>>> worldblender_getCarvers();
 
     @Accessor("carvers")
-    void wb_setCarvers(Map<GenerationStep.Carver, List<Supplier<ConfiguredCarver<?>>>> features);
+    void worldblender_setCarvers(Map<GenerationStep.Carver, List<Supplier<ConfiguredCarver<?>>>> features);
 }

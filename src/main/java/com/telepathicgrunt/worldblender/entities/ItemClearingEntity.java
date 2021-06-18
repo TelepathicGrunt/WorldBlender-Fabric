@@ -12,11 +12,12 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.Packet;
 import net.minecraft.network.packet.s2c.play.EntitySpawnS2CPacket;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.collection.TypeFilterableList;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Box;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
-import net.minecraft.world.chunk.WorldChunk;
+
+import java.util.List;
 
 public class ItemClearingEntity extends Entity {
    private int ticksTillDetonation;
@@ -46,12 +47,12 @@ public class ItemClearingEntity extends Entity {
    }
 
    @Override
-   public void writeCustomDataToTag(NbtCompound compound) {
+   public void writeCustomDataToNbt(NbtCompound compound) {
       compound.putInt("ticksTillDetonation", this.ticksTillDetonation);
    }
 
    @Override
-   public void readCustomDataFromTag(NbtCompound compound) {
+   public void readCustomDataFromNbt(NbtCompound compound) {
       this.ticksTillDetonation = compound.getInt("ticksTillDetonation");
       if(this.ticksTillDetonation == 0) this.ticksTillDetonation = tickCountdownStart;
    }
@@ -62,7 +63,7 @@ public class ItemClearingEntity extends Entity {
          // Force blocks to update themselves and tick so they break
          if(ticksTillDetonation == tickCountdownStart - 2){
             BlockPos.Mutable mutable = new BlockPos.Mutable();
-            Chunk chunk = this.world.getChunk(this.chunkX, this.chunkZ);
+            Chunk chunk = this.world.getChunk(this.getChunkPos().getStartPos());
             BlockPos chunkBlockPos = chunk.getPos().getStartPos();
 
             for(int x = 0; x < 16; x++){
@@ -74,7 +75,7 @@ public class ItemClearingEntity extends Entity {
                      if(currentState.getBlock() instanceof AbstractRailBlock){
                         AbstractRailBlock railBlock = ((AbstractRailBlock)currentState.getBlock());
                         RailShape railShape = currentState.get(railBlock.getShapeProperty());
-                        boolean invalidSpot = AbstractRailBlockInvoker.wb_callShouldDropRail(mutable, this.world, railShape);
+                        boolean invalidSpot = AbstractRailBlockInvoker.worldblender_callShouldDropRail(mutable, this.world, railShape);
                         if(invalidSpot){
                            this.world.removeBlock(mutable, false);
                         }
@@ -108,19 +109,24 @@ public class ItemClearingEntity extends Entity {
 
       // NUKE ALL THE ITEMS NOW
       else{
-         WorldChunk chunk = this.world.getChunk(this.chunkX, this.chunkZ);
-         TypeFilterableList<Entity>[] entityList = chunk.getEntitySectionArray();
+         Box box = new Box(
+                 this.getChunkPos().getStartX(),
+                 this.world.getDimension().getMinimumY(),
+                 this.getChunkPos().getStartZ(),
+                 this.getChunkPos().getEndX(),
+                 this.world.getDimension().getLogicalHeight(),
+                 this.getChunkPos().getEndZ()
+         );
+         List<Entity> entityList = this.world.getOtherEntities(this, box);
 
          // Clear the chunk of all ItemEntities
-         for (TypeFilterableList<Entity> entities : entityList) {
-            entities.forEach(entity -> {
-               if (entity.getType().equals(EntityType.ITEM)) {
-                  entity.remove(); // Will be removed automatically on next world tick
-               }
-            });
+         for (Entity entity : entityList) {
+            if (entity.getType().equals(EntityType.ITEM)) {
+               entity.discard(); // Will be removed automatically on next world tick
+            }
          }
 
-         this.remove(); // remove self as task is done
+         this.discard(); // remove self as task is done
       }
    }
 }

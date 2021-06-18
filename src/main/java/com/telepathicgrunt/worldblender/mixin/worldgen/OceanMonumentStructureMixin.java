@@ -2,6 +2,7 @@ package com.telepathicgrunt.worldblender.mixin.worldgen;
 
 import com.telepathicgrunt.worldblender.dimension.WBBiomeProvider;
 import net.minecraft.util.math.ChunkPos;
+import net.minecraft.world.HeightLimitView;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.source.BiomeSource;
 import net.minecraft.world.gen.ChunkRandom;
@@ -22,22 +23,16 @@ public class OceanMonumentStructureMixin {
      * @reason make Ocean Monuments skip their RIVER/OCEAN category checks if in World Blender's biome provider. Otherwise, Monuments don't spawn. Mojank lmao
      */
     @Inject(
-            method = "shouldStartAt(Lnet/minecraft/world/gen/chunk/ChunkGenerator;Lnet/minecraft/world/biome/source/BiomeSource;JLnet/minecraft/world/gen/ChunkRandom;IILnet/minecraft/world/biome/Biome;Lnet/minecraft/util/math/ChunkPos;Lnet/minecraft/world/gen/feature/DefaultFeatureConfig;)Z",
+            method = "shouldStartAt(Lnet/minecraft/world/gen/chunk/ChunkGenerator;Lnet/minecraft/world/biome/source/BiomeSource;JLnet/minecraft/world/gen/ChunkRandom;Lnet/minecraft/util/math/ChunkPos;Lnet/minecraft/world/biome/Biome;Lnet/minecraft/util/math/ChunkPos;Lnet/minecraft/world/gen/feature/DefaultFeatureConfig;Lnet/minecraft/world/HeightLimitView;)Z",
             at = @At(value = "HEAD"),
             cancellable = true
     )
-    private void modifyBiomeRegistry(ChunkGenerator chunkGenerator, BiomeSource biomeSource,
-                                     long seed, ChunkRandom random,
-                                     int chunkX, int chunkZ, Biome biome,
-                                     ChunkPos chunkPos, DefaultFeatureConfig config,
-                                     CallbackInfoReturnable<Boolean> cir) 
+    private void worldblender_modifyBiomeRegistry(ChunkGenerator chunkGenerator, BiomeSource biomeSource, long seed,
+                                                  ChunkRandom chunkRandom, ChunkPos chunkPos, Biome biome,
+                                                  ChunkPos chunkPos2, DefaultFeatureConfig defaultFeatureConfig,
+                                                  HeightLimitView heightLimitView, CallbackInfoReturnable<Boolean> cir)
     {
         if(biomeSource instanceof WBBiomeProvider){
-            for(Biome neighboringBiome : biomeSource.getBiomesInArea(chunkX * 16 + 9, chunkGenerator.getSeaLevel(), chunkZ * 16 + 9, 16)) {
-                if (!neighboringBiome.getGenerationSettings().hasStructureFeature((OceanMonumentFeature)(Object)this)) {
-                    cir.setReturnValue(false);
-                }
-            }
             cir.setReturnValue(true);
         }
     }

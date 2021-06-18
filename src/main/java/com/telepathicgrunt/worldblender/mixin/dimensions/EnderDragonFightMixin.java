@@ -28,9 +28,9 @@ public class EnderDragonFightMixin {
 			at = @At(value = "HEAD"),
 			cancellable = true
 	)
-	private void loadSmallerChunks(CallbackInfoReturnable<Boolean> cir) {
+	private void worldblender_loadSmallerChunks(CallbackInfoReturnable<Boolean> cir) {
 		if(world.getRegistryKey().equals(WBIdentifiers.WB_WORLD_KEY)){
-			if(((ServerWorldAccess)world).getAltar().isAltarMade()){
+			if(((ServerWorldAccess)world).worldblender_getAltar().isAltarMade()){
 				cir.setReturnValue(true);
 			}
 			else{
@@ -48,7 +48,7 @@ public class EnderDragonFightMixin {
 			at = @At(value = "HEAD"),
 			cancellable = true
 	)
-	private void worldContainsEndPortal(CallbackInfoReturnable<Boolean> cir) {
+	private void worldblender_worldContainsEndPortal(CallbackInfoReturnable<Boolean> cir) {
 		if(world.getRegistryKey().equals(WBIdentifiers.WB_WORLD_KEY)){
 			cir.setReturnValue(false);
 		}
@@ -69,7 +69,7 @@ public class EnderDragonFightMixin {
 			at = @At(value = "HEAD"),
 			cancellable = true
 	)
-	private void findEndPortal(CallbackInfoReturnable<BlockPattern.Result> cir) {
+	private void worldblender_findEndPortal(CallbackInfoReturnable<BlockPattern.Result> cir) {
 		if(world.getRegistryKey().equals(WBIdentifiers.WB_WORLD_KEY)){
 			BlockPattern.Result result = EnderDragonFightModification.findEndPortal((EnderDragonFight)(Object)this, cir.getReturnValue());
 			cir.setReturnValue(result);

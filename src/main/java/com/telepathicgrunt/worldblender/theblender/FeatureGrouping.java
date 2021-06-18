@@ -206,12 +206,12 @@ public class FeatureGrouping {
 
 					JsonElement defaultValue = config.get("default");
 					if (defaultValue != null) {
-						allFeatures.append(defaultValue.toString()).append(" ");
+						allFeatures.append(defaultValue).append(" ");
 					}
 
 					JsonElement typeValue = config.get("type");
 					if (typeValue != null) {
-						allFeatures.append(typeValue.toString()).append(" ");
+						allFeatures.append(typeValue).append(" ");
 					}
 
 					return allFeatures.toString();

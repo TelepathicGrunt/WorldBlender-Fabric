@@ -36,16 +36,18 @@ public class BlendedSurfaceBuilder extends SurfaceBuilder<TernarySurfaceConfig> 
 	public BlendedSurfaceBuilder() {
 		super(TernarySurfaceConfig.CODEC);
 	}
-	
+
 	/**
 	 Passes the chosen surface blocks at this coordinate to the Surface Builder.
 	 */
+	@Override
 	public void generate(
 		Random random, Chunk chunk, Biome biome,
 		int x, int z, int startHeight,
 		double noise,
 		BlockState defaultBlock, BlockState defaultFluid,
 		int seaLevel,
+		int minY,
 		long seed,
 		TernarySurfaceConfig config
 	) {
@@ -59,16 +61,15 @@ public class BlendedSurfaceBuilder extends SurfaceBuilder<TernarySurfaceConfig> 
 		
 		SurfaceConfig chosenConfig = weightedRandomSurface(x, z);
 		BlockState bottom = chosenConfig instanceof TernarySurfaceConfig
-			? ((TernarySurfaceConfig) chosenConfig).getUnderwaterMaterial()
+			? chosenConfig.getUnderwaterMaterial()
 			: chosenConfig.getUnderMaterial();
 		
 		// creates surface using a surface builder similar to vanilla's default but using a random config and makes end, nether, and certain modded surfaces fill entire column
 		BlockState top = chosenConfig.getTopMaterial();
-		//noinspection ConstantConditions — BYG has this as null sometimes
 		if (top == null) {
 			top = Blocks.AIR.getDefaultState();
 		}
-		
+
 		this.buildSurface(
 			random, chunk, biome,
 			x, z, startHeight,
@@ -77,7 +78,8 @@ public class BlendedSurfaceBuilder extends SurfaceBuilder<TernarySurfaceConfig> 
 			top,
 			chosenConfig.getUnderMaterial(),
 			bottom,
-			seaLevel
+			seaLevel,
+			minY
 		);
 	}
 	
@@ -125,7 +127,8 @@ public class BlendedSurfaceBuilder extends SurfaceBuilder<TernarySurfaceConfig> 
 		double noise,
 		BlockState defaultBlock, BlockState defaultFluid,
 		BlockState top, BlockState middle, BlockState bottom,
-		int seaLevel
+		int seaLevel,
+		int minY
 	) {
 		boolean replaceEntireColumn = bottom.getBlock() == Blocks.END_STONE
 			|| bottom.getBlock() == Blocks.NETHERRACK
@@ -142,7 +145,7 @@ public class BlendedSurfaceBuilder extends SurfaceBuilder<TernarySurfaceConfig> 
 		int depth = -1;
 		// reused to avoid allocations
 		BlockPos.Mutable pos = new BlockPos.Mutable();
-		for (int y = startHeight; y >= 0; --y) {
+		for (int y = startHeight; y >= minY; --y) {
 			pos.set(xInChunk, y, zInChunk);
 			BlockState currentBlock = chunk.getBlockState(pos);
 			if (currentBlock.getMaterial() == Material.AIR) {

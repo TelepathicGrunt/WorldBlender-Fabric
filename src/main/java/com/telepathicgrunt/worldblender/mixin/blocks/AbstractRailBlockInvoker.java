@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.gen.Invoker;
 public interface AbstractRailBlockInvoker {
 
     @Invoker("shouldDropRail")
-    static boolean wb_callShouldDropRail(BlockPos pos, World world, RailShape railShape) {
+    static boolean worldblender_callShouldDropRail(BlockPos pos, World world, RailShape railShape) {
         throw new UnsupportedOperationException();
     }
 }

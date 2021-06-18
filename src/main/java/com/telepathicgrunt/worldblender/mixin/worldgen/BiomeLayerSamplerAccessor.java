@@ -9,5 +9,5 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 public interface BiomeLayerSamplerAccessor {
 
     @Accessor("sampler")
-    CachingLayerSampler wb_getSampler();
+    CachingLayerSampler worldblender_getSampler();
 }

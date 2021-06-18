@@ -89,7 +89,7 @@ public class SurfaceBlender {
 
 	private static BlockState getUnderwaterMaterial(SurfaceConfig surface) {
 		if (!(surface instanceof TernarySurfaceConfig)) return null;
-		return ((TernarySurfaceConfig) surface).getUnderwaterMaterial();
+		return surface.getUnderwaterMaterial();
 	}
 	
 	private static boolean areEquivalent(SurfaceConfig config1, SurfaceConfig config2) {

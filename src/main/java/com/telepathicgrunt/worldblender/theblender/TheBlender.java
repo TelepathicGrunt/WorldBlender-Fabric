@@ -150,15 +150,15 @@ public class TheBlender {
 		blendedBiome.getGenerationSettings().getStructureFeatures().clear();
 		blendedBiome.getGenerationSettings().getStructureFeatures().addAll(blendedStructures);
 		
-		Map<GenerationStep.Carver, List<Supplier<ConfiguredCarver<?>>>> carvers = ((GenerationSettingsAccessor) blendedBiome.getGenerationSettings()).wb_getCarvers();
+		Map<GenerationStep.Carver, List<Supplier<ConfiguredCarver<?>>>> carvers = ((GenerationSettingsAccessor) blendedBiome.getGenerationSettings()).worldblender_getCarvers();
 		carvers.clear();
 		carvers.putAll(blendedCarversByStage);
 		
 		SpawnSettings spawnInfo = blendedBiome.getSpawnSettings();
 		SpawnSettingsAccessor spawnInfoAccessor = (SpawnSettingsAccessor) spawnInfo;
 		SpawnSettingsAccessor blendedAccessor = (SpawnSettingsAccessor) blendedSpawnInfo.build();
-		spawnInfoAccessor.wb_setSpawnCosts(blendedAccessor.wb_getSpawnCosts());
-		spawnInfoAccessor.wb_setSpawners(blendedAccessor.wb_getSpawners());
+		spawnInfoAccessor.worldblender_setSpawnCosts(blendedAccessor.worldblender_getSpawnCosts());
+		spawnInfoAccessor.worldblender_setSpawners(blendedAccessor.worldblender_getSpawners());
 	}
 
 	/**
@@ -170,28 +170,28 @@ public class TheBlender {
 		
 		// Fill in generation stages so there are at least 10 or else Minecraft crashes.
 		// (we need all stages for adding features/structures to the right stage too)
-		List<List<Supplier<ConfiguredFeature<?, ?>>>> generationStages = new ArrayList<>(settingsAccessor.wb_getGSFeatures());
+		List<List<Supplier<ConfiguredFeature<?, ?>>>> generationStages = new ArrayList<>(settingsAccessor.worldblender_getGSFeatures());
 		int minSize = GenerationStep.Feature.values().length;
 		for (int i = generationStages.size(); i < minSize; i++) {
 			generationStages.add(new ArrayList<>());
 		}
 		
 		// Make the Structure and GenerationStages (features) list mutable for modification later
-		settingsAccessor.wb_setGSFeatures(generationStages);
-		settingsAccessor.wb_setGSStructureFeatures(new ArrayList<>(settingsAccessor.wb_getGSStructureFeatures()));
-		settingsAccessor.wb_setGSStructureFeatures(new ArrayList<>(settingsAccessor.wb_getGSStructureFeatures()));
+		settingsAccessor.worldblender_setGSFeatures(generationStages);
+		settingsAccessor.worldblender_setGSStructureFeatures(new ArrayList<>(settingsAccessor.worldblender_getGSStructureFeatures()));
+		settingsAccessor.worldblender_setGSStructureFeatures(new ArrayList<>(settingsAccessor.worldblender_getGSStructureFeatures()));
 		
-		settingsAccessor.wb_setCarvers(new HashMap<>(settingsAccessor.wb_getCarvers()));
+		settingsAccessor.worldblender_setCarvers(new HashMap<>(settingsAccessor.worldblender_getCarvers()));
 		for (GenerationStep.Carver carverGroup : GenerationStep.Carver.values()) {
-			settingsAccessor.wb_getCarvers().put(carverGroup, new ArrayList<>(biome.getGenerationSettings().getCarversForStep(carverGroup)));
+			settingsAccessor.worldblender_getCarvers().put(carverGroup, new ArrayList<>(biome.getGenerationSettings().getCarversForStep(carverGroup)));
 		}
 		
-		((SpawnSettingsAccessor) biome.getSpawnSettings()).wb_setSpawners(new HashMap<>(((SpawnSettingsAccessor) biome.getSpawnSettings()).wb_getSpawners()));
+		((SpawnSettingsAccessor) biome.getSpawnSettings()).worldblender_setSpawners(new HashMap<>(((SpawnSettingsAccessor) biome.getSpawnSettings()).worldblender_getSpawners()));
 		for (SpawnGroup spawnGroup : SpawnGroup.values()) {
-			((SpawnSettingsAccessor) biome.getSpawnSettings()).wb_getSpawners().put(spawnGroup, new ArrayList<>(biome.getSpawnSettings().getSpawnEntries(spawnGroup).getEntries()));
+			((SpawnSettingsAccessor) biome.getSpawnSettings()).worldblender_getSpawners().put(spawnGroup, new ArrayList<>(biome.getSpawnSettings().getSpawnEntries(spawnGroup).getEntries()));
 		}
 		
-		((SpawnSettingsAccessor) biome.getSpawnSettings()).wb_setSpawnCosts(new HashMap<>(((SpawnSettingsAccessor) biome.getSpawnSettings()).wb_getSpawnCosts()));
+		((SpawnSettingsAccessor) biome.getSpawnSettings()).worldblender_setSpawnCosts(new HashMap<>(((SpawnSettingsAccessor) biome.getSpawnSettings()).worldblender_getSpawnCosts()));
 	}
 	
 	/**
@@ -213,7 +213,7 @@ public class TheBlender {
 		
 		addBiomeFeatures(settings.getFeatures());
 		addBiomeStructures(settings.getStructureFeatures());
-		addBiomeCarvers(settingsAccessor.wb_getCarvers());
+		addBiomeCarvers(settingsAccessor.worldblender_getCarvers());
 		addBiomeNaturalMobs(biome.getSpawnSettings());
 		addBiomeSurfaceConfig(settings.getSurfaceConfig(), biomeID);
 	}
@@ -261,17 +261,17 @@ public class TheBlender {
 			List<CarverAccessor> carvers = blendedCarversByStage.values().stream()
 				.flatMap(Collection::stream)
 				.map(carver -> (ConfiguredCarverAccessor) carver.get())
-				.map(carver -> (CarverAccessor) carver.wb_getcarver())
+				.map(carver -> (CarverAccessor) carver.worldblender_getcarver())
 				.collect(Collectors.toList());
 			
 			Set<Block> allCarvableBlocks = carvers.stream()
-				.flatMap(carver -> carver.wb_getalwaysCarvableBlocks().stream())
+				.flatMap(carver -> carver.worldblender_getAlwaysCarvableBlocks().stream())
 				.collect(Collectors.toSet());
 
 			// Apply the surface blocks that needs to be carved to the carvers
 			allCarvableBlocks.addAll(blendedSurface.blocksToCarve());
 			
-			carvers.forEach(carver -> carver.wb_setalwaysCarvableBlocks(allCarvableBlocks));
+			carvers.forEach(carver -> carver.worldblender_setAlwaysCarvableBlocks(allCarvableBlocks));
 		}
 		
 		// add these last so that this can contain other feature's liquids/falling blocks in local modification stage much better
@@ -414,7 +414,7 @@ public class TheBlender {
 	private void addBiomeNaturalMobs(SpawnSettings biomeSpawnInfo) {
 		for (SpawnGroup spawnGroup : SpawnGroup.values()) {
 			Integer maxWeight = MAX_WEIGHT_PER_GROUP.getOrDefault(spawnGroup, Integer.MAX_VALUE);
-			List<SpawnSettings.SpawnEntry> blendedSpawns = ((BuilderAccessor)blendedSpawnInfo).wb_getSpawners().get(spawnGroup);
+			List<SpawnSettings.SpawnEntry> blendedSpawns = ((BuilderAccessor)blendedSpawnInfo).worldblender_getSpawners().get(spawnGroup);
 			for (SpawnSettings.SpawnEntry spawnEntry : biomeSpawnInfo.getSpawnEntries(spawnGroup).getEntries()) {
 				if (checkedMobs.contains(spawnEntry)) continue;
 				checkedMobs.add(spawnEntry);
@@ -435,7 +435,7 @@ public class TheBlender {
 				SpawnSettings.SpawnEntry newEntry = new SpawnSettings.SpawnEntry(
 					spawnEntry.type,
 					// Cap the weight and make sure it isn't too low
-					Math.max(1, Math.min(maxWeight, ((EntryAccessor)spawnEntry).getWeight())),
+					Math.max(1, Math.min(maxWeight, spawnEntry.getWeight().getValue())),
 					spawnEntry.minGroupSize,
 					spawnEntry.maxGroupSize
 				);
@@ -484,7 +484,7 @@ public class TheBlender {
 			}
 
 			// Set the structure spacing config in wb dimension.
-			((StructuresConfigAccessor)WBServerWorld.getChunkManager().getChunkGenerator().getStructuresConfig()).wb_setStructureConfigMap(tempMap);
+			((StructuresConfigAccessor)WBServerWorld.getChunkManager().getChunkGenerator().getStructuresConfig()).worldblender_setStructureConfigMap(tempMap);
 		}
 	}
 	

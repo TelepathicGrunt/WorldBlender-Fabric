@@ -21,7 +21,7 @@ public class WBPortalBlockEntityRenderer implements BlockEntityRenderer<WBPortal
 	private static final Random RANDOM = new Random(31100L);
 	public static final Identifier MAIN_TEXTURE = new Identifier("textures/misc/enchanted_item_glint.png");
 	public static final Identifier ADDITIVE_TEXTURE = new Identifier("textures/misc/forcefield.png");
-	RenderLayer.MultiPhase WORLD_BLENDER_PORTAL = MultiPhaseInvoker.worldblender_createMultiPhase("world_blender_portal", VertexFormats.POSITION, VertexFormat.DrawMode.QUADS, 256, false, false, RenderLayer.MultiPhaseParameters.builder().shader(RenderPhaseAccessor.wb_getEND_GATEWAY_SHADER()).texture(RenderPhase.Textures.create().add(MAIN_TEXTURE, false, false).add(ADDITIVE_TEXTURE, false, false).build()).build(false));
+	RenderLayer.MultiPhase WORLD_BLENDER_PORTAL = MultiPhaseInvoker.worldblender_createMultiPhase("world_blender_portal", VertexFormats.POSITION, VertexFormat.DrawMode.QUADS, 256, false, false, RenderLayer.MultiPhaseParameters.builder().shader(RenderPhaseAccessor.worldblender_getEND_GATEWAY_SHADER()).texture(RenderPhase.Textures.create().add(MAIN_TEXTURE, false, false).add(ADDITIVE_TEXTURE, false, false).build()).build(false));
 
 	public void render(WBPortalBlockEntity endPortalBlockEntity, float f, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i, int j) {
 		RANDOM.setSeed(31100L);
@@ -38,20 +38,20 @@ public class WBPortalBlockEntityRenderer implements BlockEntityRenderer<WBPortal
 		float green = (RANDOM.nextFloat() * 2.95F) * 0.5f * coolDownEffect;
 		float blue = (RANDOM.nextFloat() * 3.0F) *  0.5f * coolDownEffect;
 
-		this.renderSide(entity, matrix4f, vertexConsumer, 0.0F, 1.0F, 0.0F, 1.0F, 1.0F, 1.0F, 1.0F, 1.0F, Direction.SOUTH);
-		this.renderSide(entity, matrix4f, vertexConsumer, 0.0F, 1.0F, 1.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, Direction.NORTH);
-		this.renderSide(entity, matrix4f, vertexConsumer, 1.0F, 1.0F, 1.0F, 0.0F, 0.0F, 1.0F, 1.0F, 0.0F, Direction.EAST);
-		this.renderSide(entity, matrix4f, vertexConsumer, 0.0F, 0.0F, 0.0F, 1.0F, 0.0F, 1.0F, 1.0F, 0.0F, Direction.WEST);
-		this.renderSide(entity, matrix4f, vertexConsumer, 0.0F, 1.0F, 0.0F, 0.0F, 0.0F, 0.0F, 1.0F, 1.0F, Direction.DOWN);
-		this.renderSide(entity, matrix4f, vertexConsumer, 0.0F, 1.0F, 1.0F, 1.0F, 1.0F, 1.0F, 0.0F, 0.0F, Direction.UP);
+		this.renderSide(entity, matrix4f, vertexConsumer, 0.0F, 1.0F, 0.0F, 1.0F, 1.0F, 1.0F, 1.0F, 1.0F, red, green, blue, Direction.SOUTH);
+		this.renderSide(entity, matrix4f, vertexConsumer, 0.0F, 1.0F, 1.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, red, green, blue, Direction.NORTH);
+		this.renderSide(entity, matrix4f, vertexConsumer, 1.0F, 1.0F, 1.0F, 0.0F, 0.0F, 1.0F, 1.0F, 0.0F, red, green, blue, Direction.EAST);
+		this.renderSide(entity, matrix4f, vertexConsumer, 0.0F, 0.0F, 0.0F, 1.0F, 0.0F, 1.0F, 1.0F, 0.0F, red, green, blue, Direction.WEST);
+		this.renderSide(entity, matrix4f, vertexConsumer, 0.0F, 1.0F, 0.0F, 0.0F, 0.0F, 0.0F, 1.0F, 1.0F, red, green, blue, Direction.DOWN);
+		this.renderSide(entity, matrix4f, vertexConsumer, 0.0F, 1.0F, 1.0F, 1.0F, 1.0F, 1.0F, 0.0F, 0.0F, red, green, blue, Direction.UP);
 	}
 
-	private void renderSide(WBPortalBlockEntity entity, Matrix4f model, VertexConsumer vertices, float x1, float x2, float y1, float y2, float z1, float z2, float z3, float z4, Direction direction) {
+	private void renderSide(WBPortalBlockEntity entity, Matrix4f model, VertexConsumer vertices, float x1, float x2, float y1, float y2, float z1, float z2, float z3, float z4, float red, float green, float blue, Direction direction) {
 		if (entity.shouldDrawSide(direction)) {
-			vertices.vertex(model, x1, y1, z1).next();
-			vertices.vertex(model, x2, y1, z2).next();
-			vertices.vertex(model, x2, y2, z3).next();
-			vertices.vertex(model, x1, y2, z4).next();
+			vertices.vertex(model, x1, y1, z1).color(red, green, blue, 1).next();
+			vertices.vertex(model, x2, y1, z2).color(red, green, blue, 1).next();
+			vertices.vertex(model, x2, y2, z3).color(red, green, blue, 1).next();
+			vertices.vertex(model, x1, y2, z4).color(red, green, blue, 1).next();
 		}
 	}
 	protected RenderLayer getLayer() {

@@ -7,7 +7,7 @@ import net.minecraft.world.World;
 
 public class WBIdentifiers {
     public static final Identifier MOD_DIMENSION_ID = new Identifier(WorldBlender.MODID, WorldBlender.MODID);
-    public static final RegistryKey<World> WB_WORLD_KEY = RegistryKey.of(Registry.DIMENSION, WBIdentifiers.MOD_DIMENSION_ID);
+    public static final RegistryKey<World> WB_WORLD_KEY = RegistryKey.of(Registry.WORLD_KEY, WBIdentifiers.MOD_DIMENSION_ID);
     public static final Identifier WB_BIOME_PROVIDER_ID = new Identifier(WorldBlender.MODID, "biome_source");
 
     public static final Identifier PORTAL_COOLDOWN_PACKET_ID = new Identifier(WorldBlender.MODID, "portal_cooldown");

@@ -18,7 +18,7 @@ public class LightingProviderMixin {
 	 * @reason Required to make sure structures that replaces light blocks does not crash servers
 	 */
 	@Inject(method = "addLightSource", at = @At("HEAD"), cancellable = true)
-	public void onBlockEmissionIncrease(BlockPos blockPos, int lightLevel, CallbackInfo ci) {
+	public void worldblender_onBlockEmissionIncrease(BlockPos blockPos, int lightLevel, CallbackInfo ci) {
 		if (lightLevel == 0) {
 			ci.cancel();
 		}

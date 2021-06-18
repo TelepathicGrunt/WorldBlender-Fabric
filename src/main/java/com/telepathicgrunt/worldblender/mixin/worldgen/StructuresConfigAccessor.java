@@ -12,5 +12,5 @@ import java.util.Map;
 public interface StructuresConfigAccessor {
 
     @Accessor("structures")
-    void wb_setStructureConfigMap(Map<StructureFeature<?>, StructureConfig> structures);
+    void worldblender_setStructureConfigMap(Map<StructureFeature<?>, StructureConfig> structures);
 }

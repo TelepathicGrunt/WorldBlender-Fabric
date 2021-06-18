@@ -11,8 +11,8 @@ import java.util.Set;
 public interface CarverAccessor {
 
     @Accessor("alwaysCarvableBlocks")
-    Set<Block> wb_getalwaysCarvableBlocks();
+    Set<Block> worldblender_getAlwaysCarvableBlocks();
 
     @Accessor("alwaysCarvableBlocks")
-    void wb_setalwaysCarvableBlocks(Set<Block> blockSet);
+    void worldblender_setAlwaysCarvableBlocks(Set<Block> blockSet);
 }

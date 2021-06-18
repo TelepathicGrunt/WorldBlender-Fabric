@@ -19,8 +19,8 @@ public class BlockOverlayRendererMixin {
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameOverlayRenderer;getInWallBlockState(Lnet/minecraft/entity/player/PlayerEntity;)Lnet/minecraft/block/BlockState;"),
             locals = LocalCapture.CAPTURE_FAILSOFT,
             cancellable = true)
-    private static void blockOverlay(MinecraftClient minecraftClient, MatrixStack matrixStack, CallbackInfo ci, PlayerEntity playerEntity) {
-        if (WBPortalClientOverlay.portalOverlay(playerEntity, new BlockPos(playerEntity.getPos()), matrixStack))
+    private static void worldblender_blockOverlay(MinecraftClient minecraftClient, MatrixStack matrixStack, CallbackInfo ci, PlayerEntity playerEntity) {
+        if (WBPortalClientOverlay.portalOverlay(playerEntity, matrixStack))
             ci.cancel();
     }
 }

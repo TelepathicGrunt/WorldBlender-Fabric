@@ -1,6 +1,7 @@
 package com.telepathicgrunt.worldblender.blocks;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.telepathicgrunt.worldblender.WorldBlender;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.BufferRenderer;
 import net.minecraft.client.render.GameRenderer;
@@ -12,63 +13,71 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Matrix4f;
-import net.minecraft.util.math.noise.OctaveSimplexNoiseSampler;
-import net.minecraft.world.gen.ChunkRandom;
-
-import java.util.stream.IntStream;
+import net.minecraft.util.math.Vec3f;
 
 public class WBPortalClientOverlay {
-    private static final Identifier TEXTURE_GLINT = new Identifier("textures/misc/enchanted_item_glint.png");
-    private static final Identifier TEXTURE_FORCE_FIELD = new Identifier("textures/misc/forcefield.png");
-    private static final OctaveSimplexNoiseSampler NOISE_SAMPLER = new OctaveSimplexNoiseSampler(new ChunkRandom(564566989L), IntStream.rangeClosed(-1, 0));
+    private static final Identifier TEXTURE_OVERLAY_1 = new Identifier(WorldBlender.MODID, "textures/portal_overlay_1.png");
 
-    public static boolean portalOverlay(PlayerEntity player, BlockPos pos, MatrixStack matrixStack) {
+    public static boolean portalOverlay(PlayerEntity player, MatrixStack matrixStack) {
 
         if (player.world.getBlockState(new BlockPos(player.getCameraPosVec(1))).getBlock() == WBBlocks.WORLD_BLENDER_PORTAL) {
-            float brightnessAtEyes = player.getBrightnessAtEyes();
-            float yaw = Math.abs(player.getYaw()) / 360;
-            float pitch = Math.abs(player.getPitch()) / 360;
-            float yPos = (float) player.getPos().y / 5F;
 
-            RenderSystem.setShader(GameRenderer::getPositionTexShader);
+            BufferBuilder bufferBuilder = Tessellator.getInstance().getBuffer();
+            RenderSystem.setShader(GameRenderer::getPositionColorTexShader);
+            RenderSystem.depthFunc(519);
+            RenderSystem.depthMask(false);
+            RenderSystem.enableBlend();
+            RenderSystem.defaultBlendFunc();
             RenderSystem.enableTexture();
-            RenderSystem.setShaderTexture(0, TEXTURE_FORCE_FIELD);
-            beginDrawingOverlay(matrixStack, brightnessAtEyes, yPos, yaw, pitch, 9945924F);
+            RenderSystem.setShaderTexture(0, TEXTURE_OVERLAY_1);
 
-            RenderSystem.enableTexture();
-            RenderSystem.setShaderTexture(0, TEXTURE_GLINT);
-            beginDrawingOverlay(matrixStack, brightnessAtEyes, yPos, yaw, pitch, 23565F);
+
+            float minU = -0f;
+            float maxU = 1f;
+            float midU = (minU + maxU) / 2.0F;
+            
+            float minV = -0f;
+            float maxV = 1f;
+            float midV = (minV + maxV) / 2.0F;
+            
+            float lerpAmount = 0;
+            float lerp1 = MathHelper.lerp(lerpAmount, minU, midU);
+            float lerp2 = MathHelper.lerp(lerpAmount, maxU, midU);
+            float lerp3 = MathHelper.lerp(lerpAmount, minV, midV);
+            float lerp4 = MathHelper.lerp(lerpAmount, maxV, midV);
+
+            float scale = 0.68f;
+            float rSizeScale = 0.1f;
+            float rSpinScale = 0.03f;
+            float rSpinStartSpeed = 1f;
+
+            for(int r = 0; r < 4; ++r) {
+                int altR = ((r % 2) * 2) - 1;
+                float scaledSizeR = (r * rSizeScale);
+                float scaledSpinR = altR * ((r + rSpinStartSpeed) * rSpinScale);
+
+                matrixStack.push();
+                matrixStack.multiply(Vec3f.POSITIVE_Z.getDegreesQuaternion(scaledSpinR * ((Util.getMeasuringTimeMs() * 10101) % 1000000000000000000L / 100000.0F)));
+                Matrix4f matrix4f = matrixStack.peek().getModel();
+                bufferBuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR_TEXTURE);
+                bufferBuilder.vertex(matrix4f, -scale - scaledSizeR, -scale - scaledSizeR, -0.5F).color(1.0F, 1.0F, 1.0F, 0.56f).texture(lerp2, lerp4).next();
+                bufferBuilder.vertex(matrix4f, scale + scaledSizeR, -scale - scaledSizeR, -0.5F).color(1.0F, 1.0F, 1.0F, 0.56f).texture(lerp1, lerp4).next();
+                bufferBuilder.vertex(matrix4f, scale + scaledSizeR, scale + scaledSizeR, -0.5F).color(1.0F, 1.0F, 1.0F, 0.56f).texture(lerp1, lerp3).next();
+                bufferBuilder.vertex(matrix4f, -scale - scaledSizeR, scale + scaledSizeR, -0.5F).color(1.0F, 1.0F, 1.0F, 0.56f).texture(lerp2, lerp3).next();
+                bufferBuilder.end();
+                BufferRenderer.draw(bufferBuilder);
+                matrixStack.pop();
+            }
+
+            RenderSystem.disableBlend();
+            RenderSystem.depthMask(true);
+            RenderSystem.depthFunc(515);
+
             return true;
         }
 
         return false;
-    }
-
-    private static void beginDrawingOverlay(MatrixStack matrixStack, float brightnessAtEyes, float yPos, float yaw, float pitch, float inheritOffset) {
-        BufferBuilder bufferbuilder = Tessellator.getInstance().getBuffer();
-        RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
-        Matrix4f matrix4f = matrixStack.peek().getModel();
-        RenderSystem.setShaderColor(brightnessAtEyes, brightnessAtEyes, brightnessAtEyes, 1);
-        bufferbuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR_TEXTURE);
-        drawTexture(bufferbuilder, brightnessAtEyes, yPos, yaw, pitch, inheritOffset, matrix4f);
-        matrix4f.multiplyByTranslation(0.0F, (Util.getMeasuringTimeMs() % 1000000000000000000L / 100000.0F), 0.0F);
-        bufferbuilder.end();
-        BufferRenderer.draw(bufferbuilder);
-        RenderSystem.disableBlend();
-
-    }
-
-    private static void drawTexture(BufferBuilder bufferbuilder, float brightnessAtEyes, float yPos, float yaw, float pitch, float inheritOffser, Matrix4f matrix4f) {
-        float timeOffset = (Util.getMeasuringTimeMs() % 1000000000000000000L / 5000.0F);
-        float red = Math.min(((float) Math.abs(NOISE_SAMPLER.sample(timeOffset + inheritOffser, yaw, pitch, yPos)) * 4.95F) * brightnessAtEyes, 1F);
-        float green = Math.min(((float) Math.abs(NOISE_SAMPLER.sample(yaw + inheritOffser, timeOffset, pitch + 10000F, yPos) * 3.95F)) * brightnessAtEyes, 1F);
-        float blue = Math.min(((float) Math.abs(NOISE_SAMPLER.sample(pitch + 10540F + inheritOffser, yPos, yaw + 1012100F, timeOffset) * 4.0F)) * brightnessAtEyes, 1F);
-        float alpha = Math.min(Math.max(((float) NOISE_SAMPLER.sample(pitch + 6500F + inheritOffser, yPos, timeOffset + 3540F, yaw + 13540F) * 3.0F), 0.7F), 0.85F);
-        bufferbuilder.vertex(matrix4f, -1.0F, -1.0F, -0.5F).color(red, green, blue, alpha).texture(4.0F + yaw, 4.0F + pitch).next();
-        bufferbuilder.vertex(matrix4f, 1.0F, -1.0F, -0.5F).color(red, green, blue, alpha).texture(0.0F + yaw, 4.0F + pitch).next();
-        bufferbuilder.vertex(matrix4f, 1.0F, 1.0F, -0.5F).color(red, green, blue, alpha).texture(0.0F + yaw, 0.0F + pitch).next();
-        bufferbuilder.vertex(matrix4f, -1.0F, 1.0F, -0.5F).color(red, green, blue, alpha).texture(4.0F + yaw, 0.0F + pitch).next();
     }
 }

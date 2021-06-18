@@ -182,7 +182,7 @@ public class WBPortalBlockEntity extends BlockEntity {
         }
         else if (blockState.isOpaque()) {
             Block.NeighborGroup neighborGroup = new Block.NeighborGroup(state, blockState, facing);
-            Object2ByteLinkedOpenHashMap<Block.NeighborGroup> object2ByteLinkedOpenHashMap = BlockAccessor.wb_getFACE_CULL_MAP().get();
+            Object2ByteLinkedOpenHashMap<Block.NeighborGroup> object2ByteLinkedOpenHashMap = BlockAccessor.worldblender_getFACE_CULL_MAP().get();
             byte b = object2ByteLinkedOpenHashMap.getAndMoveToFirst(neighborGroup);
             if (b != 127) {
                 return b != 0;

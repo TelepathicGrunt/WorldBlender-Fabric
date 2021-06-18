@@ -87,7 +87,7 @@ public class WBBiomeProvider extends BiomeSource
 	}
 
 	public Biome getBiomeForNoiseGen(int x, int y, int z) {
-		int biomeRawID = ((BiomeLayerSamplerAccessor)this.biomeSampler).wb_getSampler().sample(x, z);
+		int biomeRawID = ((BiomeLayerSamplerAccessor)this.biomeSampler).worldblender_getSampler().sample(x, z);
 		Biome biome = this.biomeRegistry.get(biomeRawID);
 		if (biome == null) {
 			//fallback to builtin registry if dynamic registry doesnt have biome
