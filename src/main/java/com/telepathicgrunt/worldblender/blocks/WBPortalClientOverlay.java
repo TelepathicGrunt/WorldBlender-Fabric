@@ -52,8 +52,9 @@ public class WBPortalClientOverlay {
             float rSizeScale = 0.1f;
             float rSpinScale = 0.03f;
             float rSpinStartSpeed = 1f;
+            float alpha = 0.37f;
 
-            for(int r = 0; r < 4; ++r) {
+            for(int r = 0; r < 6; ++r) {
                 int altR = ((r % 2) * 2) - 1;
                 float scaledSizeR = (r * rSizeScale);
                 float scaledSpinR = altR * ((r + rSpinStartSpeed) * rSpinScale);
@@ -62,10 +63,10 @@ public class WBPortalClientOverlay {
                 matrixStack.multiply(Vec3f.POSITIVE_Z.getDegreesQuaternion(scaledSpinR * ((Util.getMeasuringTimeMs() * 10101) % 1000000000000000000L / 100000.0F)));
                 Matrix4f matrix4f = matrixStack.peek().getModel();
                 bufferBuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR_TEXTURE);
-                bufferBuilder.vertex(matrix4f, -scale - scaledSizeR, -scale - scaledSizeR, -0.5F).color(1.0F, 1.0F, 1.0F, 0.56f).texture(lerp2, lerp4).next();
-                bufferBuilder.vertex(matrix4f, scale + scaledSizeR, -scale - scaledSizeR, -0.5F).color(1.0F, 1.0F, 1.0F, 0.56f).texture(lerp1, lerp4).next();
-                bufferBuilder.vertex(matrix4f, scale + scaledSizeR, scale + scaledSizeR, -0.5F).color(1.0F, 1.0F, 1.0F, 0.56f).texture(lerp1, lerp3).next();
-                bufferBuilder.vertex(matrix4f, -scale - scaledSizeR, scale + scaledSizeR, -0.5F).color(1.0F, 1.0F, 1.0F, 0.56f).texture(lerp2, lerp3).next();
+                bufferBuilder.vertex(matrix4f, -scale - scaledSizeR, -scale - scaledSizeR, -0.5F).color(1.0F, 1.0F, 1.0F, alpha).texture(lerp2, lerp4).next();
+                bufferBuilder.vertex(matrix4f, scale + scaledSizeR, -scale - scaledSizeR, -0.5F).color(1.0F, 1.0F, 1.0F, alpha).texture(lerp1, lerp4).next();
+                bufferBuilder.vertex(matrix4f, scale + scaledSizeR, scale + scaledSizeR, -0.5F).color(1.0F, 1.0F, 1.0F, alpha).texture(lerp1, lerp3).next();
+                bufferBuilder.vertex(matrix4f, -scale - scaledSizeR, scale + scaledSizeR, -0.5F).color(1.0F, 1.0F, 1.0F, alpha).texture(lerp2, lerp3).next();
                 bufferBuilder.end();
                 BufferRenderer.draw(bufferBuilder);
                 matrixStack.pop();

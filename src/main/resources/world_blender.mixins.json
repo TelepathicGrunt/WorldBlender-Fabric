@@ -28,7 +28,6 @@
   ],
   "client": [
     "blocks.BlockOverlayRendererMixin",
-    "blocks.RenderPhaseAccessor",
     "dimensions.SkyPropertiesAccessor"
   ],
   "injectors": {
