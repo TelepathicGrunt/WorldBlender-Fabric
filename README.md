@@ -16,14 +16,14 @@ repositories {
 
 &nbsp;
 
-Don't forget to change 3.0.0 with the actual latest version of this mod.
+Don't forget to change 3.0.1 with the actual latest version of this mod.
 
 <blockquote>
 dependencies {
 
 ...
 
-&nbsp;&nbsp;&nbsp;&nbsp;modImplementation "com.telepathicgrunt:WorldBlender-Fabric:1.17.0-3.0.0-fabric"
+&nbsp;&nbsp;&nbsp;&nbsp;modImplementation "com.telepathicgrunt:WorldBlender-Fabric:3.0.1+1.17.0"
 
 }</blockquote>
 

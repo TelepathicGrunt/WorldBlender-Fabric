@@ -474,13 +474,13 @@ public class TheBlender {
 
 		if(WBServerWorld != null){
 			// Add the default spacings
-			tempMap.putAll(StructuresConfig.DEFAULT_STRUCTURES);
-			tempMap.putAll(FabricStructureImpl.STRUCTURE_TO_CONFIG_MAP);
+			StructuresConfig.DEFAULT_STRUCTURES.forEach(tempMap::putIfAbsent);
+			FabricStructureImpl.STRUCTURE_TO_CONFIG_MAP.forEach(tempMap::putIfAbsent);
 
 			for(Map.Entry<RegistryKey<World>, ServerWorld> serverWorldEntry : worlds.entrySet()){
 				// These maps may be immutable for some chunk generators. Our own won't be unless
 				// someone messes with it. I take no chances so defensive programming incoming!
-				tempMap.putAll(serverWorldEntry.getValue().getChunkManager().getChunkGenerator().getStructuresConfig().getStructures());
+				serverWorldEntry.getValue().getChunkManager().getChunkGenerator().getStructuresConfig().getStructures().forEach(tempMap::putIfAbsent);
 			}
 
 			// Set the structure spacing config in wb dimension.

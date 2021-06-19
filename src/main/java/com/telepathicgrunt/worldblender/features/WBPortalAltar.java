@@ -65,6 +65,7 @@ public class WBPortalAltar extends Feature<DefaultFeatureConfig>
 
 		finalPosition.move(Direction.UP);
 		context.getWorld().setBlockState(finalPosition.down(), Blocks.AIR.getDefaultState(), 3);
+		if(finalPosition.getY() <= context.getGenerator().getMinimumY()) finalPosition.move(Direction.UP, (context.getGenerator().getMinimumY() - finalPosition.getY()) + 3);
 		ALTAR_TEMPLATE.place(context.getWorld(), finalPosition.add(-5, -2, -5), finalPosition.add(-5, -2, -5), placementSettings, context.getRandom(), 3);
 		finalPosition.move(Direction.DOWN);
 		context.getWorld().setBlockState(finalPosition, WBBlocks.WORLD_BLENDER_PORTAL.getDefaultState(), 3); //extra check to make sure portal is placed

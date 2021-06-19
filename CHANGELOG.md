@@ -1,3 +1,11 @@
+### **(V.3.0.1 Changes) (1.17.0 Minecraft)**
+
+##### Dimension:
+- Imported structure spacings will no longer overwrite the existing spacing for structures you set for world blender's dimension.
+
+- Added config option to remove structure pieces at world bottom.
+
+
 ### **(V.3.0.0 Changes) (1.17.0 Minecraft)**
 
 ##### Dimension:

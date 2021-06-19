@@ -4,9 +4,9 @@
   "package": "com.telepathicgrunt.worldblender.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "blocks.MultiPhaseInvoker",
     "blocks.AbstractRailBlockInvoker",
     "blocks.BlockAccessor",
+    "blocks.MultiPhaseInvoker",
     "dimensions.DimensionTypeAccessor",
     "dimensions.EnderDragonFightAccessor",
     "dimensions.EnderDragonFightMixin",
@@ -23,6 +23,7 @@
     "worldgen.GenerationSettingsAccessor",
     "worldgen.OceanMonumentStructureMixin",
     "worldgen.SpawnSettingsAccessor",
+    "worldgen.StructureMixin",
     "worldgen.StructuresConfigAccessor",
     "worldgen.WeightedBlockStateProviderMixin"
   ],

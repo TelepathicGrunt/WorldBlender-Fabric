@@ -10,10 +10,19 @@ public class WBDimensionConfigs implements ConfigData {
 
     @ConfigEntry.Gui.PrefixText
     @ConfigEntry.Gui.Tooltip(count = 0)
-    @Comment(value = " The size of the different kinds of surfaces. Higher numbers means\r\n"
-            +" each surface will be larger but might make some surfaces harder to"
-            +" find. Lower numbers means the surfaces are smaller but could become"
-            +" too chaotic or small for some features to spawn on.\r\n")
+    @Comment(value = """
+             Removes any nbt structure piece being place at the bottom of the world.
+             Best for floating island World Blender terrain
+            """)
+    public boolean removeWorldBottomStructures = false;
+
+    @ConfigEntry.Gui.PrefixText
+    @ConfigEntry.Gui.Tooltip(count = 0)
+    @Comment(value = """
+             The size of the different kinds of surfaces.
+             Higher numbers means each surface will be larger but might make some surfaces harder to find.
+             Lower numbers means the surfaces are smaller but could become too chaotic or small for some features to spawn on.
+            """)
     @ConfigEntry.BoundedDiscrete(min = 1, max = 100000)
     public double surfaceScale = 240D;
 
