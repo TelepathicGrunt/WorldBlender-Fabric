@@ -5,49 +5,55 @@ import com.telepathicgrunt.worldblender.theblender.ConfigBlacklisting;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.world.World;
 import net.minecraft.world.gen.surfacebuilder.SurfaceBuilder;
 import net.minecraft.world.gen.surfacebuilder.SurfaceConfig;
 import net.minecraft.world.gen.surfacebuilder.TernarySurfaceConfig;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class SurfaceBlender {
 	final List<SurfaceConfig> surfaces = new ArrayList<>();
+	final Map<Integer, Boolean> undergroundBlocks = new HashMap<>();
 	final double baseScale;
 	
 	public SurfaceBlender() {
-		// default order of surface builders I want to start with always
-		surfaces.add(SurfaceBuilder.NETHER_CONFIG);
-		surfaces.add(SurfaceBuilder.END_CONFIG);
-		
-		if (WorldBlender.WB_CONFIG.WBBlendingConfig.allowVanillaSurfaces &&
-			WorldBlender.WB_CONFIG.WBBlendingConfig.allowVanillaBiomeImport) {
-			surfaces.add(SurfaceBuilder.GRASS_CONFIG);
-			surfaces.add(SurfaceBuilder.PODZOL_CONFIG);
-			surfaces.add(SurfaceBuilder.BADLANDS_CONFIG);
-			surfaces.add(BlendedSurfaceBuilder.SAND_SAND_UNDERWATER_CONFIG);
-			surfaces.add(SurfaceBuilder.MYCELIUM_CONFIG);
-			surfaces.add(new TernarySurfaceConfig(Blocks.SNOW_BLOCK.getDefaultState(), Blocks.DIRT.getDefaultState(), Blocks.GRAVEL.getDefaultState()));
-			surfaces.add(SurfaceBuilder.CRIMSON_NYLIUM_CONFIG);
-			surfaces.add(SurfaceBuilder.WARPED_NYLIUM_CONFIG);
-			surfaces.add(SurfaceBuilder.BASALT_DELTA_CONFIG);
-			surfaces.add(SurfaceBuilder.COARSE_DIRT_CONFIG);
-			surfaces.add(SurfaceBuilder.GRAVEL_CONFIG);
-		}
-		
-		// remove the surfaces that we disallow through blacklist but keep nether/end road
-		for (int i = surfaces.size() - 1; i > 1; i--) {
-			Block topBlock = surfaces.get(i).getTopMaterial().getBlock();
-			boolean isBlacklisted = ConfigBlacklisting.isIdentifierBlacklisted(
-				ConfigBlacklisting.BlacklistType.SURFACE_BLOCK,
-				Registry.BLOCK.getId(topBlock)
-			);
-			if (isBlacklisted) {
-				surfaces.remove(i);
+
+		int index = 0;
+
+		for(String rawStringEntry : WorldBlender.WB_CONFIG.WBDimensionConfig.biomeSurfacesLayerOrder){
+			List<String> parsedStrings = Arrays.stream(rawStringEntry.replace(" ", "").split(",")).collect(Collectors.toList());
+
+			if(parsedStrings.size() == 1){
+				BlockState state = parseStringToState(parsedStrings.get(0), index);
+				surfaces.add(new TernarySurfaceConfig(state, state, state));
+				undergroundBlocks.put(index, true);
+				index++;
+			}
+			else if(parsedStrings.size() == 2){
+				BlockState state = parseStringToState(parsedStrings.get(0), index);
+				BlockState state2 = parseStringToState(parsedStrings.get(1), index);
+				surfaces.add(new TernarySurfaceConfig(state, state2, state2));
+				undergroundBlocks.put(index, false);
+				index++;
+			}
+			else if(parsedStrings.size() > 2){
+				BlockState state = parseStringToState(parsedStrings.get(0), index);
+				BlockState state2 = parseStringToState(parsedStrings.get(1), index);
+				BlockState state3 = parseStringToState(parsedStrings.get(2), index);
+				surfaces.add(new TernarySurfaceConfig(state, state2, state3));
+				undergroundBlocks.put(index, false);
+				index++;
 			}
 		}
 		
@@ -57,6 +63,22 @@ public class SurfaceBlender {
 	public void save() {
 		BlendedSurfaceBuilder.blender = this;
 	}
+
+
+	private BlockState parseStringToState(String blockId, int surfaceIndex){
+		Optional<Block> state = Registry.BLOCK.getOrEmpty(new Identifier(blockId));
+
+		if(state.isEmpty()){
+			WorldBlender.LOGGER.warn("Surface Block Creator: Unable to parse {} into a block from the block registry. " +
+					"The layer it would've been is layer {}. " +
+					"Check biomeSurfacesLayerOrder config option to make sure all blocks are not mispelled.",
+					blockId,
+					surfaceIndex);
+
+			return Blocks.AIR.getDefaultState();
+		}
+		return state.get().getDefaultState();
+	}
 	
 	/**
 	 Adds the surface to allSurfaceList for surface gen later
@@ -64,7 +86,12 @@ public class SurfaceBlender {
 	public void addIfMissing(SurfaceConfig config) {
 		boolean alreadyPresent = surfaces.stream().anyMatch(existing -> areEquivalent(existing, config));
 		if (alreadyPresent) return;
-		
+
+		if(!Registry.BLOCK.getId(config.getUnderMaterial().getBlock()).getNamespace().equals("minecraft")){
+			undergroundBlocks.put(surfaces.size(), true);
+		}else{
+			undergroundBlocks.put(surfaces.size(), false);
+		}
 		surfaces.add(config);
 	}
 	

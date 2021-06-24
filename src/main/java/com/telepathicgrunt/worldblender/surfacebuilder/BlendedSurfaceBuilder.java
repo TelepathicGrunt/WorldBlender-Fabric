@@ -6,7 +6,6 @@ import net.minecraft.block.Blocks;
 import net.minecraft.block.Material;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.noise.OctaveSimplexNoiseSampler;
-import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.ChunkRandom;
@@ -18,11 +17,8 @@ import java.util.Random;
 import java.util.stream.IntStream;
 
 public class BlendedSurfaceBuilder extends SurfaceBuilder<TernarySurfaceConfig> {
+
 	static SurfaceBlender blender;
-	
-	public static final SurfaceConfig SAND_SAND_UNDERWATER_CONFIG =
-		new TernarySurfaceConfig(Blocks.SAND.getDefaultState(), Blocks.SAND.getDefaultState(), Blocks.SANDSTONE.getDefaultState());
-	
 	private OctaveSimplexNoiseSampler perlinGen;
 	private long perlinSeed;
 	
@@ -58,26 +54,16 @@ public class BlendedSurfaceBuilder extends SurfaceBuilder<TernarySurfaceConfig> 
 		}
 		
 		setPerlinSeed(seed);
-		
-		SurfaceConfig chosenConfig = weightedRandomSurface(x, z);
-		BlockState bottom = chosenConfig instanceof TernarySurfaceConfig
-			? chosenConfig.getUnderwaterMaterial()
-			: chosenConfig.getUnderMaterial();
-		
-		// creates surface using a surface builder similar to vanilla's default but using a random config and makes end, nether, and certain modded surfaces fill entire column
-		BlockState top = chosenConfig.getTopMaterial();
-		if (top == null) {
-			top = Blocks.AIR.getDefaultState();
-		}
+
+		SurfaceData chosenConfig = weightedRandomSurface(x, z);
 
 		this.buildSurface(
 			random, chunk, biome,
 			x, z, startHeight,
 			noise,
-			defaultBlock, defaultFluid,
-			top,
-			chosenConfig.getUnderMaterial(),
-			bottom,
+			defaultBlock,
+			defaultFluid,
+			chosenConfig,
 			seaLevel,
 			minY
 		);
@@ -86,27 +72,24 @@ public class BlendedSurfaceBuilder extends SurfaceBuilder<TernarySurfaceConfig> 
 	/**
 	 Returns a random index within the range of allSurfaceList.size(). The index picked is noise based and when visualized, it creates thin bands of areas for the indices chosen.
 	 */
-	private SurfaceConfig weightedRandomSurface(int x, int z) {
+	private SurfaceData weightedRandomSurface(int x, int z) {
 		// list checking
 		//		for(int i = 0; i<configList.size(); i++) {
 		//			WorldBlender.LOGGER.log(Level.INFO, i+": top "+configList.get(i).getTop().getBlock().getRegistryName().getPath()+": middle "+configList.get(i).getUnder().getBlock().getRegistryName().getPath()+": bottom "+configList.get(i).getUnderWaterMaterial().getBlock().getRegistryName().getPath());
 		//		}
 		
-		int chosenConfigIndex = 2; // Grass surface
+		int chosenConfigIndex = 0;
 		double noiseScale = WorldBlender.WB_CONFIG.WBDimensionConfig.surfaceScale;
 		
 		for (int configIndex = 0; configIndex < blender.surfaces.size(); configIndex++) {
-			if (configIndex == 0) {
-				if (Math.abs(perlinGen.sample(x / noiseScale, z / noiseScale, true)) < 0.035D) {
-					chosenConfigIndex = 0; // nether pathway
+			if(configIndex < WorldBlender.WB_CONFIG.WBDimensionConfig.roadLayers - 1){
+				// create roads in the dimension
+				if (Math.abs(perlinGen.sample(x / noiseScale, z / noiseScale, true)) < configIndex * WorldBlender.WB_CONFIG.WBDimensionConfig.roadThickeness + 0.035D) {
+					chosenConfigIndex = configIndex; // pathway
 					break;
 				}
-			} else if (configIndex == 1) {
-				if (Math.abs(perlinGen.sample(x / noiseScale, z / noiseScale, true)) < 0.06D) {
-					chosenConfigIndex = 1; // end border on nether path. Uses same scale as nether path.
-					break;
-				}
-			} else {
+			}
+			else {
 				double offset = 200D * configIndex;
 				double scaling = 200D + configIndex * 4D;
 				double threshold = blender.baseScale + Math.min(configIndex / 150D, 0.125D);
@@ -118,7 +101,7 @@ public class BlendedSurfaceBuilder extends SurfaceBuilder<TernarySurfaceConfig> 
 		}
 		
 		int index = Math.min(chosenConfigIndex, blender.surfaces.size() - 1); // no index out of bounds errors by locking to last config in list
-		return blender.surfaces.get(index);
+		return new SurfaceData(blender.surfaces.get(index), blender.undergroundBlocks.get(chosenConfigIndex));
 	}
 	
 	private void buildSurface(
@@ -126,14 +109,23 @@ public class BlendedSurfaceBuilder extends SurfaceBuilder<TernarySurfaceConfig> 
 		int x, int z, int startHeight,
 		double noise,
 		BlockState defaultBlock, BlockState defaultFluid,
-		BlockState top, BlockState middle, BlockState bottom,
+		SurfaceData chosenConfig,
 		int seaLevel,
 		int minY
 	) {
-		boolean replaceEntireColumn = bottom.getBlock() == Blocks.END_STONE
-			|| bottom.getBlock() == Blocks.NETHERRACK
-			|| !Registry.BLOCK.getId(bottom.getBlock()).getNamespace().equals("minecraft");
-		
+
+		BlockState bottom = chosenConfig.surfaceConfig instanceof TernarySurfaceConfig
+				? chosenConfig.surfaceConfig.getUnderwaterMaterial()
+				: chosenConfig.surfaceConfig.getUnderMaterial();
+
+		BlockState middle = chosenConfig.surfaceConfig.getUnderMaterial();
+
+		// creates surface using a surface builder similar to vanilla's default but using a random config and makes end, nether, and certain modded surfaces fill entire column
+		BlockState top = chosenConfig.surfaceConfig.getTopMaterial();
+		if (top == null) {
+			top = Blocks.AIR.getDefaultState();
+		}
+
 		// randomly generate a maxDepth from noise
 		final int maxDepth = (int) (noise / 3.0D + 3.0D + random.nextDouble() * 0.25D);
 		// WorldBlender.LOGGER.log(Level.DEBUG, "Max Noise depth: "+maxDepth);
@@ -145,7 +137,7 @@ public class BlendedSurfaceBuilder extends SurfaceBuilder<TernarySurfaceConfig> 
 		int depth = -1;
 		// reused to avoid allocations
 		BlockPos.Mutable pos = new BlockPos.Mutable();
-		int cutoffPoint = replaceEntireColumn ? chunk.getBottomY() : minY;
+		int cutoffPoint = chosenConfig.replaceEntireColumn ? chunk.getBottomY() : minY;
 		for (int y = startHeight; y >= cutoffPoint; --y) {
 			pos.set(xInChunk, y, zInChunk);
 			BlockState currentBlock = chunk.getBlockState(pos);
@@ -210,11 +202,21 @@ public class BlendedSurfaceBuilder extends SurfaceBuilder<TernarySurfaceConfig> 
 						? Blocks.RED_SANDSTONE.getDefaultState()
 						: Blocks.SANDSTONE.getDefaultState();
 				}
-			} else if (replaceEntireColumn) {
+			} else if (chosenConfig.replaceEntireColumn) {
 				toPlace = bottom;
 			} else continue;
 			
 			chunk.setBlockState(pos, toPlace, false);
+		}
+	}
+
+	private static class SurfaceData{
+		public final boolean replaceEntireColumn;
+		public final SurfaceConfig surfaceConfig;
+
+		private SurfaceData(SurfaceConfig surfaceConfig, boolean replaceEntireColumn) {
+			this.surfaceConfig = surfaceConfig;
+			this.replaceEntireColumn = replaceEntireColumn;
 		}
 	}
 }

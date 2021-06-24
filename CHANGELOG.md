@@ -1,3 +1,20 @@
+### **(V.3.0.3 Changes) (1.17.0 Minecraft)**
+
+##### Dimension:
+- Added roadLayers, roadThickeness, biomeSurfacesLayerOrder config option and merged two config entries into allowImportingAnySurfaces.
+  This gives players more power over what blocks are imported and makes up the surface of the dimension as well as the shape of the roads.
+
+
+### **(V.3.0.2 Changes) (1.17.0 Minecraft)**
+
+##### Dimension:
+- Improved removeWorldBottomStructures config to impact more structures.
+
+- Added text translation for removeWorldBottomStructures config option.
+  
+- Added config option to remove structure pillars that would've hit world bottom.
+
+
 ### **(V.3.0.1 Changes) (1.17.0 Minecraft)**
 
 ##### Dimension:

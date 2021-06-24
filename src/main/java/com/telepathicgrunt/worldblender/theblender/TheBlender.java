@@ -448,8 +448,8 @@ public class TheBlender {
 	private void addBiomeSurfaceConfig(SurfaceConfig biomeSurface, Identifier biomeID) {
 		if (shouldSkip(
 			biomeID,
-			c -> c.allowVanillaSurfaces,
-			c -> c.allowModdedSurfaces,
+			c -> c.allowImportingAnySurfaces,
+			c -> c.allowImportingAnySurfaces,
 			null
 		)) return;
 		

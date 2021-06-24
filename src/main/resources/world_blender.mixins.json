@@ -22,8 +22,12 @@
     "worldgen.ConfiguredCarverAccessor",
     "worldgen.GenerationSettingsAccessor",
     "worldgen.OceanMonumentStructureMixin",
+    "worldgen.OceanRuinGeneratorPieceMixin",
+    "worldgen.ShipwreckGeneratorPieceMixin",
     "worldgen.SpawnSettingsAccessor",
     "worldgen.StructureMixin",
+    "worldgen.StructurePieceMixin",
+    "worldgen.StructurePieceWithDimensionsMixin",
     "worldgen.StructuresConfigAccessor",
     "worldgen.WeightedBlockStateProviderMixin"
   ],

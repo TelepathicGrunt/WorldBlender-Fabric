@@ -19,7 +19,7 @@ public class StructureMixin {
 
     /**
      * @author TelepathicGrunt
-     * @reason Prevent template structures from being placed at world bottom if allowed in World Blender's config
+     * @reason Prevent template structures from being placed at world bottom if disallowed in World Blender's config
      */
     @Inject(
             method = "place(Lnet/minecraft/world/ServerWorldAccess;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/structure/StructurePlacementData;Ljava/util/Random;I)Z",
@@ -34,7 +34,7 @@ public class StructureMixin {
             world.toServerWorld().getChunkManager().getChunkGenerator().getBiomeSource() instanceof WBBiomeProvider &&
             pos.getY() <= world.getBottomY())
         {
-            cir.setReturnValue(true);
+            cir.setReturnValue(false);
         }
     }
 }
