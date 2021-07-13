@@ -78,13 +78,13 @@ public class BlendedSurfaceBuilder extends SurfaceBuilder<TernarySurfaceConfig> 
 		//			WorldBlender.LOGGER.log(Level.INFO, i+": top "+configList.get(i).getTop().getBlock().getRegistryName().getPath()+": middle "+configList.get(i).getUnder().getBlock().getRegistryName().getPath()+": bottom "+configList.get(i).getUnderWaterMaterial().getBlock().getRegistryName().getPath());
 		//		}
 		
-		int chosenConfigIndex = 0;
+		int chosenConfigIndex = blender.surfaces.size() - 1;
 		double noiseScale = WorldBlender.WB_CONFIG.WBDimensionConfig.surfaceScale;
 		
 		for (int configIndex = 0; configIndex < blender.surfaces.size(); configIndex++) {
-			if(configIndex < WorldBlender.WB_CONFIG.WBDimensionConfig.roadLayers - 1){
+			if(configIndex < WorldBlender.WB_CONFIG.WBDimensionConfig.roadLayers){
 				// create roads in the dimension
-				if (Math.abs(perlinGen.sample(x / noiseScale, z / noiseScale, true)) < configIndex * WorldBlender.WB_CONFIG.WBDimensionConfig.roadThickeness + 0.035D) {
+				if (Math.abs(perlinGen.sample(x / noiseScale, z / noiseScale, true)) < (configIndex * WorldBlender.WB_CONFIG.WBDimensionConfig.roadThickeness) + 0.035D) {
 					chosenConfigIndex = configIndex; // pathway
 					break;
 				}
@@ -101,7 +101,7 @@ public class BlendedSurfaceBuilder extends SurfaceBuilder<TernarySurfaceConfig> 
 		}
 		
 		int index = Math.min(chosenConfigIndex, blender.surfaces.size() - 1); // no index out of bounds errors by locking to last config in list
-		return new SurfaceData(blender.surfaces.get(index), blender.undergroundBlocks.get(chosenConfigIndex));
+		return new SurfaceData(blender.surfaces.get(index), blender.undergroundBlocks.get(index));
 	}
 	
 	private void buildSurface(

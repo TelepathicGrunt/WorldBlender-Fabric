@@ -69,7 +69,7 @@
   "text.autoconfig.world_blender.option.WBBlendingConfig.allowModdedSpawns.@PrefixText": "\n\nDecides if the dimension imports natural mob spawns like zombies, cows, etc.",
   "text.autoconfig.world_blender.option.WBBlendingConfig.allowModdedSpawns": "Allow Modded Spawns",
   "text.autoconfig.world_blender.option.WBBlendingConfig.allowImportingAnySurfaces.@PrefixText": "\n\nDecides if the dimension automatically imports new surfacebuilder configs in addition to biomeSurfacesLayerOrder's values (it is added to the end of biomeSurfacesLayerOrder internally).",
-  "text.autoconfig.world_blender.option.WBBlendingConfig.allowImportingAnySurfaces": "Allow Modded Surfaces",
+  "text.autoconfig.world_blender.option.WBBlendingConfig.allowImportingAnySurfaces": "Allow Importing Any Surfaces",
   "text.autoconfig.world_blender.option.WBBlendingConfig.allowVanillaBiomeImport.@PrefixText": "\n\nDecides if the dimension can import anything from vanilla biomes.\n Note: If the other vanilla stuff options are set to true and you \n have the import from modded biome option set to true as well, then\n vanilla stuff can still get imported if a modded biome has them.",
   "text.autoconfig.world_blender.option.WBBlendingConfig.allowVanillaBiomeImport": "Allow Vanilla Biome Import",
   "text.autoconfig.world_blender.option.WBBlendingConfig.allowVanillaFeatures.@PrefixText": "\n\nDecides if the dimension imports features like trees, plants, ores, etc.",

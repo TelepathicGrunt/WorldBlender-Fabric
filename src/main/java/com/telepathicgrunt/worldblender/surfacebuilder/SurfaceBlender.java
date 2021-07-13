@@ -31,7 +31,7 @@ public class SurfaceBlender {
 
 		int index = 0;
 
-		for(String rawStringEntry : WorldBlender.WB_CONFIG.WBDimensionConfig.biomeSurfacesLayerOrder){
+		for(String rawStringEntry : WorldBlender.omegaConfig.biomeSurfacesLayerOrder){
 			List<String> parsedStrings = Arrays.stream(rawStringEntry.replace(" ", "").split(",")).collect(Collectors.toList());
 
 			if(parsedStrings.size() == 1){
