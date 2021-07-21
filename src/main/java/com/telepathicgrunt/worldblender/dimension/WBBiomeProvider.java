@@ -8,6 +8,7 @@ import com.telepathicgrunt.worldblender.mixin.worldgen.BiomeLayerSamplerAccessor
 import com.telepathicgrunt.worldblender.utils.WorldSeedHolder;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.SharedConstants;
 import net.minecraft.util.Util;
 import net.minecraft.util.dynamic.RegistryLookupCodec;
@@ -24,7 +25,17 @@ import net.minecraft.world.biome.layer.util.LayerSampler;
 import net.minecraft.world.biome.source.BiomeLayerSampler;
 import net.minecraft.world.biome.source.BiomeSource;
 
+import java.io.BufferedWriter;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.io.PrintWriter;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.function.LongFunction;
 import java.util.stream.Collectors;
 
@@ -61,6 +72,21 @@ public class WBBiomeProvider extends BiomeSource
 		this.biomeSize = biomeSize;
 		this.seed = seed;
 		this.biomeSampler = buildWorldProcedure(seed, biomeSize, biomeRegistry);
+		
+		// for debugging purposes
+//		Path filePath = Paths.get(FabricLoader.getInstance().getConfigDir().toString(), "world_blender-biome_source_debugging.txt");
+//		try(PrintStream printStream = new PrintStream(filePath.toString())) {
+//			printStream.println("Biome Registry " + biomeRegistry.getClass().getName() + "@" + Integer.toHexString(biomeRegistry.hashCode()));
+//			for(Biome biome : biomeRegistry){
+//				printStream.println("int id: " + biomeRegistry.getRawId(biome) + "       biome id: " + biomeRegistry.getId(biome) + "       biome instance: " + biome.getClass().getName() + "@" + Integer.toHexString(biome.hashCode()));
+//			}
+//			printStream.println();
+//			printStream.println("----------------------------");
+//			printStream.println();
+//		}
+//		catch (FileNotFoundException e) {
+//			e.printStackTrace();
+//		}
 	}
 
 	public static BiomeLayerSampler buildWorldProcedure(long seed, int biomeSize, Registry<Biome> biomeRegistry) {
@@ -86,9 +112,38 @@ public class WBBiomeProvider extends BiomeSource
 		return layerFactory;
 	}
 
+	//private final Set<Biome> printedBiomes = new HashSet<>();
 	public Biome getBiomeForNoiseGen(int x, int y, int z) {
 		int biomeRawID = ((BiomeLayerSamplerAccessor)this.biomeSampler).worldblender_getSampler().sample(x, z);
 		Biome biome = this.biomeRegistry.get(biomeRawID);
+
+		// for debugging purposes
+//		if(!printedBiomes.contains(biome)){
+//			printedBiomes.add(biome);
+//			Path filePath = Paths.get(FabricLoader.getInstance().getConfigDir().toString(), "world_blender-biome_source_debugging.txt");
+//			try(FileWriter fw = new FileWriter(filePath.toString(), true);
+//				BufferedWriter bw = new BufferedWriter(fw);
+//				PrintWriter printStream = new PrintWriter(bw))
+//			{
+//				if (biome == null) {
+//					printStream.println("Null biome from int id to resolve: " + biomeRawID);
+//					printStream.println("Biome Registry " + biomeRegistry.getClass().getName() + "@" + Integer.toHexString(biomeRegistry.hashCode()));
+//					for(Biome biome2 : biomeRegistry){
+//						printStream.println("int id: " + biomeRegistry.getRawId(biome2) + "       biome id: " + biomeRegistry.getId(biome2) + "       biome instance: " + biome2.getClass().getName() + "@" + Integer.toHexString(biome2.hashCode()));
+//					}
+//					printStream.println();
+//					printStream.println("----------------------------");
+//					printStream.println();
+//				}
+//				else{
+//					printStream.println("int id to resolve: " + biomeRawID + "       biome resolved: " + this.biomeRegistry.getId(biome) + "       biome instance: " + biome.getClass().getName() + "@" + Integer.toHexString(biome.hashCode()) + "        Biome Registry " + biomeRegistry.getClass().getName() + "@" + Integer.toHexString(biomeRegistry.hashCode()));
+//				}
+//			}
+//			catch (IOException e) {
+//				e.printStackTrace();
+//			}
+//		}
+
 		if (biome == null) {
 			//fallback to builtin registry if dynamic registry doesnt have biome
 			if (SharedConstants.isDevelopment) {

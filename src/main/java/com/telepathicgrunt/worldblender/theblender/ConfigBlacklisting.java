@@ -66,7 +66,7 @@ public class ConfigBlacklisting
 		//mod specific ban
 		else if(blacklistedEntry.contains("*")) 
 		{
-			return blacklistedEntry.replace(":", "").substring(0, blacklistedEntry.length() - 1).equals(IdentifierToCheck.getNamespace());
+			return blacklistedEntry.replace(":", "").replace("*", "").equals(IdentifierToCheck.getNamespace());
 		}
 		//term specific ban
 		return IdentifierToCheck.getPath().contains(blacklistedEntry);

@@ -1,3 +1,10 @@
+### **(V.3.0.5 Changes) (1.17.0 Minecraft)**
+
+##### Mod Compat:
+* Added a few BetterEnd features and structures to World Blender's blacklist to help prevent crashes 
+  and stop the world being encased entirely by End Stone
+
+
 ### **(V.3.0.4 Changes) (1.17.0 Minecraft)**
 
 ##### Dimension:

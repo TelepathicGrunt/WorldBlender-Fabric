@@ -34,7 +34,6 @@ public class WorldBlender implements ModInitializer {
 
 		WBBlocks.register();
 
-		WorldBlender.reserveBiomeIDs();
 		WBFeatures.registerFeatures();
 		WBConfiguredFeatures.registerConfiguredFeatures();
 		WBSurfaceBuilders.registerSurfaceBuilders();
@@ -42,16 +41,5 @@ public class WorldBlender implements ModInitializer {
 		WBEntities.registerEntities();
 
 		UseBlockCallback.EVENT.register(WBPortalSpawning::blockRightClick);
-	}
-
-
-
-	public static void reserveBiomeIDs() {
-		//Reserve WorldBlender biome IDs for the json version to replace
-		Registry.register(BuiltinRegistries.BIOME, WBIdentifiers.GENERAL_BLENDED_BIOME_ID, DefaultBiomeCreator.createNormalOcean(false));
-		Registry.register(BuiltinRegistries.BIOME, WBIdentifiers.MOUNTAINOUS_BLENDED_BIOME_ID, DefaultBiomeCreator.createNormalOcean(false));
-		Registry.register(BuiltinRegistries.BIOME, WBIdentifiers.COLD_HILLS_BLENDED_BIOME_ID, DefaultBiomeCreator.createNormalOcean(false));
-		Registry.register(BuiltinRegistries.BIOME, WBIdentifiers.OCEAN_BLENDED_BIOME_ID, DefaultBiomeCreator.createNormalOcean(false));
-		Registry.register(BuiltinRegistries.BIOME, WBIdentifiers.FROZEN_OCEAN_BLENDED_BIOME_ID, DefaultBiomeCreator.createNormalOcean(false));
 	}
 }
