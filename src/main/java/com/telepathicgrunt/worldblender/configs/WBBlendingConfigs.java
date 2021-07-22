@@ -30,6 +30,8 @@ public class WBBlendingConfigs implements ConfigData {
             
              To blacklist by key terms, just enter the term alone such as "ocean"
              and all biomes with ocean in their name will not be imported.
+             This uses Regex so you could do "cold\\w+plateau" to blacklist any name
+             that starts with 'cold' and ends in 'plateau'.
             
              NOTE: You can blacklist multiple things at a time. Just separate
              each entry with a , (comma). Here's an example blacklisting a mod
@@ -46,6 +48,8 @@ public class WBBlendingConfigs implements ConfigData {
             
              To blacklist by key terms, just enter the term alone such as "tree"
              and all features with tree in their name will not be imported.
+             This uses Regex so you could do "tall\\w+tree" to blacklist any name
+             that starts with 'fire' and ends in 'tree'.
             
              To blacklist by mod ID, just enter the mod ID with an * on the end such as
              "ultra_amplified_dimension*" and all features from that mod will not be imported.
@@ -69,6 +73,8 @@ public class WBBlendingConfigs implements ConfigData {
             
              To blacklist by key terms, just enter the term alone such as "temple"
              and all features with temple in their name will not be imported.
+             This uses Regex so you could do "advanced\\w+village" to blacklist any name
+             that starts with 'advanced' and ends in 'village'.
             
              To blacklist by mod ID, just enter the mod ID with an * on the end such as
              "ultra_amplified_dimension*" and all structures from that mod will not be imported.
@@ -89,10 +95,13 @@ public class WBBlendingConfigs implements ConfigData {
     @ConfigEntry.Gui.Tooltip(count = 0)
     @Comment(value = """
              Blacklist carvers by key terms, mod ID, or their identifier
-            
+             Not many mods register their carvers sadly so if a mod has a carver,
+             it may not be imported into World Blender's dimension at all.
+             
              To blacklist by key terms, just enter the term alone such as "cave"
-             and all carvers with cave in their name will not be imported if they
-             are registered with a name. Not many mods register their carvers sadly.
+             and all carvers with cave in their name will not be imported.
+             This uses Regex so you could do "hot\\w+cavern" to blacklist any name
+             that starts with 'hot' and ends in 'cavern'.
             
              To blacklist by mod ID, just enter the mod ID with an * on the end such as
              "ultra_amplified_dimension*" and all carvers from that mod will not be imported.
@@ -118,6 +127,8 @@ public class WBBlendingConfigs implements ConfigData {
             
              To blacklist by key terms, just enter the term alone such as "zombie"
              and all mobs with zombie in their name will not be imported.
+             This uses Regex so you could do "turbo\\w+bat" to blacklist any name
+             that starts with 'turbo' and ends in 'bat'.
             
              To blacklist by mod ID, just enter the mod ID with an * on the end such as
              "super_duper_mob_mod*" and all mobs from that mod will not be imported.
@@ -146,6 +157,8 @@ public class WBBlendingConfigs implements ConfigData {
              To blacklist by key terms, just enter the term alone such as "sand"
              and all biome surfaces that uses blocks with sand in its name will
              not be imported. After all, sand is coarse and rough and gets everywhere!
+             This uses Regex so you could do "raw\\w+ore" to blacklist any name
+             that starts with 'raw' and ends in 'ore'.
             
              To blacklist by mod ID, just enter the mod ID with an * on the end such as
              "weird_biome_mod*" and all biome surfaces from that mod will not be imported.

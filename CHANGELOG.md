@@ -6,6 +6,9 @@
 ##### Mod Compat:
 * Added a few BetterEnd structures to World Blender's blacklist to stop the world being encased entirely by End Stone
 
+##### Config:
+* Term blacklisting now uses Regex so you can do more advanced blacklisting
+
 
 ### **(V.3.0.4 Changes) (1.17.0 Minecraft)**
 
