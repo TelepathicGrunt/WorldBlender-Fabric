@@ -1,8 +1,10 @@
 ### **(V.3.0.5 Changes) (1.17.0 Minecraft)**
 
+##### Dimension:
+* Fixed the dimensiontype json so World Blender dimension allows blocks up to 256 again.
+
 ##### Mod Compat:
-* Added a few BetterEnd features and structures to World Blender's blacklist to help prevent crashes 
-  and stop the world being encased entirely by End Stone
+* Added a few BetterEnd structures to World Blender's blacklist to stop the world being encased entirely by End Stone
 
 
 ### **(V.3.0.4 Changes) (1.17.0 Minecraft)**
