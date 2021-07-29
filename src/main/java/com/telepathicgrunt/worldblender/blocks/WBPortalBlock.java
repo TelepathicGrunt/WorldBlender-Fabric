@@ -155,6 +155,12 @@ public class WBPortalBlock extends BlockWithEntity
 					//there is no portal block and then makes it be in cooldown
 					if (destinationWorld.getRegistryKey().equals(WBIdentifiers.WB_WORLD_KEY))
 					{
+						// prevents portal over void killing player
+						if(destPos.getY() == destinationWorld.getBottomY()){
+							destinationWorld.setBlockState(destPos, Blocks.STONE.getDefaultState(), 3);
+							destPos = destPos.up();
+						}
+
 						destinationWorld.setBlockState(destPos, Blocks.AIR.getDefaultState());
 						destinationWorld.setBlockState(destPos.up(), Blocks.AIR.getDefaultState());
 						

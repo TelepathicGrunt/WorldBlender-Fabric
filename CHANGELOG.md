@@ -3,6 +3,11 @@
 ##### Dimension:
 Liquids exposed to the sky will not be contained much better.
 
+##### Teleportation:
+Teleporting to World Blender will make sure that the portal is not placed right at world bottom.
+ A stone block will be placed below portal so player won't die.
+
+
 ### **(V.3.0.5 Changes) (1.17.0 Minecraft)**
 
 ##### Dimension:
