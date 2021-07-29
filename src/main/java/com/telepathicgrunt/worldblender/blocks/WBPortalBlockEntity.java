@@ -48,6 +48,9 @@ public class WBPortalBlockEntity extends BlockEntity {
 
     public void teleportEntity(Entity entity, BlockPos destPos, ServerWorld destinationWorld, ServerWorld originalWorld) {
         this.triggerCooldown();
+        
+        // makes sure chunk is made
+        destinationWorld.getChunk(destPos);
 
         if (entity instanceof PlayerEntity) {
             ((ServerPlayerEntity) entity).teleport(
