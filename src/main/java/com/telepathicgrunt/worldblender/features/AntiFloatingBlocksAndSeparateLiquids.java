@@ -131,7 +131,13 @@ public class AntiFloatingBlocksAndSeparateLiquids extends Feature<DefaultFeature
             for (int z = 0; z < 16; z++) {
 				setblock = false;
                 mutable.set(context.getOrigin().getX() + x, 0, context.getOrigin().getZ() + z);
-                mutable.move(Direction.UP, Math.max(context.getWorld().getTopY(Heightmap.Type.WORLD_SURFACE, mutable.getX(), mutable.getZ()), context.getGenerator().getSeaLevel()));
+                int maxHeight = Math.max(context.getWorld().getTopY(Heightmap.Type.WORLD_SURFACE, mutable.getX(), mutable.getZ()), context.getGenerator().getSeaLevel());
+                maxHeight = Math.max(context.getWorld().getTopY(Heightmap.Type.WORLD_SURFACE, mutable.getX() + 1, mutable.getZ()), maxHeight);
+                maxHeight = Math.max(context.getWorld().getTopY(Heightmap.Type.WORLD_SURFACE, mutable.getX(), mutable.getZ() + 1), maxHeight);
+                maxHeight = Math.max(context.getWorld().getTopY(Heightmap.Type.WORLD_SURFACE, mutable.getX() - 1, mutable.getZ()), maxHeight);
+                maxHeight = Math.max(context.getWorld().getTopY(Heightmap.Type.WORLD_SURFACE, mutable.getX(), mutable.getZ() - 1), maxHeight);
+
+                mutable.move(Direction.UP, maxHeight);
 
                 //checks the column downward
                 for (; mutable.getY() >= context.getGenerator().getMinimumY(); mutable.move(Direction.DOWN)) {

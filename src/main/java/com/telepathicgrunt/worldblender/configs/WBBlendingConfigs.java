@@ -25,8 +25,8 @@ public class WBBlendingConfigs implements ConfigData {
              from that specific biome.
             
              If you want to blacklist an entire mod itself so no importing
-             will happen for any of its biome, just enter the mod's ID and thenr
-             put an * at the end.r
+             will happen for any of its biome, just enter the mod's ID and then
+             put an * at the end.
             
              To blacklist by key terms, just enter the term alone such as "ocean"
              and all biomes with ocean in their name will not be imported.
@@ -162,7 +162,7 @@ public class WBBlendingConfigs implements ConfigData {
             
              To blacklist by mod ID, just enter the mod ID with an * on the end such as
              "weird_biome_mod*" and all biome surfaces from that mod will not be imported.
-            
+             
              To blacklist a block from being a surface, enter the mod ID, then :, and then the
              block's name. For example, "minecraft:mycelium" will prevent any surfaces that uses
              Mycelium blocks from being imported.
