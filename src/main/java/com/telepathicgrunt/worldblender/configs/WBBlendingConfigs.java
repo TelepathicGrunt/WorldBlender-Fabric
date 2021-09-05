@@ -63,7 +63,22 @@ public class WBBlendingConfigs implements ConfigData {
              and vanilla's icebergs:
              "tree, minecraft:iceberg"
             """)
-    public String blacklistedFeatures = "minecraft:basalt_blobs, minecraft:blackstone_blobs, betterend:end_lake_normal, betterend:end_lake, betterend:desert_lake";
+    public String blacklistedFeatures =
+                    "minecraft:basalt_blobs, " +
+                    "minecraft:blackstone_blobs, " +
+                    "betterend:purple_polypore_dense, " +
+                    "betterend:twisted_umbrella_moss, " +
+                    "betterend:umbrella_moss, " +
+                    "betterend:sulphuric_lake, " +
+                    "betterend:bubble_coral, " +
+                    "betterend:bulb_moss, " +
+                    "betterend:charnia_red, " +
+                    "betterend:creeping_moss, " +
+                    "betterend:end_lily, " +
+                    "betterend:end_lake_normal, " +
+                    "betterend:end_lake, " +
+                    "betterend:desert_lake, " +
+                    "betterend:end_lake_rare";
 
 
     @ConfigEntry.Gui.PrefixText
