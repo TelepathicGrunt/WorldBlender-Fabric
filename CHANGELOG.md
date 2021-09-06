@@ -1,4 +1,4 @@
-### **(V.4.0.1 Changes) (1.16.5 Minecraft)**
+### **(V.3.0.7 Changes) (1.16.5 Minecraft)**
 
 ##### Config:
 Added some Better End's stuff to World Blender's config blacklist default values to keep the dimension looking nicer and not overwhelmed.
