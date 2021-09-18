@@ -1,4 +1,10 @@
-### **(V.3.0.7 Changes) (1.16.5 Minecraft)**
+### **(V.3.0.8 Changes) (1.17.0 Minecraft)**
+
+##### Misc:
+Changed world blender dimension's noise setting json file to have 320 as height instead of 384 because the terrain is limited to 320 range of height already.
+
+
+### **(V.3.0.7 Changes) (1.17.0 Minecraft)**
 
 ##### Config:
 Added some Better End's stuff to World Blender's config blacklist default values to keep the dimension looking nicer and not overwhelmed.

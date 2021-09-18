@@ -139,7 +139,7 @@
     },
     "size_horizontal": 1,
     "min_y": -64,
-    "height": 384,
+    "height": 320,
     "sampling": {
       "xz_scale": 0.9999999814507745,
       "y_scale": 0.9999999814507745,
