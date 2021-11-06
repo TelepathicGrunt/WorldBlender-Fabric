@@ -5,8 +5,6 @@ import me.shedaniel.autoconfig.annotation.Config;
 import me.shedaniel.autoconfig.annotation.ConfigEntry;
 import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.Comment;
 
-import java.util.List;
-
 @Config(name = "blending")
 public class WBBlendingConfigs implements ConfigData {
 

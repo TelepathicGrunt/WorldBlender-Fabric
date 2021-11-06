@@ -2,11 +2,13 @@ package com.telepathicgrunt.worldblender.theblender;
 
 import com.telepathicgrunt.worldblender.WorldBlender;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 public class ConfigBlacklisting

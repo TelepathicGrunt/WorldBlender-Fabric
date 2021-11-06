@@ -1,14 +1,11 @@
 package com.telepathicgrunt.worldblender.surfacebuilder;
 
 import com.telepathicgrunt.worldblender.WorldBlender;
-import com.telepathicgrunt.worldblender.theblender.ConfigBlacklisting;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.world.World;
-import net.minecraft.world.gen.surfacebuilder.SurfaceBuilder;
 import net.minecraft.world.gen.surfacebuilder.SurfaceConfig;
 import net.minecraft.world.gen.surfacebuilder.TernarySurfaceConfig;
 

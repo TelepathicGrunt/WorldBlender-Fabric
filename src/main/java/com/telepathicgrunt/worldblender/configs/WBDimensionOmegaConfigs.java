@@ -2,6 +2,7 @@ package com.telepathicgrunt.worldblender.configs;
 
 import draylar.omegaconfig.api.Comment;
 import draylar.omegaconfig.api.Config;
+
 import java.util.List;
 
 public class WBDimensionOmegaConfigs implements Config {

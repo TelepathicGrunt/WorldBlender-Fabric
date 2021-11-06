@@ -8,7 +8,6 @@ import com.telepathicgrunt.worldblender.mixin.worldgen.BiomeLayerSamplerAccessor
 import com.telepathicgrunt.worldblender.utils.WorldSeedHolder;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.SharedConstants;
 import net.minecraft.util.Util;
 import net.minecraft.util.dynamic.RegistryLookupCodec;
@@ -25,17 +24,7 @@ import net.minecraft.world.biome.layer.util.LayerSampler;
 import net.minecraft.world.biome.source.BiomeLayerSampler;
 import net.minecraft.world.biome.source.BiomeSource;
 
-import java.io.BufferedWriter;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintStream;
-import java.io.PrintWriter;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.function.LongFunction;
 import java.util.stream.Collectors;
 

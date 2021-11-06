@@ -1,11 +1,8 @@
 package com.telepathicgrunt.worldblender.blocks;
 
 import com.google.common.primitives.Floats;
-import com.telepathicgrunt.worldblender.WorldBlender;
 import com.telepathicgrunt.worldblender.mixin.blocks.MultiPhaseInvoker;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gl.JsonEffectGlShader;
-import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.RenderPhase;
 import net.minecraft.client.render.Shader;
