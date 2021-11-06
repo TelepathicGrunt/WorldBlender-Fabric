@@ -38,7 +38,7 @@ public abstract class StructurePieceWithDimensionsMixin extends StructurePiece {
      * @reason Prevent structures from being placed at world bottom if disallowed in World Blender's config
      */
     @Inject(
-            method = "method_14839(Lnet/minecraft/world/WorldAccess;Lnet/minecraft/util/math/BlockBox;I)Z",
+            method = "adjustToAverageHeight(Lnet/minecraft/world/WorldAccess;Lnet/minecraft/util/math/BlockBox;I)Z",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/world/WorldAccess;getTopPosition(Lnet/minecraft/world/Heightmap$Type;Lnet/minecraft/util/math/BlockPos;)Lnet/minecraft/util/math/BlockPos;"),
             cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD
     )

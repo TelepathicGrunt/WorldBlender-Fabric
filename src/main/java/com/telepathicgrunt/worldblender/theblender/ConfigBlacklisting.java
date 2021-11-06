@@ -2,6 +2,9 @@ package com.telepathicgrunt.worldblender.theblender;
 
 import com.telepathicgrunt.worldblender.WorldBlender;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.world.biome.Biome;
 
 import java.util.*;
 import java.util.regex.Pattern;
@@ -72,11 +75,26 @@ public class ConfigBlacklisting
 		//term specific ban
 		return Pattern.compile(blacklistedEntry).matcher(IdentifierToCheck.getPath()).find();
 	}
-	
+
+	private static boolean biomeMatchFound(String blacklistedEntry, Biome biome, Identifier resourceLocationToCheck)
+	{
+		if(blacklistedEntry.contains("#"))
+		{
+			return biome.getCategory().getName().toLowerCase(Locale.ROOT).equals(blacklistedEntry.replace("#", ""));
+		}
+
+		return matchFound(blacklistedEntry, resourceLocationToCheck);
+	}
 
 	public static boolean isIdentifierBlacklisted(BlacklistType type, Identifier incomingRL)
 	{
 		List<String> listToUse = TYPE_TO_BLACKLIST.get(type);
 		return listToUse.stream().anyMatch(banEntry -> matchFound(banEntry, incomingRL));
+	}
+
+	public static boolean isBiomeBlacklisted(BlacklistType type, Biome biome, Identifier incomingRL)
+	{
+		List<String> listToUse = TYPE_TO_BLACKLIST.get(type);
+		return listToUse.stream().anyMatch(banEntry -> biomeMatchFound(banEntry, biome, incomingRL));
 	}
 }

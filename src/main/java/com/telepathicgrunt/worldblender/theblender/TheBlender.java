@@ -201,7 +201,8 @@ public class TheBlender {
 		// ignore our own biomes to speed things up and prevent possible duplications
 		if (biomeID.getNamespace().equals(WorldBlender.MODID)) return;
 		
-		if (shouldSkip(
+		if (shouldBiomeSkip(
+			biome,
 			biomeID,
 			c -> c.allowVanillaBiomeImport,
 			c -> c.allowModdedBiomeImport,
@@ -504,6 +505,22 @@ public class TheBlender {
 		if (!isVanilla && !allowModded.apply(WorldBlender.WB_CONFIG.WBBlendingConfig)) return true;
 		
 		return blacklist != null && ConfigBlacklisting.isIdentifierBlacklisted(blacklist, id);
+	}
+
+	private static boolean shouldBiomeSkip(
+			Biome biome,
+			Identifier id,
+			Function<WBBlendingConfigs, Boolean> allowVanilla,
+			Function<WBBlendingConfigs, Boolean> allowModded,
+			ConfigBlacklisting.BlacklistType blacklist
+	) {
+		if (id == null) return true;
+
+		boolean isVanilla = id.getNamespace().equals("minecraft");
+		if (isVanilla && !allowVanilla.apply(WorldBlender.WB_CONFIG.WBBlendingConfig)) return true;
+		if (!isVanilla && !allowModded.apply(WorldBlender.WB_CONFIG.WBBlendingConfig)) return true;
+
+		return blacklist != null && ConfigBlacklisting.isBiomeBlacklisted(blacklist, biome, id);
 	}
 	
 	private static boolean disallowFireLavaBasaltFeatures() {

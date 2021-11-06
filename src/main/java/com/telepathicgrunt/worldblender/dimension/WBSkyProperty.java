@@ -2,11 +2,11 @@ package com.telepathicgrunt.worldblender.dimension;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.render.SkyProperties;
+import net.minecraft.client.render.DimensionEffects;
 import net.minecraft.util.math.Vec3d;
 
 @Environment(EnvType.CLIENT)
-public class WBSkyProperty extends SkyProperties {
+public class WBSkyProperty extends DimensionEffects {
     public WBSkyProperty() {
         super(155, true, SkyType.NORMAL, false, false);
     }

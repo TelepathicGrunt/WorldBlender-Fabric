@@ -33,10 +33,15 @@ public class WBBlendingConfigs implements ConfigData {
              This uses Regex so you could do "cold\\w+plateau" to blacklist any name
              that starts with 'cold' and ends in 'plateau'.
             
+             To blacklist by biome categories, just enter the category with a # in front like "#DESERT"
+             and all biomes that are desert category will not be imported.
+             The categories you can use are: DESERT, FOREST, SWAMP, ICY, TAIGA, EXTREME_HILLS,
+             JUNGLE, MESA, PLAINS, SAVANNA, BEACH, RIVER, OCEAN, MUSHROOM, THE_END, NETHER, NONE
+                                    
              NOTE: You can blacklist multiple things at a time. Just separate
              each entry with a , (comma). Here's an example blacklisting a mod
-             and a vanilla biome at the same time:
-             "ultra_amplified_dimension*, minecraft:jungle_edge"
+             a vanilla biome, and all mushroom category biomes at the same time:
+             "ultra_amplified_dimension*, minecraft:jungle_edge, #MUSHROOM"
             """)
     public String blanketBlacklist = "ultra_amplified_dimension*";
 

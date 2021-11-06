@@ -1,3 +1,9 @@
+### **(V.3.0.9 Changes) (1.17.1 Minecraft)**
+
+##### Configs:
+Added ability for the blanket blacklist to not import from biomes based on their category. See config for more info on how. (uses # to work)
+
+
 ### **(V.3.0.8 Changes) (1.17.0 Minecraft)**
 
 ##### Misc:

@@ -32,7 +32,7 @@ public class OceanRuinGeneratorPieceMixin {
      */
     @Inject(
             method = "generate(Lnet/minecraft/world/StructureWorldAccess;Lnet/minecraft/world/gen/StructureAccessor;Lnet/minecraft/world/gen/chunk/ChunkGenerator;Ljava/util/Random;Lnet/minecraft/util/math/BlockBox;Lnet/minecraft/util/math/ChunkPos;Lnet/minecraft/util/math/BlockPos;)Z",
-            at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/world/StructureWorldAccess;getTopY(Lnet/minecraft/world/Heightmap$Type;II)I", ordinal = 0),
+            at = @At(value = "INVOKE", target = "Lnet/minecraft/structure/Structure;transformAround(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/util/BlockMirror;Lnet/minecraft/util/BlockRotation;Lnet/minecraft/util/math/BlockPos;)Lnet/minecraft/util/math/BlockPos;", ordinal = 0),
             cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD
     )
     private void worldblender_disableHeightmapSnap(StructureWorldAccess world, StructureAccessor structureAccessor,
