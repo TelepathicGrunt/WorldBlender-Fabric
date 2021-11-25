@@ -12,13 +12,11 @@ import net.minecraft.world.gen.feature.FeatureConfig;
 import net.minecraft.world.gen.feature.util.FeatureContext;
 
 
-public class AltarManager
-{
+public class AltarManager {
 	private boolean altarMade;
 	private final ServerWorld world;
 
-	public AltarManager(ServerWorld serverWorld)
-	{
+	public AltarManager(ServerWorld serverWorld) {
 		this.world = serverWorld;
 		this.altarMade = WBWorldSavedData.get(serverWorld).getWBAltarState();
 	}
@@ -27,36 +25,27 @@ public class AltarManager
 		return altarMade;
 	}
 
-	@SuppressWarnings("resource")
-	public void tick()
-	{
-		if (!this.altarMade)
-		{
+	public void tick() {
+		if (!this.altarMade) {
 			boolean flag = this.isWorldOriginTicking();
-			if(flag)
-			{
-				WBFeatures.WB_PORTAL_ALTAR.generate(new FeatureContext(this.world, this.world.getChunkManager().getChunkGenerator(), this.world.random, new BlockPos(0, 255, 0), FeatureConfig.DEFAULT));
+			if(flag) {
+				WBFeatures.WB_PORTAL_ALTAR.generate(new FeatureContext<>(this.world, this.world.getChunkManager().getChunkGenerator(), this.world.random, new BlockPos(0, 255, 0), FeatureConfig.DEFAULT));
 				this.altarMade = true;
 				this.saveWBAltarData(this.world);
 			}
 		}
 	}
 
-	private boolean isWorldOriginTicking()
-	{
-		for (int x = -1; x <= 0; ++x)
-		{
-			for (int z = -1; z <= 0; ++z)
-			{
-				Chunk ichunk = this.world.getChunk(x, z, ChunkStatus.FULL, false);
-				if (!(ichunk instanceof WorldChunk))
-				{
+	private boolean isWorldOriginTicking() {
+		for (int x = -1; x <= 0; ++x) {
+			for (int z = -1; z <= 0; ++z) {
+				Chunk chunk = this.world.getChunk(x, z, ChunkStatus.FULL, false);
+				if (!(chunk instanceof WorldChunk)) {
 					return false;
 				}
 
-				ChunkHolder.LevelType chunkholder$locationtype = ((WorldChunk) ichunk).getLevelType();
-				if (!chunkholder$locationtype.isAfter(ChunkHolder.LevelType.TICKING))
-				{
+				ChunkHolder.LevelType levelType = ((WorldChunk) chunk).getLevelType();
+				if (!levelType.isAfter(ChunkHolder.LevelType.TICKING)) {
 					return false;
 				}
 			}
@@ -65,8 +54,7 @@ public class AltarManager
 		return true;
 	}
 	
-	public void saveWBAltarData(World world) 
-	{
+	public void saveWBAltarData(World world) {
 		WBWorldSavedData.get(world).setWBAltarState(this.altarMade);
 		WBWorldSavedData.get(world).markDirty();
 	}

@@ -1,3 +1,11 @@
+### **(V.3.0.10 Changes) (1.17.1 Minecraft)**
+
+##### Misc:
+Switched to using FabricEntityTypeBuilder to not get "DataFixer" log spam for World Blender's ItemClearingEntity.
+
+Removed some deprecated API usage with Mod Menu and fabric API to prevent issues with future versions of those mods. 
+
+
 ### **(V.3.0.9 Changes) (1.17.1 Minecraft)**
 
 ##### Configs:

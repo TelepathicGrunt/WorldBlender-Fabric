@@ -9,8 +9,8 @@ import com.telepathicgrunt.worldblender.entities.WBEntities;
 import com.telepathicgrunt.worldblender.mixin.dimensions.SkyPropertiesAccessor;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry;
-import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityRendererRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.BlockEntityRendererRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
@@ -19,9 +19,9 @@ public class WorldBlenderClient implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 		SkyPropertiesAccessor.worldblender_getBY_IDENTIFIER().put(new Identifier(WorldBlender.MODID, "sky_property"), new WBSkyProperty());
-		EntityRendererRegistry.INSTANCE.register(WBEntities.ITEM_CLEARING_ENTITY, ItemClearingEntityRendering::new);
+		EntityRendererRegistry.register(WBEntities.ITEM_CLEARING_ENTITY, ItemClearingEntityRendering::new);
 
-		BlockEntityRendererRegistry.INSTANCE.register(WBBlocks.WORLD_BLENDER_PORTAL_BE, WBPortalBlockEntityRenderer::new);
+		BlockEntityRendererRegistry.register(WBBlocks.WORLD_BLENDER_PORTAL_BE, WBPortalBlockEntityRenderer::new);
 
 		// Set cooldown for portal after server says it was triggered
 		ClientPlayNetworking.registerGlobalReceiver(WBIdentifiers.PORTAL_COOLDOWN_PACKET_ID,
